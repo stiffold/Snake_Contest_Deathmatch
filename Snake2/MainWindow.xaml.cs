@@ -31,10 +31,9 @@ namespace Snake2
             _canvas.VerticalAlignment = VerticalAlignment.Top;
             _canvas.Background = Brushes.Black;
             Content = _canvas;
-            SizeToContent = SizeToContent.WidthAndHeight;
 
             _timer.Tick += UpdateGameSurround;
-            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 15); //update at 60 fps
+            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 20);
 
             Restart();
         }

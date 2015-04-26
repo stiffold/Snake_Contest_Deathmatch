@@ -32,7 +32,7 @@ namespace Snake2.game
             _players.Add(playerFactory.Create<TestPlayerUI>(Colors.Red));
             _players.Add(playerFactory.Create<Vazba>(Colors.Blue));
             _players.Add(playerFactory.Create<Setal>(Colors.Aqua));
-            _players.Add(playerFactory.Create<TestPlayer>(Colors.White));
+            _players.Add(playerFactory.Create<Randomer>(Colors.White));
         }
 
         public int[,] Move()
