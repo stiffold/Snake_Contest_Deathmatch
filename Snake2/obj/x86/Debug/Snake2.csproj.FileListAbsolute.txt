@@ -1,0 +1,11 @@
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\bin\Debug\Snake2.exe
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\bin\Debug\Snake2.pdb
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\MainWindow.baml
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\App.g.cs
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\Snake2_MarkupCompile.cache
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\Snake2.g.resources
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\Snake2.Properties.Resources.resources
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\Snake2.csproj.GenerateResource.Cache
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\Snake2.exe
+C:\Users\Honzik\Documents\Visual Studio 2013\Projects\SnakeDeathmatch\Snake_Contest_Deathmatch\Snake2\obj\x86\Debug\Snake2.pdb

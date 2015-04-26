@@ -26,8 +26,11 @@ namespace Snake2.factories
         public Player Create<TPlayerBehvaiour>(Color color) where TPlayerBehvaiour : IPlayerBehavior, new()
         {
             var behavior = new TPlayerBehvaiour();
-           
-            var player = new Player(RandomPosition(), RandomDirection(), color, behavior, _nextIdentifikator);
+            var position = RandomPosition();
+
+            _game[position.X, position.Y] = _nextIdentifikator;
+
+            var player = new Player(position, RandomDirection(), color, behavior, _nextIdentifikator);
 
             _nextIdentifikator++;
 
@@ -38,6 +41,8 @@ namespace Snake2.factories
         {
             var behavior = new TPlayerBehvaiour();
             var player = new Player(position, RandomDirection(), color, behavior, _nextIdentifikator);
+
+            _game[position.X, position.Y] = _nextIdentifikator;
 
             _nextIdentifikator++;
 

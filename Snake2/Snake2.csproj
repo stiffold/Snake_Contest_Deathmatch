@@ -76,6 +76,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="players\Setal.cs" />
     <Compile Include="players\TestPlayerUI.cs" />
     <Compile Include="players\TestPlayer.cs" />
     <Compile Include="players\Vazba.cs" />
