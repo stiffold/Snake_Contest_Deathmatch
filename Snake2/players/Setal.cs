@@ -7,17 +7,14 @@ namespace Snake2.players
     {
         private byte[,] _possibilities;
         private int _identificator;
-        private readonly int _size;
+        private int _size;
         private enums.Direction _direction;
         private GamePoint _actualPosition;
         private bool _firstRun;
 
         public Setal()
         {
-            //TODO get field size
-            _size = 100;
             _firstRun = true;
-            _possibilities = new byte[_size, _size];
         }
 
         public void Init(int direction, int identificator)
@@ -30,6 +27,8 @@ namespace Snake2.players
         {
             if (_firstRun)
             {
+                _size = gameSurrond.GetUpperBound(0) + 1;
+                _possibilities = new byte[_size, _size];
                 _actualPosition = FindMySelf(gameSurrond);
                 _firstRun = false;
             }

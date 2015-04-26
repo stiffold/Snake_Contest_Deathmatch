@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Snake2.game;
 
 namespace Deathmatch
@@ -46,13 +47,17 @@ namespace Deathmatch
 
         public class Next
         {
-            public Point Left;
-            public Point Straight;
-            public Point Right;
+            public Direction LeftDirection;
+            public Direction StraightDirection;
+            public Direction RightDirection;
+
+            public Point LeftPoint;
+            public Point StraightPoint;
+            public Point RightPoint;
 
             public override string ToString()
             {
-                return string.Format("Left: {0}, Straight: {1}, Right: {2}", Left, Straight, Right);
+                return string.Format("Left: {0}, Straight: {1}, Right: {2}", LeftPoint, StraightPoint, RightPoint);
             }
         }
 
@@ -96,6 +101,8 @@ namespace Deathmatch
                     }
                     if (found) break;
                 }
+                if (!found)
+                    throw new Exception("Na Vazbíka jste zapomněli, není v hracím poli!");
             }
         }
 
@@ -124,13 +131,32 @@ namespace Deathmatch
             return !IsInPlayground(p);
         }
 
+        private bool IsCrossCollision(Point p, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.TopRight: return (_playground[p.X, p.Y + 1] != 0) && (_playground[p.X - 1, p.Y] != 0);
+                case Direction.BottomRight: return (_playground[p.X, p.Y - 1] != 0) && (_playground[p.X - 1, p.Y] != 0);
+                case Direction.BottomLeft: return (_playground[p.X, p.Y - 1] != 0) && (_playground[p.X + 1, p.Y] != 0);
+                case Direction.TopLeft: return (_playground[p.X, p.Y + 1] != 0) && (_playground[p.X + 1, p.Y] != 0);
+            }
+            return false;
+        }
+
         private Next GetNextMove(Point p, Direction direction)
         {
-            return new Next
+            Direction leftDirection = GetNextDirection(direction, Move.Left);
+            Direction straightDirection = GetNextDirection(direction, Move.Straight);
+            Direction rightDirection = GetNextDirection(direction, Move.Right);
+
+            return new Next()
             {
-                Left = GetNextPoint(p, GetNextDirection(direction, Move.Left)),
-                Straight = GetNextPoint(p, GetNextDirection(direction, Move.Straight)),
-                Right = GetNextPoint(p, GetNextDirection(direction, Move.Right)),
+                LeftDirection = leftDirection,
+                StraightDirection = straightDirection,
+                RightDirection = rightDirection,
+                LeftPoint = GetNextPoint(p, leftDirection),
+                StraightPoint = GetNextPoint(p, straightDirection),
+                RightPoint = GetNextPoint(p, rightDirection),
             };
         }
 
@@ -201,20 +227,44 @@ namespace Deathmatch
             return (int)move;
         }
 
+        private int wtf = 18;
+
         private Move DoNextMove()
         {
-            Move move;
-
             Next next = GetNextMove(_p, _direction);
 
-            if (IsEmpty(next.Left))
-                move = Move.Left;
-            else if (IsEmpty(next.Straight))
-                move = Move.Straight;
-            else
-                move = Move.Right;
+            int depthLeft = IsEmpty(next.LeftPoint) && !IsCrossCollision(next.LeftPoint, next.LeftDirection) ? GetEmptyDepth(next.LeftPoint, next.LeftDirection, 0) : 0;
+            int depthStraight = (depthLeft != wtf) && IsEmpty(next.StraightPoint) && !IsCrossCollision(next.StraightPoint, next.StraightDirection) ? GetEmptyDepth(next.StraightPoint, next.StraightDirection, 0) : 0;
+            int depthRight = (depthLeft != wtf && depthStraight != wtf) && IsEmpty(next.RightPoint) && !IsCrossCollision(next.RightPoint, next.RightDirection) ? GetEmptyDepth(next.RightPoint, next.RightDirection, 0) : 0;
 
-            return move;
+            if (depthLeft >= depthStraight && depthLeft >= depthRight) return Move.Left;
+            if (depthStraight >= depthLeft && depthStraight >= depthRight) return Move.Straight;
+            return Move.Right;
+        }
+
+        private int GetEmptyDepth(Point p, Direction direction, int level)
+        {
+            _playground[p.X, p.Y] = _myId;
+
+            if (level >= wtf)
+                return wtf;
+
+            int result = level;
+
+            Next next = GetNextMove(p, direction);
+
+            if (IsEmpty(next.LeftPoint) && !IsCrossCollision(next.LeftPoint, next.LeftDirection))
+                result = Math.Max(result, GetEmptyDepth(next.LeftPoint, next.LeftDirection, level + 1));
+
+            if (IsEmpty(next.StraightPoint) && !IsCrossCollision(next.StraightPoint, next.StraightDirection))
+                result = Math.Max(result, GetEmptyDepth(next.StraightPoint, next.StraightDirection, level + 1));
+
+            if (IsEmpty(next.RightPoint) && !IsCrossCollision(next.RightPoint, next.RightDirection))
+                result = Math.Max(result, GetEmptyDepth(next.RightPoint, next.RightDirection, level + 1));
+
+            _playground[p.X, p.Y] = 0;
+
+            return result;
         }
     }
 }
