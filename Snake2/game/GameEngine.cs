@@ -32,7 +32,7 @@ namespace Snake2.game
             _players.Add(playerFactory.Create<TestPlayerUI>(Colors.Red));
             _players.Add(playerFactory.Create<Vazba>(Colors.Blue));
             _players.Add(playerFactory.Create<Setal>(Colors.Aqua));
-            _players.Add(playerFactory.Create<Randomer>(Colors.White));
+            //_players.Add(playerFactory.Create<Randomer>(Colors.White));
         }
 
         public int[,] Move()
@@ -63,7 +63,7 @@ namespace Snake2.game
                 }
 
                 //vlastní kolize v tahu
-                if (_players.Any(p => player.Position.X == p.Position.X && player.Position.Y == p.Position.Y && p.Identificator != player.Identificator))
+                if (_players.Where(p => p.State == PlayerState.Playing).Any(p => player.Position.X == p.Position.X && player.Position.Y == p.Position.Y && p.Identificator != player.Identificator))
                 {
                     player.State = PlayerState.OneMoveCollission;
                     break;
@@ -89,21 +89,12 @@ namespace Snake2.game
 
         private bool CrossCollision(Player player)
         {
-            if (player.Position.X == 0 || player.Position.Y == 0 || player.Position.X == _max - 1 || player.Position.Y == _max - 1)
-            {
-                return false;
-            }
-
             switch (player.MyDirection)
             {
                 case Direction.TopRight: return (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0);
-
                 case Direction.BottomRight: return (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0);
-
                 case Direction.BottomLeft: return (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0);
-
                 case Direction.TopLeft: return (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0);
-
             }
             return false;
         }
@@ -130,7 +121,7 @@ namespace Snake2.game
         public Color GetColorForIdentificator(int i)
         {
             if (i == -1)
-                return Colors.DarkGray;
+                return Color.FromRgb(64, 64, 64);
 
             var player = _players.Where(p => p.Identificator == i).FirstOrDefault();
             if (player != null)

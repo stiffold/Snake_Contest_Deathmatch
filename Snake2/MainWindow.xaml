@@ -5,6 +5,13 @@
         SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize"
         Loaded="Window_Loaded">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Background="DarkGray">
+            <Button x:Name="_buttonRestart" HorizontalAlignment="Left" Margin="4" Width="60" Height="22" Click="buttonRestart_Click">Restart</Button>
+        </StackPanel>
+        <Canvas x:Name="_canvas" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Black"/>
     </Grid>
 </Window>

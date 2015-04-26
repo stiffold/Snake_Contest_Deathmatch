@@ -11,7 +11,7 @@ namespace Snake2.players
         private Direction _myFirstDirection;
         private int _myID;
         private int _round;
-        private int _max = 100;
+        private int _max = 0;
         Random r = new Random(Environment.TickCount);
         private List<Tuple<int, Move, Direction, Position>> _myPlanedMoves = new List<Tuple<int, Move, Direction, Position>>();
         public void Init(int direction, int identificator)
@@ -23,6 +23,9 @@ namespace Snake2.players
 
         public int NextMove(int[,] gameSurrond)
         {
+            if (_max == 0)
+                _max = gameSurrond.GetUpperBound(0) + 1;
+
             _round++;
             if (!_myPlanedMoves.Any(p=>p.Item1 ==_round))
             {
