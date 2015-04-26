@@ -6,7 +6,7 @@ using Snake2.game;
 
 namespace Snake2.players
 {
-    public class TestPlayerUI : IPlayerBehavior
+    public class Jardik : IPlayerBehavior
     {
         private Direction _myFirstDirection;
         private int _myID;
@@ -216,7 +216,7 @@ namespace Snake2.players
 
         public string MyName()
         {
-            return "Jára";
+            return "Jardík";
         }
 
         bool CrossColision(Direction direction, int[,] gameSurround, Position position)
