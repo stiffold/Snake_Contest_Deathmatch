@@ -29,7 +29,7 @@ namespace Snake2.game
 
             PlayerFactory playerFactory = new PlayerFactory(_gameSurround, _max);
 
-            _players.Add(playerFactory.Create<TestPlayerUI>(Colors.Red));
+            _players.Add(playerFactory.Create<Jardik>(Colors.Red));
             _players.Add(playerFactory.Create<Vazba>(Colors.Blue));
             _players.Add(playerFactory.Create<Setal>(Colors.Aqua));
             //_players.Add(playerFactory.Create<Randomer>(Colors.White));

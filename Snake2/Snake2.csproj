@@ -78,7 +78,7 @@
   <ItemGroup>
     <Compile Include="players\Randomer.cs" />
     <Compile Include="players\Setal.cs" />
-    <Compile Include="players\TestPlayerUI.cs" />
+    <Compile Include="players\Jardik.cs" />
     <Compile Include="players\Vazba.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
