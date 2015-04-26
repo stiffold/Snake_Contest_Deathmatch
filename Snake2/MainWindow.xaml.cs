@@ -8,15 +8,16 @@ using Snake2.game;
 
 namespace Snake2
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        public const int PlaygroundSizeInDots = 100;
+        public const int PlaygroundSizeInPixels = 500;
+        public const int DotSizeInPixels = 5;
 
-        Canvas _c = new Canvas();
-        DispatcherTimer _timer = new DispatcherTimer();
-        GameEngine _engine = new GameEngine(100);
+        private Canvas _canvas = new Canvas();
+        private DispatcherTimer _timer = new DispatcherTimer();
+        private GameEngine _gameEngine;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -24,61 +25,71 @@ namespace Snake2
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _c.Width = 1000;
-            _c.Height = 1000;
-            _c.HorizontalAlignment = HorizontalAlignment.Left;
-            _c.VerticalAlignment = VerticalAlignment.Top;
-            _c.Background = Brushes.Black;
-            Content = _c;
+            _canvas.Width = PlaygroundSizeInPixels;
+            _canvas.Height = PlaygroundSizeInPixels;
+            _canvas.HorizontalAlignment = HorizontalAlignment.Left;
+            _canvas.VerticalAlignment = VerticalAlignment.Top;
+            _canvas.Background = Brushes.Black;
+            Content = _canvas;
+            SizeToContent = SizeToContent.WidthAndHeight;
 
             _timer.Tick += UpdateGameSurround;
-            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60); //update at 60 fps
+            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 15); //update at 60 fps
+
+            Restart();
+        }
+
+        private void Restart()
+        {
+            _gameEngine = new GameEngine(PlaygroundSizeInDots);
             _timer.Start();
         }
 
-        void UpdateGameSurround(object sender, EventArgs e)
+        private void UpdateGameSurround(object sender, EventArgs e)
         {
-            if (!_engine.GameOver)
+            if (!_gameEngine.GameOver)
             {
-                RenderArray(_engine.Move());
+                RenderArray(_gameEngine.Move());
             }
             else
             {
                 _timer.Stop();
-                MessageBox.Show(_engine.ScoreMessage());
+                if (MessageBox.Show(string.Format("{0}\r\nSpustit další deathmatch?", _gameEngine.ScoreMessage()), Title, MessageBoxButton.YesNo, MessageBoxImage.None, MessageBoxResult.Yes) == MessageBoxResult.Yes)
+                {
+                    Restart();
+                }
             }
-
         }
 
-        void RenderArray(int[,] array)
+        private void RenderArray(int[,] array)
         {
-            _c.Children.Clear();
-            for (int x = 0; x < 100; x++)
+            _canvas.Children.Clear();
+            for (int x = 0; x < PlaygroundSizeInDots; x++)
             {
-                for (int y = 0; y < 100; y++)
+                for (int y = 0; y < PlaygroundSizeInDots; y++)
                 {
                     if (array[x, y] != 0)
                     {
-                        AddRectangle(x, y, _engine.GetColorForIdentificator(array[x, y]));
+                        AddRectangle(x, y, _gameEngine.GetColorForIdentificator(array[x, y]));
                     }
                 }
             }
         }
 
-        void AddRectangle(int x, int y, Color color)
+        private void AddRectangle(int x, int y, Color color)
         {
             var rect = new Ellipse
                            {
                                Stroke = new SolidColorBrush(Colors.White),
-                               StrokeThickness = 2,
+                               StrokeThickness = 0,
                                Fill = new SolidColorBrush(color),
-                               Width = 10,
-                               Height = 10
+                               Width = DotSizeInPixels,
+                               Height = DotSizeInPixels
                            };
 
-            Canvas.SetLeft(rect, x * 10);
-            Canvas.SetTop(rect, y * 10);
-            _c.Children.Add(rect);
+            Canvas.SetLeft(rect, x * DotSizeInPixels);
+            Canvas.SetTop(rect, y * DotSizeInPixels);
+            _canvas.Children.Add(rect);
         }
     }
 }

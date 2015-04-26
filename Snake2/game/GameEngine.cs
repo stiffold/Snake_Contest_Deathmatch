@@ -29,33 +29,9 @@ namespace Snake2.game
 
             PlayerFactory playerFactory = new PlayerFactory(_gameSurround, _max);
 
-            Player player1 = playerFactory.Create<TestPlayerUI>(Colors.Red);
-            //TestPlayerUI test = new TestPlayerUI();
-            //Player player1 = new Player(new Position(0, 0), Direction.Bottom, Colors.Red, test, 1);
-            //_gameSurround[player1.Position.X, player1.Position.Y] = player1.Identificator;        
-            _players.Add(player1);
-
-            //TestPlayer test2 = new TestPlayer();
-            //Player player2 = new Player(new Position(49, 0), Direction.BottomLeft, Colors.Blue, test2, 2);
-            //_gameSurround[player2.Position.X, player2.Position.Y] = player2.Identificator;
-            //_players.Add(player2);
-
-            Player player3 = playerFactory.Create<Vazba>(Colors.Blue);
-            //Vazba test3 = new Vazba();
-            //Player player3 = new Player(new Position(25, 25), Direction.TopLeft, Colors.Blue, test3, 3);
-            //_gameSurround[player3.Position.X, player3.Position.Y] = player3.Identificator;
-            _players.Add(player3);
-
-            //TestPlayerUI test4 = new TestPlayerUI();
-            //Player player4 = new Player(new Position(0, 49), Direction.TopRight, Colors.Yellow, test4, 4);
-            //_gameSurround[player4.Position.X, player4.Position.Y] = player4.Identificator;
-            //_players.Add(player4);
-
-            Player player5 = playerFactory.Create<TestPlayer>(Colors.White);
-            //TestPlayer test5 = new TestPlayer();
-            //Player player5 = new Player(new Position(50, 50), Direction.TopRight, Colors.White, test5, 5);
-            //_gameSurround[player5.Position.X, player5.Position.Y] = player5.Identificator;
-            _players.Add(player5);
+            _players.Add(playerFactory.Create<TestPlayerUI>(Colors.Red));
+            _players.Add(playerFactory.Create<Vazba>(Colors.Blue));
+            _players.Add(playerFactory.Create<TestPlayer>(Colors.White));
         }
 
         public int[,] Move()
