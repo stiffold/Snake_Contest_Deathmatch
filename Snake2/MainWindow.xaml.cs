@@ -33,7 +33,7 @@ namespace Snake2
             Content = _canvas;
 
             _timer.Tick += UpdateGameSurround;
-            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 20);
+            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
 
             Restart();
         }

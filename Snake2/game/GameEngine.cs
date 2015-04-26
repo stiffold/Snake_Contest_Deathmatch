@@ -56,7 +56,7 @@ namespace Snake2.game
                 }
 
                 //cross kolize
-                if (CrossColision(player))
+                if (CrossCollision(player))
                 {
                     player.State = PlayerState.CrossCollission;
                     break;
@@ -76,6 +76,9 @@ namespace Snake2.game
                 }
             }
 
+            FillUnreachableDots();
+
+
             if (!_players.Any(p => p.State == PlayerState.Playing))
             {
                 _gameOver = true;
@@ -84,7 +87,7 @@ namespace Snake2.game
             return _gameSurround;
         }
 
-        private bool CrossColision(Player player)
+        private bool CrossCollision(Player player)
         {
             if (player.Position.X == 0 || player.Position.Y == 0 || player.Position.X == _max - 1 || player.Position.Y == _max - 1)
             {
@@ -93,26 +96,48 @@ namespace Snake2.game
 
             switch (player.MyDirection)
             {
-                case Direction.TopRight: return !((_gameSurround[player.Position.X, player.Position.Y + 1] == 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] == 0));
+                case Direction.TopRight: return (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0);
 
-                case Direction.BottomRight: return !((_gameSurround[player.Position.X, player.Position.Y - 1] == 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] == 0));
+                case Direction.BottomRight: return (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0);
 
-                case Direction.BottomLeft: return !((_gameSurround[player.Position.X, player.Position.Y - 1] == 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] == 0));
+                case Direction.BottomLeft: return (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0);
 
-                case Direction.TopLeft: return !((_gameSurround[player.Position.X, player.Position.Y + 1] == 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] == 0));
+                case Direction.TopLeft: return (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0);
 
             }
             return false;
         }
 
+        private bool IsEmpty(int x, int y)
+        {
+            return (x >= 0 && x < _max && y >= 0 && y < _max) && (_gameSurround[x, y] == 0);
+        }
+
+        private void FillUnreachableDots()
+        {
+            for (int y = 0; y < _max; y++)
+            {
+                for (int x = 0; x < _max; x++)
+                {
+                    if (IsEmpty(x, y) && !IsEmpty(x, y-1) && !IsEmpty(x-1, y) && !IsEmpty(x, y+1) && !IsEmpty(x+1, y))
+                    {
+                        _gameSurround[x, y] = -1;
+                    }
+                }
+            }
+        }
+
         public Color GetColorForIdentificator(int i)
         {
+            if (i == -1)
+                return Colors.DarkGray;
+
             var player = _players.Where(p => p.Identificator == i).FirstOrDefault();
             if (player != null)
             {
                 return player.Color;
             }
-            return Colors.Aqua;
+            return Colors.Magenta;
         }
 
         public string ScoreMessage()
