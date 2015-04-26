@@ -46,10 +46,11 @@ namespace Snake2.game
             //_gameSurround[player3.Position.X, player3.Position.Y] = player3.Identificator;
             _players.Add(player3);
 
+            Player player4 = playerFactory.Create<Setal>(Colors.Aqua);
             //TestPlayerUI test4 = new TestPlayerUI();
             //Player player4 = new Player(new Position(0, 49), Direction.TopRight, Colors.Yellow, test4, 4);
             //_gameSurround[player4.Position.X, player4.Position.Y] = player4.Identificator;
-            //_players.Add(player4);
+            _players.Add(player4);
 
             Player player5 = playerFactory.Create<TestPlayer>(Colors.White);
             //TestPlayer test5 = new TestPlayer();
