@@ -1,4 +1,4 @@
-﻿namespace Snake2.enums
+﻿namespace SnakeDeathmatch.Game
 {
 	public enum PlayerState
 	{

@@ -1,10 +1,10 @@
 using System;
 using System.Windows.Media;
-using Snake2.enums;
-using Snake2.game;
-using Position = Snake2.game.Position;
+using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Game;
+using Position = SnakeDeathmatch.Game.Position;
 
-namespace Snake2.factories
+namespace SnakeDeathmatch.Game
 {
     public class PlayerFactory
     {

@@ -4,14 +4,14 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Snake2.game;
+using SnakeDeathmatch.Game;
 
-namespace Snake2
+namespace SnakeDeathmatch
 {
     public partial class MainWindow : Window
     {
-        public const int PlaygroundSizeInDots = 25;
-        public const int PlaygroundSizeInPixels = 500;
+        public const int PlaygroundSizeInDots = 100;
+        public const int PlaygroundSizeInPixels = 600;
         public int DotSizeInPixels;
 
         private DispatcherTimer _timer = new DispatcherTimer();

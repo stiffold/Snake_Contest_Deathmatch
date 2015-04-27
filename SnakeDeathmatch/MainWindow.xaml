@@ -1,4 +1,4 @@
-﻿<Window x:Class="Snake2.MainWindow"
+﻿<Window x:Class="SnakeDeathmatch.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Snake Deatchmatch" Height="500" Width="500"

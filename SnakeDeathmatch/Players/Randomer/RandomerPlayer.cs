@@ -1,10 +1,11 @@
 ﻿using System;
-using Snake2.game;
+using SnakeDeathmatch.Game;
 using System.Threading;
+using SnakeDeathmatch.Interface;
 
-namespace Snake2.players
+namespace SnakeDeathmatch.Players.Randomer
 {
-    public class Randomer : IPlayerBehavior
+    public class RandomerPlayer : IPlayerBehavior
     {
         private Random _random;
 

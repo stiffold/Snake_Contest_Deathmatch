@@ -8,7 +8,7 @@
     <ProjectGuid>{0B4B4033-2DA4-491C-BDB7-D23DA511EE08}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Snake2</RootNamespace>
+    <RootNamespace>SnakeDeathmatch</RootNamespace>
     <AssemblyName>Snake2</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -63,23 +63,23 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="enums\Direction.cs" />
-    <Compile Include="enums\Move.cs" />
-    <Compile Include="factories\PlayerFactory.cs" />
-    <Compile Include="game\GameEngine.cs" />
-    <Compile Include="game\IPlayerBehavior.cs" />
-    <Compile Include="game\Player.cs" />
-    <Compile Include="game\Position.cs" />
+    <Compile Include="Interface\Direction.cs" />
+    <Compile Include="Interface\Move.cs" />
+    <Compile Include="Game\PlayerFactory.cs" />
+    <Compile Include="Game\GameEngine.cs" />
+    <Compile Include="Interface\IPlayerBehavior.cs" />
+    <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\Position.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="players\Randomer.cs" />
-    <Compile Include="players\Setal.cs" />
-    <Compile Include="players\Jardik.cs" />
-    <Compile Include="players\Vazba.cs" />
+    <Compile Include="Players\Randomer\RandomerPlayer.cs" />
+    <Compile Include="Players\Setal.cs" />
+    <Compile Include="Players\Jardik.cs" />
+    <Compile Include="Players\Vazba\VazbaPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,7 +97,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="enums\PlayerState.cs" />
+    <Compile Include="Game\PlayerState.cs" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

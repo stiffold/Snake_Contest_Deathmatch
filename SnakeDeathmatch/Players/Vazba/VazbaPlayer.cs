@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Snake2.game;
+using SnakeDeathmatch.Game;
+using SnakeDeathmatch.Interface;
 
-namespace Deathmatch
+namespace SnakeDeathmatch.Players.Vazba
 {
-    public class Vazba : IPlayerBehavior
+    public class VazbaPlayer : IPlayerBehavior
     {
         #region Init
 

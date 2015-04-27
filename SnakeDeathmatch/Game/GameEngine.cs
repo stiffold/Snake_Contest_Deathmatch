@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Media;
-using Deathmatch;
-using Snake2.enums;
-using Snake2.factories;
-using Snake2.players;
-using Direction = Snake2.enums.Direction;
+using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Players;
+using SnakeDeathmatch.Players.Vazba;
+using SnakeDeathmatch.Players.Randomer;
+using Direction = SnakeDeathmatch.Interface.Direction;
 
-namespace Snake2.game
+namespace SnakeDeathmatch.Game
 {
     public class GameEngine
     {
@@ -30,7 +30,7 @@ namespace Snake2.game
             PlayerFactory playerFactory = new PlayerFactory(_gameSurround, _max);
 
             _players.Add(playerFactory.Create<Jardik>(Colors.Red));
-            _players.Add(playerFactory.Create<Vazba>(Colors.Blue));
+            _players.Add(playerFactory.Create<VazbaPlayer>(Colors.Blue));
             _players.Add(playerFactory.Create<Setal>(Colors.Aqua));
             //_players.Add(playerFactory.Create<Randomer>(Colors.White));
         }
