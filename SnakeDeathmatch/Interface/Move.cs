@@ -1,4 +1,4 @@
-﻿namespace Snake2.enums
+﻿namespace SnakeDeathmatch.Interface
 {
     public enum Move
     {

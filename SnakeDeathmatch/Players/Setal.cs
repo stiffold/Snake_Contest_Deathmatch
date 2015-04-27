@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using Snake2.game;
+using SnakeDeathmatch.Interface;
 
-namespace Snake2.players
+namespace SnakeDeathmatch.Players
 {
     public class Setal : IPlayerBehavior
     {
         private byte[,] _possibilities;
         private int _identificator;
         private int _size;
-        private enums.Direction _direction;
+        private Interface.Direction _direction;
         private GamePoint _actualPosition;
         private bool _firstRun;
 
@@ -19,7 +19,7 @@ namespace Snake2.players
 
         public void Init(int direction, int identificator)
         {
-            _direction = (enums.Direction)direction;
+            _direction = (Interface.Direction)direction;
             _identificator = identificator;
         }
 
@@ -109,222 +109,222 @@ namespace Snake2.players
             }
         }
 
-        private List<Step> PossibleSteps(enums.Direction direction, GamePoint gamePoint)
+        private List<Step> PossibleSteps(Interface.Direction direction, GamePoint gamePoint)
         {
             var steps = new List<Step>();
 
             switch (direction)
             {
-                case enums.Direction.Top:
+                case Interface.Direction.Top:
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var move = Interface.Move.Left;
+                        var dir = UpdateDirection(_direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var move = Interface.Move.Straight;
+                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var move = Interface.Move.Right;
+                        var dir = UpdateDirection(_direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     break;
 
-                case enums.Direction.TopRight:
+                case Interface.Direction.TopRight:
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var move = Interface.Move.Left;
+                        var dir = UpdateDirection(_direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var move = Interface.Move.Straight;
+                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
-                        var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var move = Interface.Move.Right;
+                        var dir = UpdateDirection(_direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     break;
 
-                case enums.Direction.Right:
+                case Interface.Direction.Right:
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var move = Interface.Move.Left;
+                        var dir = UpdateDirection(_direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
-                        var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var move = Interface.Move.Straight;
+                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var move = Interface.Move.Right;
+                        var dir = UpdateDirection(_direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     break;
 
-                case enums.Direction.BottomRight:
+                case Interface.Direction.BottomRight:
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
-                        var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var move = Interface.Move.Left;
+                        var dir = UpdateDirection(_direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var move = Interface.Move.Straight;
+                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var move = Interface.Move.Right;
+                        var dir = UpdateDirection(_direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     break;
 
-                case enums.Direction.Bottom:
+                case Interface.Direction.Bottom:
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var move = Interface.Move.Left;
+                        var dir = UpdateDirection(_direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var move = Interface.Move.Straight;
+                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var move = Interface.Move.Right;
+                        var dir = UpdateDirection(_direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     break;
 
-                case enums.Direction.BottomLeft:
+                case Interface.Direction.BottomLeft:
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var move = Interface.Move.Left;
+                        var dir = UpdateDirection(_direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var move = Interface.Move.Straight;
+                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
-                        var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var move = Interface.Move.Right;
+                        var dir = UpdateDirection(_direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     break;
 
-                case enums.Direction.Left:
+                case Interface.Direction.Left:
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
-                        var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var move = Interface.Move.Left;
+                        var dir = UpdateDirection(_direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
-                        var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var move = Interface.Move.Straight;
+                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var move = Interface.Move.Right;
+                        var dir = UpdateDirection(_direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     break;
 
-                case enums.Direction.TopLeft:
+                case Interface.Direction.TopLeft:
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
-                        var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var move = Interface.Move.Left;
+                        var dir = UpdateDirection(_direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var move = Interface.Move.Straight;
+                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
-                        var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var move = Interface.Move.Right;
+                        var dir = UpdateDirection(_direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -355,17 +355,17 @@ namespace Snake2.players
             return _possibilities[X, Y] == 0;
         }
 
-        private enums.Direction UpdateDirection(enums.Direction direction, enums.Move move)
+        private Interface.Direction UpdateDirection(Interface.Direction direction, Interface.Move move)
         {
             switch (move)
             {
-                case enums.Move.Straight:
+                case Interface.Move.Straight:
                     break;
 
-                case enums.Move.Left:
-                    if (direction == (enums.Direction)1)
+                case Interface.Move.Left:
+                    if (direction == (Interface.Direction)1)
                     {
-                        direction = (enums.Direction)8;
+                        direction = (Interface.Direction)8;
                     }
                     else
                     {
@@ -373,10 +373,10 @@ namespace Snake2.players
                     }
                     break;
 
-                case enums.Move.Right:
-                    if (direction == (enums.Direction)8)
+                case Interface.Move.Right:
+                    if (direction == (Interface.Direction)8)
                     {
-                        direction = (enums.Direction)1;
+                        direction = (Interface.Direction)1;
                     }
                     else
                     {
@@ -413,15 +413,15 @@ namespace Snake2.players
 
     internal class Step
     {
-        public Step(enums.Move move, enums.Direction finalDirection, GamePoint finalPosition)
+        public Step(Interface.Move move, Interface.Direction finalDirection, GamePoint finalPosition)
         {
             Move = move;
             FinalDirection = finalDirection;
             FinalPosition = finalPosition;
         }
 
-        public enums.Move Move { get; set; }
-        public enums.Direction FinalDirection { get; set; }
+        public Interface.Move Move { get; set; }
+        public Interface.Direction FinalDirection { get; set; }
         public GamePoint FinalPosition { get; set; }
     }
 

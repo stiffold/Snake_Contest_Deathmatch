@@ -1,4 +1,4 @@
-﻿namespace Snake2.game
+﻿namespace SnakeDeathmatch.Interface
 {
     public interface IPlayerBehavior
     {
@@ -21,13 +21,13 @@
         /// <summary>
         /// Vrať směr dalšího tahu
         /// </summary>
-        /// <param name="gameSurrond">hrací pole 50/50 X/Y</param>
+        /// <param name="gameSurround">hrací pole 50/50 X/Y</param>
         /// <returns>
         ///Left = 1,
         ///Straight = 2,
         ///Right = 3
         /// </returns>
-        int NextMove(int[,] gameSurrond);
+        int NextMove(int[,] gameSurround);
 
         /// <summary>
         /// Vrať svoje jméno

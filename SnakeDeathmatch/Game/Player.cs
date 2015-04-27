@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
-using Snake2.enums;
+using SnakeDeathmatch.Interface;
 
-namespace Snake2.game
+namespace SnakeDeathmatch.Game
 {
     public class Player
     {
@@ -61,10 +61,10 @@ namespace Snake2.game
 
         public PlayerState State { get; set; }
 
-        public Move NextMove (int [,] gameSurrond)
+        public Move NextMove (int [,] gameSurround)
         {
             Move myMove;
-            int move = Behavior.NextMove(gameSurrond);
+            int move = Behavior.NextMove(gameSurround);
             myMove = move > 0 && move < 4 ? (Move) move : Move.Straight;
             Direction newDirection = GetNewDirection(_direction, myMove);
             _direction = newDirection;

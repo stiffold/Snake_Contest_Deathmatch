@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace Snake2
+namespace SnakeDeathmatch
 {
     /// <summary>
     /// Interaction logic for App.xaml

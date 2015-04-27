@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Snake2.enums;
+using SnakeDeathmatch.Interface;
 
-namespace Snake2.game
+namespace SnakeDeathmatch.Game
 {
     public class Position
     {

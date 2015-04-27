@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Snake2.game;
+using SnakeDeathmatch.Interface;
 
-namespace Snake2.players
+namespace SnakeDeathmatch.Players
 {
     public class Jardik : IPlayerBehavior
     {
