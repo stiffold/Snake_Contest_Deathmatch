@@ -57,7 +57,7 @@ namespace SnakeDeathmatch.Players.SoulEater
                 InitPositionsOfPlayers(gameSurrond);
                 _isFirstMove = false;
             }
-
+            //
             ValidateCurrentPosition();
             Interface.Move nextMove = GetSafeMove(20);
             RecalculateNextPositionAndDirection(nextMove);
