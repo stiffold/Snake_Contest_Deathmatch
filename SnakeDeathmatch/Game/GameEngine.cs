@@ -8,6 +8,7 @@ using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Players;
 using SnakeDeathmatch.Players.Vazba;
 using SnakeDeathmatch.Players.Randomer;
+using SnakeDeathmatch.Players.SoulEater;
 using Direction = SnakeDeathmatch.Interface.Direction;
 
 namespace SnakeDeathmatch.Game
@@ -32,7 +33,7 @@ namespace SnakeDeathmatch.Game
             _players.Add(playerFactory.Create<Jardik>(Colors.Red));
             _players.Add(playerFactory.Create<VazbaPlayer>(Colors.Blue));
             _players.Add(playerFactory.Create<Setal>(Colors.Aqua));
-            //_players.Add(playerFactory.Create<Randomer>(Colors.White));
+            _players.Add(playerFactory.Create<SoulEaterBehavior>(Colors.White));
         }
 
         public int[,] Move()
