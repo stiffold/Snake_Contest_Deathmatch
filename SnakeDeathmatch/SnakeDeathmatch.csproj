@@ -77,7 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Players\Randomer\RandomerPlayer.cs" />
-    <Compile Include="Players\Setal.cs" />
+    <Compile Include="Players\Setal\Setal.cs" />
     <Compile Include="Players\Jardik.cs" />
     <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />
     <Compile Include="Players\Vazba\VazbaPlayer.cs" />
