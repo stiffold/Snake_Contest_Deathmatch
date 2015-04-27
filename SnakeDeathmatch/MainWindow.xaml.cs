@@ -10,7 +10,7 @@ namespace SnakeDeathmatch
 {
     public partial class MainWindow : Window
     {
-        public const int PlaygroundSizeInDots = 100;
+        public const int PlaygroundSizeInDots = 50;
         public const int PlaygroundSizeInPixels = 600;
         public int DotSizeInPixels;
 

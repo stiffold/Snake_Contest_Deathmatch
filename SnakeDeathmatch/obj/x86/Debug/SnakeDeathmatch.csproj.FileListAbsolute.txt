@@ -9,3 +9,14 @@ D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\bin\Debug\Snake2.exe
 D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\bin\Debug\Snake2.pdb
 D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2.exe
 D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2.pdb
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2.exe
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2.pdb
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\bin\Debug\Snake2.exe
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\bin\Debug\Snake2.pdb
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\MainWindow.baml
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\MainWindow.g.cs
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\App.g.cs
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2_MarkupCompile.cache
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2.g.resources
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\SnakeDeathmatch.Properties.Resources.resources
+C:\Users\stiff\Documents\GitHub\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\SnakeDeathmatch.csproj.GenerateResource.Cache
