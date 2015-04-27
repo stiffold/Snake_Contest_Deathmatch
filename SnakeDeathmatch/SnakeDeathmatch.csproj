@@ -79,6 +79,7 @@
     <Compile Include="Players\Randomer\RandomerPlayer.cs" />
     <Compile Include="Players\Setal.cs" />
     <Compile Include="Players\Jardik.cs" />
+    <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />
     <Compile Include="Players\Vazba\VazbaPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
