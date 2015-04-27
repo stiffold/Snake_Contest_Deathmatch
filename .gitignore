@@ -4,3 +4,15 @@ Snake2/bin
 Snake2/obj
 *.csproj.user
 *.suo
+bin
+obj
+_ReSharper.Snake2
+SnakeDeathmatch/Snake2.5.0.ReSharper.user
+SnakeDeathmatch/_ReSharper.Snake2
+SnakeDeathmatch/bin
+SnakeDeathmatch/obj
+SnakeDeathmatch/*.csproj.user
+SnakeDeathmatch/*.suo
+_ReSharper.SnakeDeathmatch
+SnakeDeathmatch.5.0.ReSharper.user
+*.pdb
