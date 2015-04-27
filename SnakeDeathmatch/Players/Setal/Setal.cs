@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using SnakeDeathmatch.Interface;
 
-namespace SnakeDeathmatch.Players
+namespace SnakeDeathmatch.Players.Setal
 {
     public class Setal : IPlayerBehavior
     {
@@ -49,9 +50,6 @@ namespace SnakeDeathmatch.Players
                     return (int)step.Move;
                 }
             }
-
-
-
             return 2;
         }
 
@@ -82,8 +80,7 @@ namespace SnakeDeathmatch.Players
                         return new GamePoint(i, j);
                     }
                 }
-            // throw new InvalidOperationException("Nejsem na herní ploše!");
-            return new GamePoint(0, 0);
+            throw new InvalidOperationException("Nejsem na herní ploše!");
         }
 
         /// <summary>
@@ -356,11 +353,11 @@ namespace SnakeDeathmatch.Players
 
         private bool IsViable(int X, int Y)
         {
-            //ovìøit jeslti vubec bod existuje
+            //overit jeslti vubec bod existuje
             if (X < 0 || X >= _size || Y < 0 || Y >= _size)
                 return false;
 
-            //ovìøit jestli je bod možný
+            //overit jestli je bod dostupny
             return _possibilities[X, Y] == 0;
         }
 

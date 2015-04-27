@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Media;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Players;
+using SnakeDeathmatch.Players.Setal;
 using SnakeDeathmatch.Players.Vazba;
 using SnakeDeathmatch.Players.Randomer;
 using SnakeDeathmatch.Players.SoulEater;
