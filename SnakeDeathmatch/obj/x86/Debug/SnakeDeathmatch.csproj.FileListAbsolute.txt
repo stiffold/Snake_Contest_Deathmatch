@@ -1,0 +1,11 @@
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\MainWindow.baml
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\MainWindow.g.cs
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\App.g.cs
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2_MarkupCompile.cache
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2.g.resources
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\SnakeDeathmatch.Properties.Resources.resources
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\SnakeDeathmatch.csproj.GenerateResource.Cache
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\bin\Debug\Snake2.exe
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\bin\Debug\Snake2.pdb
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2.exe
+D:\Snake\Snake_Contest_Deathmatch\SnakeDeathmatch\obj\x86\Debug\Snake2.pdb
