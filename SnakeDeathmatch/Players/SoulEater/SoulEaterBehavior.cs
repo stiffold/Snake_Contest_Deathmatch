@@ -30,8 +30,8 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         private bool _isFirstMove = true;
 
-        private IList<Player> _otherPlayers = new List<Player>();
-        private IList<Player> OtherPlayers
+        private IList<OtherPlayerInfo> _otherPlayers = new List<OtherPlayerInfo>();
+        private IList<OtherPlayerInfo> OtherPlayers
         {
 
             get { return _otherPlayers; }
@@ -42,7 +42,6 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         public void Init(int direction, int identificator)
         {
-
             _myCurrentDirection = (Interface.Direction)direction;
             _myIdentificatior = identificator;
         }
@@ -52,7 +51,7 @@ namespace SnakeDeathmatch.Players.SoulEater
             _currentSurrond = gameSurrond;
 
             if (_isFirstMove)
-            {
+            { 
                 _sizeOfTable = gameSurrond.GetUpperBound(0) + 1;
                 InitPositionsOfPlayers(gameSurrond);
                 _isFirstMove = false;
@@ -114,47 +113,35 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         private void CreateNewPlayer(int x, int y, int identificator)
         {
-            _otherPlayers.Add(new Player(x, y, identificator));
+            _otherPlayers.Add(new OtherPlayerInfo(x, y, identificator));
         }
 
         #region move
 
         private void RecalculateNextPositionAndDirection(Interface.Move move)
         {
-
             _myCurrentDirection = GetAbsoluteDirection(_myCurrentDirection, move);
-
             MyCurrentPosition = GetNextPoint(MyCurrentPosition, _myCurrentDirection);
-
         }
 
         private Interface.Move GetSafeMove(int numberOfSafeMoves)
         {
-
             if (numberOfSafeMoves == 0)
-
                 return Interface.Move.Straight;
 
             foreach (Interface.Move move in _moveList)
             {
-
                 bool isMoveSafe = GetIfMoveIsSafe(MyCurrentPosition, _myCurrentDirection, move, numberOfSafeMoves);
-
                 if (isMoveSafe)
-
                     return move;
-
             }
 
             return GetSafeMove(--numberOfSafeMoves);
-
         }
 
         private bool GetIfMoveIsSafe(Point currentPosition, Interface.Direction currentDirection, Interface.Move move, int numberOfSafeMoves)
         {
-
             if (numberOfSafeMoves == 0)
-
                 return true;
 
             Interface.Direction absoluteDirection = GetAbsoluteDirection(currentDirection, move);
@@ -162,46 +149,32 @@ namespace SnakeDeathmatch.Players.SoulEater
             Point nextPoint = GetNextPoint(currentPosition, absoluteDirection);
 
             if (nextPoint.X >= _sizeOfTable || nextPoint.X < 0 || nextPoint.Y >= _sizeOfTable || nextPoint.Y < 0)
-
                 return false;
 
             if (_currentSurrond[nextPoint.X, nextPoint.Y] != 0)
-
                 return false;
 
             if (IsCrossColision(nextPoint, absoluteDirection))
-
                 return false;
 
             numberOfSafeMoves--;
 
             foreach (var nextMove in _moveList)
             {
-
                 if (GetIfMoveIsSafe(nextPoint, absoluteDirection, nextMove, numberOfSafeMoves))
-
                     return true;
-
             }
-
             return false;
-
         }
 
         private bool IsCrossColision(Point newPosition, Interface.Direction direction)
         {
-
             switch (direction)
             {
-
                 case Interface.Direction.TopRight: return (_currentSurrond[newPosition.X, newPosition.Y + 1] != 0) && (_currentSurrond[newPosition.X - 1, newPosition.Y] != 0);
-
                 case Interface.Direction.BottomRight: return (_currentSurrond[newPosition.X, newPosition.Y - 1] != 0) && (_currentSurrond[newPosition.X - 1, newPosition.Y] != 0);
-
                 case Interface.Direction.BottomLeft: return (_currentSurrond[newPosition.X, newPosition.Y - 1] != 0) && (_currentSurrond[newPosition.X + 1, newPosition.Y] != 0);
-
                 case Interface.Direction.TopLeft: return (_currentSurrond[newPosition.X, newPosition.Y + 1] != 0) && (_currentSurrond[newPosition.X + 1, newPosition.Y] != 0);
-
             }
 
             return false;
@@ -212,113 +185,46 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         private Point GetNextPoint(Point myPosition, Interface.Direction absoluteDirection)
         {
-
             switch (absoluteDirection)
             {
-
                 case Interface.Direction.Top:
-
                     return new Point(myPosition.X, myPosition.Y - 1);
-
                 case Interface.Direction.TopRight:
-
                     return new Point(myPosition.X + 1, myPosition.Y - 1);
-
                 case Interface.Direction.Right:
-
                     return new Point(myPosition.X + 1, myPosition.Y);
-
                 case Interface.Direction.BottomRight:
-
                     return new Point(myPosition.X + 1, myPosition.Y + 1);
-
                 case Interface.Direction.Bottom:
-
                     return new Point(myPosition.X, myPosition.Y + 1);
-
                 case Interface.Direction.BottomLeft:
-
                     return new Point(myPosition.X - 1, myPosition.Y + 1);
-
                 case Interface.Direction.Left:
-
                     return new Point(myPosition.X - 1, myPosition.Y);
-
                 case Interface.Direction.TopLeft:
-
                     return new Point(myPosition.X - 1, myPosition.Y - 1);
-
             }
-
             throw new InvalidProgramException("uuu");
-
         }
 
         private Interface.Direction GetAbsoluteDirection(Interface.Direction direction, Interface.Move move)
         {
-
             if (move == Interface.Move.Left)
             {
-
                 if (direction == Interface.Direction.Top)
-
                     return Interface.Direction.TopLeft;
-
                 return direction - 1;
-
             }
 
             if (move == Interface.Move.Right)
             {
-
                 if (direction == Interface.Direction.TopLeft)
-
                     return Interface.Direction.Top;
-
                 return direction + 1;
-
             }
 
             return direction;
-
-        }
-
-        private class Player
-        {
-            public Player(int x, int y, int identificator)
-            {
-                CurrentPosition = new Point(x, y);
-                IsDown = false;
-                Direction = null;
-                Identificator = identificator;
-            }
-
-            public Interface.Direction? Direction { get; set; }
-
-            public Point CurrentPosition { get; set; }
-
-            public int Identificator { get; set; }
-
-            public bool IsDown { get; set; }
-        }
-
-        public struct Point
-        {
-            public Point(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
-
-            public int X;
-            public int Y;
-
-            public override string ToString()
-            {
-                return string.Format("[{0},{1}]", X, Y);
-            }
         }
     }
-
 }
 
