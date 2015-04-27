@@ -39,9 +39,9 @@ namespace Snake2.players
 
             foreach (var step in steps)
             {
-                //zkontroluj že mužeš tahnout i další tah
+                //zkontroluj ze muzes tahnout i dalsi tah
                 var innerStep = PossibleSteps(step.FinalDirection, step.FinalPosition);
-                if (innerStep.Count > 0)
+                if (innerStep.Count >=2)
                 {
                     //rozhodl jsem se pro tah, aktualizuj polohu
                     _direction = UpdateDirection(_direction, step.Move);
@@ -87,10 +87,12 @@ namespace Snake2.players
         }
 
         /// <summary>
-        /// Oznaèení nedostupnosti pole
+        /// Oznacení nedostupnosti pole
         /// </summary>
         private void MarkPoint(int x, int y)
         {
+            _possibilities[x, y] = 1;
+
             if (x - 1 > 0)
             {
                 _possibilities[x - 1, y] = 1;
@@ -119,7 +121,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var dir = UpdateDirection(direction, enums.Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -127,7 +129,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var dir = UpdateDirection(direction, enums.Move.Straight);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -135,7 +137,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var dir = UpdateDirection(direction, enums.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -146,7 +148,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var dir = UpdateDirection(direction, enums.Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -154,7 +156,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var dir = UpdateDirection(direction, enums.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -162,7 +164,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
                         var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var dir = UpdateDirection(direction, enums.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -173,7 +175,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var dir = UpdateDirection(direction, enums.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -181,7 +183,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
                         var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var dir = UpdateDirection(direction, enums.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -189,7 +191,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var dir = UpdateDirection(direction, enums.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -200,7 +202,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
                         var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var dir = UpdateDirection(direction, enums.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -208,7 +210,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var dir = UpdateDirection(direction, enums.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -216,7 +218,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var dir = UpdateDirection(direction, enums.Move.Right);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -227,7 +229,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var dir = UpdateDirection(direction, enums.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -235,7 +237,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var dir = UpdateDirection(direction, enums.Move.Straight);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -243,7 +245,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var dir = UpdateDirection(direction, enums.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -254,7 +256,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var dir = UpdateDirection(direction, enums.Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -262,7 +264,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var dir = UpdateDirection(direction, enums.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -270,7 +272,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var dir = UpdateDirection(direction, enums.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -281,7 +283,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var dir = UpdateDirection(direction, enums.Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -289,7 +291,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var dir = UpdateDirection(direction, enums.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -297,7 +299,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var dir = UpdateDirection(direction, enums.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -308,7 +310,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = enums.Move.Left;
-                        var dir = UpdateDirection(_direction, enums.Move.Left);
+                        var dir = UpdateDirection(direction, enums.Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -316,7 +318,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Straight;
-                        var dir = UpdateDirection(_direction, enums.Move.Straight);
+                        var dir = UpdateDirection(direction, enums.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -324,7 +326,7 @@ namespace Snake2.players
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
                         var move = enums.Move.Right;
-                        var dir = UpdateDirection(_direction, enums.Move.Right);
+                        var dir = UpdateDirection(direction, enums.Move.Right);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -337,11 +339,11 @@ namespace Snake2.players
 
         private bool IsViable(GamePoint gamePoint)
         {
-            //ovìøit jeslti vubec bod existuje
+            //overit jeslti vubec bod existuje
             if (gamePoint.X < 0 || gamePoint.X >= _size || gamePoint.Y < 0 || gamePoint.Y >= _size)
                 return false;
 
-            //ovìøit jestli je bod možný
+            //overit jestli je bod dostupny
             return _possibilities[gamePoint.X, gamePoint.Y] == 0;
         }
 
