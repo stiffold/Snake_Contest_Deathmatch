@@ -9,71 +9,41 @@ namespace SnakeDeathmatch.Game
 {
     public class Player
     {
-        private string _name;
-        private Position _position;
-        private Direction _direction;
-        private Color _color;
-        private IPlayerBehavior _playerBehavior;
-        private int _identificator;
-        private int _score;
+        private PlayerBehaviourWrapper _playerBehaviour;
 
-        public Player(Position position, Direction direction, Color color, IPlayerBehavior playerBehavior, int identificator)
+        public string Name { get; private set; }
+        public int Identifier { get; private set; }
+        public Position Position { get; private set; }
+        public Direction Direction { get; private set; }
+        public Color Color { get; private set; }
+        public int Score { get; private set; }
+
+        public Player(Position position, Direction direction, Color color, object playerBehaviour, int identificator, int playgroundSize)
         {
-            _name = playerBehavior.MyName();
-            _position = position;
-            _direction = direction;
-            _color = color;
-            _playerBehavior = playerBehavior;
-            _identificator = identificator;
+            _playerBehaviour = new PlayerBehaviourWrapper(playerBehaviour);
+            Name = _playerBehaviour.Name;
+            Position = position;
+            Direction = direction;
+            Color = color;
+            Identifier = identificator;
             State = PlayerState.Playing;
 
-            playerBehavior.Init((int)_direction, _identificator);
-        }
-
-        public string Name
-        {
-            get { return _name; }
-        }
-        public int Identificator
-        {
-            get { return _identificator; }
-        }
-        public Position Position
-        {
-            get { return _position; }
-        }
-        public Direction MyDirection
-        {
-            get { return _direction; }
-        }
-        public Color Color
-        {
-            get { return _color; }
-        }
-        public IPlayerBehavior Behavior
-        {
-            get { return _playerBehavior; }
-        }
-        public int Score
-        {
-            get { return _score; }
+            _playerBehaviour.Init(Identifier, playgroundSize, position.X, position.Y, Direction);
         }
 
         public PlayerState State { get; set; }
 
-        public Move NextMove (int [,] gameSurround)
+        public Move NextMove (int [,] playground)
         {
-            Move myMove;
-            int move = Behavior.NextMove(gameSurround);
-            myMove = move > 0 && move < 4 ? (Move) move : Move.Straight;
-            Direction newDirection = GetNewDirection(_direction, myMove);
-            _direction = newDirection;
+            Move move = _playerBehaviour.GetNextMove(playground);
+            Direction newDirection = GetNewDirection(Direction, move);
+            Direction = newDirection;
             Position.Update(newDirection);
-            _score++;
-            return myMove;
+            Score++;
+            return move;
         }
 
-        private Direction GetNewDirection(Direction oldDirection , Move move)
+        private Direction GetNewDirection(Direction oldDirection, Move move)
         {
             if (move == Move.Left)
             {
@@ -107,6 +77,5 @@ namespace SnakeDeathmatch.Game
 
             return oldDirection;
         }
-
     }
 }

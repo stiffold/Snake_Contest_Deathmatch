@@ -27,7 +27,7 @@ namespace SnakeDeathmatch.Game
 
             foreach (Player player in players)
             {
-                _gameSurround[player.Position.X, player.Position.Y] = player.Identificator;
+                _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
             }
         }
 
@@ -66,10 +66,10 @@ namespace SnakeDeathmatch.Game
             livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
             foreach (Player player in livePlayers)
             {
-                if ((player.MyDirection == Direction.TopRight && (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0)) ||
-                    (player.MyDirection == Direction.BottomRight && (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0)) ||
-                    (player.MyDirection == Direction.BottomLeft && (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0)) ||
-                    (player.MyDirection == Direction.TopLeft && (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0)))
+                if ((player.Direction == Direction.TopRight && (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0)) ||
+                    (player.Direction == Direction.BottomRight && (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0)) ||
+                    (player.Direction == Direction.BottomLeft && (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0)) ||
+                    (player.Direction == Direction.TopLeft && (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0)))
                 {
                     player.State = PlayerState.HeadToTailCrossCollision;
                 }
@@ -80,7 +80,7 @@ namespace SnakeDeathmatch.Game
             var headToHeadCrashes = new List<Position>();
             foreach (Player player in livePlayers)
             {
-                if (livePlayers.Any(p => player.Position.X == p.Position.X && player.Position.Y == p.Position.Y && player.Identificator != p.Identificator))
+                if (livePlayers.Any(p => player.Position.X == p.Position.X && player.Position.Y == p.Position.Y && player.Identifier != p.Identifier))
                 {
                     player.State = PlayerState.HeadToHeadCollision;
                     headToHeadCrashes.Add(player.Position);
@@ -90,15 +90,15 @@ namespace SnakeDeathmatch.Game
             // detekce diagonálního překřížení hlav dvou hadů
             foreach (Player player in livePlayers)  // záměrně neupdatuju livePlayers
             {
-                if ((player.MyDirection == Direction.TopRight && livePlayers.Any(p => p.MyDirection == Direction.TopLeft && player.Position.X == p.Position.X + 1 && player.Position.Y == p.Position.Y)) ||
-                    (player.MyDirection == Direction.TopLeft && livePlayers.Any(p => p.MyDirection == Direction.TopRight && player.Position.X == p.Position.X - 1 && player.Position.Y == p.Position.Y)) ||
-                    (player.MyDirection == Direction.BottomRight && livePlayers.Any(p => p.MyDirection == Direction.BottomLeft && player.Position.X == p.Position.X + 1 && player.Position.Y == p.Position.Y)) ||
-                    (player.MyDirection == Direction.BottomLeft && livePlayers.Any(p => p.MyDirection == Direction.BottomRight && player.Position.X == p.Position.X - 1 && player.Position.Y == p.Position.Y)) ||
+                if ((player.Direction == Direction.TopRight && livePlayers.Any(p => p.Direction == Direction.TopLeft && player.Position.X == p.Position.X + 1 && player.Position.Y == p.Position.Y)) ||
+                    (player.Direction == Direction.TopLeft && livePlayers.Any(p => p.Direction == Direction.TopRight && player.Position.X == p.Position.X - 1 && player.Position.Y == p.Position.Y)) ||
+                    (player.Direction == Direction.BottomRight && livePlayers.Any(p => p.Direction == Direction.BottomLeft && player.Position.X == p.Position.X + 1 && player.Position.Y == p.Position.Y)) ||
+                    (player.Direction == Direction.BottomLeft && livePlayers.Any(p => p.Direction == Direction.BottomRight && player.Position.X == p.Position.X - 1 && player.Position.Y == p.Position.Y)) ||
 
-                    (player.MyDirection == Direction.TopRight && livePlayers.Any(p => p.MyDirection == Direction.BottomRight && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y - 1)) ||
-                    (player.MyDirection == Direction.BottomRight && livePlayers.Any(p => p.MyDirection == Direction.TopRight && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y + 1)) ||
-                    (player.MyDirection == Direction.TopLeft && livePlayers.Any(p => p.MyDirection == Direction.BottomLeft && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y - 1)) ||
-                    (player.MyDirection == Direction.BottomLeft && livePlayers.Any(p => p.MyDirection == Direction.TopLeft && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y + 1)))
+                    (player.Direction == Direction.TopRight && livePlayers.Any(p => p.Direction == Direction.BottomRight && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y - 1)) ||
+                    (player.Direction == Direction.BottomRight && livePlayers.Any(p => p.Direction == Direction.TopRight && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y + 1)) ||
+                    (player.Direction == Direction.TopLeft && livePlayers.Any(p => p.Direction == Direction.BottomLeft && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y - 1)) ||
+                    (player.Direction == Direction.BottomLeft && livePlayers.Any(p => p.Direction == Direction.TopLeft && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y + 1)))
                 {
                     if (player.State == PlayerState.Playing)
                         player.State = PlayerState.HeadToHeadCrossCollision;
@@ -109,7 +109,7 @@ namespace SnakeDeathmatch.Game
             livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
             foreach (Player player in livePlayers)
             {
-                _gameSurround[player.Position.X, player.Position.Y] = player.Identificator;
+                _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
             }
 
             // zapsání tahu přeživších hadů do hracího pole
@@ -136,7 +136,7 @@ namespace SnakeDeathmatch.Game
             if (i == HeadToHeadCrash)
                 return Colors.Magenta;
 
-            var player = _players.Where(p => p.Identificator == i).FirstOrDefault();
+            var player = _players.Where(p => p.Identifier == i).FirstOrDefault();
             if (player != null)
             {
                 return player.Color;

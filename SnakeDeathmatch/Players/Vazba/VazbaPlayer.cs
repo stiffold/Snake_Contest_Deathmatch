@@ -4,12 +4,8 @@ using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
-    using Direction = SnakeDeathmatch.Interface.Direction;
-
-    public class VazbaPlayer : IPlayerBehavior
+    public class VazbaPlayer : IPlayerBehaviour2
     {
-        #region Init
-
         public struct Point
         {
             public Point(int x, int y)
@@ -43,51 +39,22 @@ namespace SnakeDeathmatch.Players.Vazba
             }
         }
 
-        public string MyName() { return "Vazba"; }
+        public string Name { get { return "Vazba"; } }
 
-        public void Init(int direction, int id)
+        public void Init(int identifier, int playgroundSize, int x, int y, Direction direction)
         {
-            _direction = (Direction)direction;
-            _myId = id;
+            _myId = identifier;
+            _p = new Point(x, y);
+            _direction = direction;
+            _size = playgroundSize;
         }
-
-        #endregion
 
         private int _myId;
         private Direction _direction;
-        private int _step = 0;
         private Point _p = new Point(-1, -1);
-        private int _width = -1;
-        private int _height = -1;
+        private int _size;
         private int[,] _playground;
         private int wtf = 18;
-
-        private void InitIfTheFirstMove()
-        {
-            if (_step == 0)
-            {
-                _width = _playground.GetUpperBound(0) + 1;
-                _height = _playground.GetUpperBound(1) + 1;
-
-                // init _p
-                bool found = false;
-                for (int y = 0; y < _height; y++)
-                {
-                    for (int x = 0; x < _width; x++)
-                    {
-                        if (_playground[x, y] == _myId)
-                        {
-                            _p = new Point(x, y);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) break;
-                }
-                if (!found)
-                    throw new Exception("Na Vazbíka jste zapomněli, není v hracím poli!");
-            }
-        }
 
         private int GetValue(Point p)
         {
@@ -106,7 +73,7 @@ namespace SnakeDeathmatch.Players.Vazba
 
         private bool IsInPlayground(Point p)
         {
-            return (p.X >= 0 && p.X < _width && p.Y >= 0 && p.Y < _height);
+            return (p.X >= 0 && p.X < _size && p.Y >= 0 && p.Y < _size);
         }
 
         private bool IsNotInPlayground(Point p)
@@ -196,18 +163,16 @@ namespace SnakeDeathmatch.Players.Vazba
             throw new Exception();
         }
 
-        public int NextMove(int[,] playground)
+        public Move GetNextMove(int[,] playground)
         {
             _playground = playground;
-            InitIfTheFirstMove();
-            _step++;
 
             Move move = DoNextMove();
 
             _direction = GetNextDirection(_direction, move);
             _p = GetNextPoint(_p, _direction);
 
-            return (int)move;
+            return move;
         }
 
         private Move DoNextMove()

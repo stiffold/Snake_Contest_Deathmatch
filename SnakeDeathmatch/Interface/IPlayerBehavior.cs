@@ -1,5 +1,8 @@
-﻿namespace SnakeDeathmatch.Interface
+﻿using System;
+
+namespace SnakeDeathmatch.Interface
 {
+    [Obsolete("Use IPlayerBehaviour2 instead.")]
     public interface IPlayerBehavior
     {
         /// <summary>

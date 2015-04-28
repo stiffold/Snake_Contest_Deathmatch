@@ -17,7 +17,7 @@ namespace SnakeDeathmatch.Tests
         private Player CreatePlayer<TPlayerBehaviour>(Color color, int x, int y, Direction direction)
             where TPlayerBehaviour : IPlayerBehavior, new()
         {
-            return new Player(new Position(x, y), direction, color, new TPlayerBehaviour(), _nextIdentifier++);
+            return new Player(new Position(x, y), direction, color, new TPlayerBehaviour(), _nextIdentifier++, PlaygroundSize);
         }
 
 
