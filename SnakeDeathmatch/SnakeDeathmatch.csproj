@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -67,7 +70,9 @@
     <Compile Include="Players\Jardik\Walk.cs" />
     <Compile Include="Players\Jardik\WalkSetBase.cs" />
     <Compile Include="Players\Jardik\WalkSets.cs" />
+    <Compile Include="Players\Jirka\Extensions.cs" />
     <Compile Include="Players\Jirka\Jirka.cs" />
+    <Compile Include="Players\Jirka\Vector.cs" />
     <Compile Include="Players\Setal\Setal.cs" />
     <Compile Include="Players\SoulEater\OtherPlayerInfo.cs" />
     <Compile Include="Players\SoulEater\Point.cs" />
