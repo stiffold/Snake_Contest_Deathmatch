@@ -89,7 +89,25 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test09_HeadToTailCrossCollision_TopRight()
+        public GameEngine Test09_HeadToTailCollision_Right_vs_Left()
+        {
+            return new GameEngine(PlaygroundSize, new[]
+            {
+                CreatePlayer<SnakeDeathmatch.Players.Fools.RightPlayer>(Colors.Red, 2, 4, Direction.Right),
+                CreatePlayer<SnakeDeathmatch.Players.Fools.LeftPlayer>(Colors.DarkRed, 7, 4, Direction.Left),
+            });
+        }
+
+        public GameEngine Test10_HeadToTailCollision_Bottom_vs_Top()
+        {
+            return new GameEngine(PlaygroundSize, new[]
+            {
+                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomPlayer>(Colors.Red, 4, 2, Direction.Bottom),
+                CreatePlayer<SnakeDeathmatch.Players.Fools.TopPlayer>(Colors.DarkRed, 4, 7, Direction.Top),
+            });
+        }
+
+        public GameEngine Test11_HeadToTailCrossCollision_TopRight()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -98,7 +116,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test10_HeadToTailCrossCollision_TopLeft()
+        public GameEngine Test12_HeadToTailCrossCollision_TopLeft()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -107,7 +125,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test11_HeadToTailCrossCollision_BottomRight()
+        public GameEngine Test13_HeadToTailCrossCollision_BottomRight()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -116,7 +134,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test12_HeadToTailCrossCollision_BottomLeft()
+        public GameEngine Test14_HeadToTailCrossCollision_BottomLeft()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -125,7 +143,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test13_HeadToHeadCollision_TopLeft_x_TopRight()
+        public GameEngine Test15_HeadToHeadCollision_TopLeft_x_TopRight()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -134,7 +152,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test14_HeadToHeadCollision_BottomLeft_x_BottomRight()
+        public GameEngine Test16_HeadToHeadCollision_BottomLeft_x_BottomRight()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -143,7 +161,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test15_HeadToHeadCollision_TopLeft_x_BottomLeft()
+        public GameEngine Test17_HeadToHeadCollision_TopLeft_x_BottomLeft()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -152,7 +170,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test16_HeadToHeadCollision_TopRight_x_BottomRight()
+        public GameEngine Test18_HeadToHeadCollision_TopRight_x_BottomRight()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -161,7 +179,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test17_HeadToHeadCrossCollision_TopLeft_x_TopRight()
+        public GameEngine Test19_HeadToHeadCrossCollision_TopLeft_x_TopRight()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -170,7 +188,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test18_HeadToHeadCrossCollision_BottomLeft_x_BottomRight()
+        public GameEngine Test20_HeadToHeadCrossCollision_BottomLeft_x_BottomRight()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -179,7 +197,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test19_HeadToHeadCrossCollision_TopLeft_x_BottomLeft()
+        public GameEngine Test21_HeadToHeadCrossCollision_TopLeft_x_BottomLeft()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -188,7 +206,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test20_HeadToHeadCrossCollision_TopRight_x_BottomRight()
+        public GameEngine Test22_HeadToHeadCrossCollision_TopRight_x_BottomRight()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -197,7 +215,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test21_HeadToHeadCollision_and_HeadToTailCrossCollision()
+        public GameEngine Test23_HeadToHeadCollision_and_HeadToTailCrossCollision()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
@@ -207,7 +225,7 @@ namespace SnakeDeathmatch.Tests
             });
         }
 
-        public GameEngine Test22_HeadToHeadCollision_and_HeadToTailCrossCollision_BigBang()
+        public GameEngine Test24_HeadToHeadCollision_and_HeadToTailCrossCollision_BigBang()
         {
             return new GameEngine(PlaygroundSize, new[]
             {
