@@ -42,7 +42,7 @@ namespace SnakeDeathmatch.Players.Setal
             {
                 //zkontroluj ze muzes tahnout i dalsi tah
                 var innerStep = PossibleSteps(step.FinalDirection, step.FinalPosition);
-                if (innerStep.Count >=2)
+                if (innerStep.Count >= 2)
                 {
                     //rozhodl jsem se pro tah, aktualizuj polohu
                     _direction = UpdateDirection(_direction, step.Move);
@@ -88,23 +88,27 @@ namespace SnakeDeathmatch.Players.Setal
         /// </summary>
         private void MarkPoint(int x, int y)
         {
-            _possibilities[x, y] = 1;
+            _possibilities[x, y] = 2;
 
             if (x - 1 > 0)
             {
-                _possibilities[x - 1, y] = 1;
+                if (_possibilities[x - 1, y] == 0)
+                    _possibilities[x - 1, y] = 1;
             }
             if (x + 1 < _size)
             {
-                _possibilities[x + 1, y] = 1;
+                if (_possibilities[x + 1, y] == 0)
+                    _possibilities[x + 1, y] = 1;
             }
             if (y - 1 > 0)
             {
-                _possibilities[x, y - 1] = 1;
+                if (_possibilities[x, y - 1] == 0)
+                    _possibilities[x, y - 1] = 1;
             }
             if (y + 1 < _size)
             {
-                _possibilities[x, y + 1] = 1;
+                if (_possibilities[x, y + 1] == 0)
+                    _possibilities[x, y + 1] = 1;
             }
         }
 
@@ -351,14 +355,43 @@ namespace SnakeDeathmatch.Players.Setal
             return _possibilities[gamePoint.X, gamePoint.Y] == 0;
         }
 
-        private bool IsViable(int X, int Y)
+        private bool IsViable(int x, int y)
         {
             //overit jeslti vubec bod existuje
-            if (X < 0 || X >= _size || Y < 0 || Y >= _size)
+            if (x < 0 || x >= _size || y < 0 || y >= _size)
                 return false;
 
             //overit jestli je bod dostupny
-            return _possibilities[X, Y] == 0;
+            return _possibilities[x, y] == 0;
+        }
+
+        private bool IsTaken(int x, int y)
+        {
+            //overit jeslti vubec bod existuje
+            if (x < 0 || x >= _size || y < 0 || y >= _size)
+                return true;
+
+            //overit jestli bod je obsazeny
+            return _possibilities[x, y] == 2;
+        }
+
+        private bool IsHead(int x, int y)
+        {
+            //Jestli je obsazene proveruji sousedni pole
+            if (IsTaken(x, y))
+            {
+                if ((IsTaken(x - 1, y)) || (IsTaken(x + 1, y)) || (IsTaken(x, y - 1)) || (IsTaken(x, y + 1)))
+                {
+                    return false;
+                }
+                if ((IsTaken(x - 1, y + 1)) || (IsTaken(x + 1, y + 1)) || (IsTaken(x - 1, y - 1)) || (IsTaken(x + 1, y - 1)))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            else return false;
         }
 
         private Interface.Direction UpdateDirection(Interface.Direction direction, Interface.Move move)
@@ -419,16 +452,18 @@ namespace SnakeDeathmatch.Players.Setal
 
     internal class Step
     {
-        public Step(Interface.Move move, Interface.Direction finalDirection, GamePoint finalPosition)
+        public Step(Interface.Move move, Interface.Direction finalDirection, GamePoint finalPosition, bool isSafe = true)
         {
             Move = move;
             FinalDirection = finalDirection;
             FinalPosition = finalPosition;
+            IsSafe = isSafe;
         }
 
         public Interface.Move Move { get; set; }
         public Interface.Direction FinalDirection { get; set; }
         public GamePoint FinalPosition { get; set; }
+        public bool IsSafe { get; set; }
     }
 
     internal class Map
