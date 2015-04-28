@@ -35,7 +35,12 @@ namespace SnakeDeathmatch.Players
             {
                 _myPlanedMoves.AddRange(_planner.GetBestWalksToMe(_round, _myPosition, _myDirection, gameSurrond));
             }
-            
+            else
+            {
+                _planner.RepairSteps(_round,_myPlanedMoves, gameSurrond);
+            }
+
+                      
             var nextMove = _myPlanedMoves.Where(x => x.Round == _round).FirstOrDefault();
             if (nextMove!=null)
             {
@@ -234,6 +239,8 @@ namespace SnakeDeathmatch.Players
         CollissionHelper _ch;
         int _myId;
         List<WalkSetBase> _walkSets = new List<WalkSetBase>();
+
+        List<WalkSetBase> _walkSetsPro = new List<WalkSetBase>();
         public Planner(int max, int myId)
         {
            _ch = new CollissionHelper(max);
@@ -246,11 +253,31 @@ namespace SnakeDeathmatch.Players
            _walkSets.Add(new Left45(_ch, _myId));
            _walkSets.Add(new Left90(_ch, _myId));
            _walkSets.Add(new Left125(_ch, _myId));
-           _walkSets.Add(new Left180(_ch, _myId));      
+           _walkSets.Add(new Left180(_ch, _myId));
+
+           _walkSetsPro.Add(new RollLeft(_ch, _myId));
+           _walkSetsPro.Add(new RollRight(_ch, _myId));
+           _walkSetsPro.Add(new SquareRight(_ch, _myId));    
+           _walkSetsPro.Add(new SquareLeft(_ch, _myId));    
+  
+            
         }
 
         public List<Walk> GetBestWalksToMe(int round,Position position, Direction direction, int[,] gameSurround)
         {
+
+                foreach (var walkSet in _walkSetsPro)
+                {
+                    walkSet.Evaluate(round, position, direction, gameSurround);
+                }
+                var bestPro = _walkSetsPro.OrderByDescending(x => x.Score).FirstOrDefault();
+                if (bestPro.Score > 30)
+                {
+                    return bestPro.Walks;
+                }            
+            
+            
+            
             foreach (var walkSet in _walkSets)
             {
                 walkSet.Evaluate(round,position, direction, gameSurround);
@@ -259,21 +286,45 @@ namespace SnakeDeathmatch.Players
 
             if (best != null) return best.Walks;
             return new List<Walk>();
-       }   
-   }
+       }
+
+        internal void RepairSteps(int round ,List<Walk> planedWalks, int[,] gameSurround)
+        {
+            int roundIndCollission = 0;
+            foreach (Walk walk in planedWalks.Where(x=>x.Round> round))
+            {
+                if (_ch.Collission(walk.Direction, gameSurround, walk.Position))
+                {
+                    roundIndCollission = walk.Round;
+                    continue;
+                }
+            }
+
+            if (roundIndCollission != 0)
+            {
+                var lastWalk = planedWalks.Where(x=>x.Round == round-1).First();
+                planedWalks.Clear();
+                
+                planedWalks.AddRange(GetBestWalksToMe(round, lastWalk.Position, lastWalk.Direction, gameSurround));
+            }                     
+
+        }
+    }
 
     internal abstract class WalkSetBase
     {
-        CollissionHelper _ch;
-        int _score = 0;
-        int _myId = 0;
-        int _round = 0;
-        List<Walk> _walks = new List<Walk>();
+        protected CollissionHelper _ch;
+        protected int _score = 0;
+        protected int _myId = 0;
+        protected int _round = 0;
+        protected bool _isPro;
+        protected List<Walk> _walks = new List<Walk>();
 
-        protected WalkSetBase(CollissionHelper ch, int myId)
+        protected WalkSetBase(CollissionHelper ch, int myId, bool isPro = false)
         {
             _myId = myId;
             _ch = ch;
+            _isPro = isPro;
         }
 
         public void Evaluate(int round,Position position, Direction direction, int[,] gameSurrond)
@@ -336,7 +387,17 @@ namespace SnakeDeathmatch.Players
 
         protected abstract void DoEvaluate(Position position, Direction direction, int[,] gameSurrond);
         public int Score{get {return _score;}}
-        public List<Walk> Walks { get { return _walks.OrderBy(x=>x.Round).Take(2).ToList(); } }
+
+        public List<Walk> Walks 
+        { 
+            get {  
+                    if (_isPro)
+	                {
+                        return _walks.OrderBy(x => x.Round).Take(_walks.Count -2).ToList(); 
+	                }
+                    return _walks.OrderBy(x => x.Round).Take(10).ToList();
+                } 
+        }
     }
 
     internal class CollissionHelper
@@ -485,6 +546,146 @@ namespace SnakeDeathmatch.Players
             protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
             {
                 throw new NotImplementedException();
+            }
+        }
+
+        internal class RollLeft : WalkSetBase
+        {
+            public RollLeft(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+            protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+            {
+                _score = 1;
+                int _count = 1;
+                Move move = Move.Left;
+                Direction simulateDirection = direction;
+                Position simulatePosition = position.Copy();
+                int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));                
+
+                while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+                {
+                    simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                    simulateDirection = simulateDirection.GetNewDirection(move);
+                    simulatePosition.Update(simulateDirection);
+                    _score++;
+                    _round++;
+                    _count++;
+                    _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+                    if (_count <= 4) move = Move.Left;
+                    if (_count > 4) move = Move.Right;
+                    if (_count == 8) _count = 1;
+                }               
+            }
+        }
+
+        internal class RollRight : WalkSetBase
+        {
+            public RollRight(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+            protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+            {
+                _score = 1;
+                int _count = 1;
+                Move move = Move.Right;
+                Direction simulateDirection = direction;
+                Position simulatePosition = position.Copy();
+                int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+                while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+                {
+                    simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                    simulateDirection = simulateDirection.GetNewDirection(move);
+                    simulatePosition.Update(simulateDirection);
+                    _score++;
+                    _round++;
+                    _count++;
+                    _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+                    if (_count <= 4) move = Move.Right;
+                    if (_count > 4) move = Move.Left;
+                    if (_count == 8) _count = 1;
+                }
+            }
+        }
+
+        internal class SquareRight : WalkSetBase
+        {
+            public SquareRight(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+            protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+            {
+                _score = 1;
+                int _count = 1;
+                Move move = Move.Straight;
+                Direction simulateDirection = direction;
+                Position simulatePosition = position.Copy();
+                int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+                while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+                {
+                    simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                    simulateDirection = simulateDirection.GetNewDirection(move);
+                    simulatePosition.Update(simulateDirection);
+                    _score++;
+                    _round++;
+                    _count++;
+                    _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+                    if (_count <= 8) move = Move.Straight;
+                    if (_count > 8 && _count <= 10) move = Move.Right;
+                    if (_count > 10 && _count <= 18) move = Move.Straight;
+                    if (_count > 18 && _count <= 20) move = Move.Left;
+                    if (_count > 20 && _count <= 28) move = Move.Straight;
+                    if (_count > 28 && _count <= 30) move = Move.Right;
+                    if (_count > 30 && _count <= 38) move = Move.Straight;
+                    if (_count > 36 && _count <= 37) move = Move.Left;
+                    if (_count > 37) move = Move.Straight;
+                }
+            }
+        }
+
+            internal class SquareLeft : WalkSetBase
+        {
+            public SquareLeft(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+            protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+            {
+                _score = 1;
+                int _count = 1;
+                Move move = Move.Straight;
+                Direction simulateDirection = direction;
+                Position simulatePosition = position.Copy();
+                int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+                while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+                {
+                    simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                    simulateDirection = simulateDirection.GetNewDirection(move);
+                    simulatePosition.Update(simulateDirection);
+                    _score++;
+                    _round++;
+                    _count++;
+                    _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+                    if (_count <= 8) move = Move.Straight;
+                    if (_count > 8 && _count <=10) move = Move.Left;
+                    if (_count > 10 && _count <=18 ) move = Move.Straight;
+                    if (_count > 18 && _count <= 20) move = Move.Right;
+                    if (_count > 20 && _count <= 28) move = Move.Straight;
+                    if (_count > 28 && _count <= 30) move = Move.Left;
+                    if (_count > 30 && _count <= 38) move = Move.Straight;
+                    if (_count > 36 && _count <= 37) move = Move.Right;
+                    if (_count > 37) move = Move.Straight;
+                }
             }
         }
 }

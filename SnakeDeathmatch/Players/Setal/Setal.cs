@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using SnakeDeathmatch.Interface;
 
-namespace SnakeDeathmatch.Players
+namespace SnakeDeathmatch.Players.Setal
 {
     public class Setal : IPlayerBehavior
     {
@@ -39,9 +40,9 @@ namespace SnakeDeathmatch.Players
 
             foreach (var step in steps)
             {
-                //zkontroluj že mužeš tahnout i další tah
+                //zkontroluj ze muzes tahnout i dalsi tah
                 var innerStep = PossibleSteps(step.FinalDirection, step.FinalPosition);
-                if (innerStep.Count > 0)
+                if (innerStep.Count >=2)
                 {
                     //rozhodl jsem se pro tah, aktualizuj polohu
                     _direction = UpdateDirection(_direction, step.Move);
@@ -49,9 +50,6 @@ namespace SnakeDeathmatch.Players
                     return (int)step.Move;
                 }
             }
-
-
-
             return 2;
         }
 
@@ -82,15 +80,16 @@ namespace SnakeDeathmatch.Players
                         return new GamePoint(i, j);
                     }
                 }
-            // throw new InvalidOperationException("Nejsem na herní ploše!");
-            return new GamePoint(0, 0);
+            throw new InvalidOperationException("Nejsem na herní ploše!");
         }
 
         /// <summary>
-        /// Oznaèení nedostupnosti pole
+        /// Oznacení nedostupnosti pole
         /// </summary>
         private void MarkPoint(int x, int y)
         {
+            _possibilities[x, y] = 1;
+
             if (x - 1 > 0)
             {
                 _possibilities[x - 1, y] = 1;
@@ -118,8 +117,10 @@ namespace SnakeDeathmatch.Players
                 case Interface.Direction.Top:
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
+
                         var move = Interface.Move.Left;
-                        var dir = UpdateDirection(_direction, Interface.Move.Left);
+                        var dir = UpdateDirection(direction, Interface.Move.Left);
+
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -127,15 +128,16 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
                         var move = Interface.Move.Straight;
-                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
+                        var dir = UpdateDirection(direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
+
                         var move = Interface.Move.Right;
-                        var dir = UpdateDirection(_direction, Interface.Move.Right);
+                        var dir = UpdateDirection(direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -145,16 +147,18 @@ namespace SnakeDeathmatch.Players
                 case Interface.Direction.TopRight:
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
+
                         var move = Interface.Move.Left;
-                        var dir = UpdateDirection(_direction, Interface.Move.Left);
+                        var dir = UpdateDirection(direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
+
                         var move = Interface.Move.Straight;
-                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
+                        var dir = UpdateDirection(direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -162,7 +166,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
                         var move = Interface.Move.Right;
-                        var dir = UpdateDirection(_direction, Interface.Move.Right);
+                        var dir = UpdateDirection(direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -173,15 +177,16 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y - 1))
                     {
                         var move = Interface.Move.Left;
-                        var dir = UpdateDirection(_direction, Interface.Move.Left);
+                        var dir = UpdateDirection(direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
+
                         var move = Interface.Move.Straight;
-                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
+                        var dir = UpdateDirection(direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -189,7 +194,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
                         var move = Interface.Move.Right;
-                        var dir = UpdateDirection(_direction, Interface.Move.Right);
+                        var dir = UpdateDirection(direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -200,15 +205,16 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y))
                     {
                         var move = Interface.Move.Left;
-                        var dir = UpdateDirection(_direction, Interface.Move.Left);
+                        var dir = UpdateDirection(direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
                     }
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
+
                         var move = Interface.Move.Straight;
-                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
+                        var dir = UpdateDirection(direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -216,7 +222,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = Interface.Move.Right;
-                        var dir = UpdateDirection(_direction, Interface.Move.Right);
+                        var dir = UpdateDirection(direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -227,7 +233,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X + 1, gamePoint.Y + 1))
                     {
                         var move = Interface.Move.Left;
-                        var dir = UpdateDirection(_direction, Interface.Move.Left);
+                        var dir = UpdateDirection(direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -235,7 +241,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = Interface.Move.Straight;
-                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
+                        var dir = UpdateDirection(direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -243,7 +249,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = Interface.Move.Right;
-                        var dir = UpdateDirection(_direction, Interface.Move.Right);
+                        var dir = UpdateDirection(direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -254,7 +260,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = Interface.Move.Left;
-                        var dir = UpdateDirection(_direction, Interface.Move.Left);
+                        var dir = UpdateDirection(direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -262,7 +268,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = Interface.Move.Straight;
-                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
+                        var dir = UpdateDirection(direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -270,7 +276,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = Interface.Move.Right;
-                        var dir = UpdateDirection(_direction, Interface.Move.Right);
+                        var dir = UpdateDirection(direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -281,7 +287,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = Interface.Move.Left;
-                        var dir = UpdateDirection(_direction, Interface.Move.Left);
+                        var dir = UpdateDirection(direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -289,7 +295,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = Interface.Move.Straight;
-                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
+                        var dir = UpdateDirection(direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -297,7 +303,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
                         var move = Interface.Move.Right;
-                        var dir = UpdateDirection(_direction, Interface.Move.Right);
+                        var dir = UpdateDirection(direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -308,7 +314,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = Interface.Move.Left;
-                        var dir = UpdateDirection(_direction, Interface.Move.Left);
+                        var dir = UpdateDirection(direction, Interface.Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
 
                         steps.Add(new Step(move, dir, point));
@@ -316,7 +322,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X - 1, gamePoint.Y - 1))
                     {
                         var move = Interface.Move.Straight;
-                        var dir = UpdateDirection(_direction, Interface.Move.Straight);
+                        var dir = UpdateDirection(direction, Interface.Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -324,7 +330,7 @@ namespace SnakeDeathmatch.Players
                     if (IsViable(gamePoint.X, gamePoint.Y - 1))
                     {
                         var move = Interface.Move.Right;
-                        var dir = UpdateDirection(_direction, Interface.Move.Right);
+                        var dir = UpdateDirection(direction, Interface.Move.Right);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point));
@@ -337,21 +343,21 @@ namespace SnakeDeathmatch.Players
 
         private bool IsViable(GamePoint gamePoint)
         {
-            //ovìøit jeslti vubec bod existuje
+            //overit jeslti vubec bod existuje
             if (gamePoint.X < 0 || gamePoint.X >= _size || gamePoint.Y < 0 || gamePoint.Y >= _size)
                 return false;
 
-            //ovìøit jestli je bod možný
+            //overit jestli je bod dostupny
             return _possibilities[gamePoint.X, gamePoint.Y] == 0;
         }
 
         private bool IsViable(int X, int Y)
         {
-            //ovìøit jeslti vubec bod existuje
+            //overit jeslti vubec bod existuje
             if (X < 0 || X >= _size || Y < 0 || Y >= _size)
                 return false;
 
-            //ovìøit jestli je bod možný
+            //overit jestli je bod dostupny
             return _possibilities[X, Y] == 0;
         }
 

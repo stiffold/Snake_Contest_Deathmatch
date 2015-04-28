@@ -55,6 +55,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Players\Setal\Setal.cs" />
+    <Compile Include="Players\SoulEater\OtherPlayerInfo.cs" />
+    <Compile Include="Players\SoulEater\Point.cs" />
+    <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />
     <Compile Include="Tests\CollisionTests.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -87,7 +91,6 @@
     <Compile Include="Players\Fools\TopLeftPlayer.cs" />
     <Compile Include="Players\Fools\TopPlayer.cs" />
     <Compile Include="Players\Fools\TopRightPlayer.cs" />
-    <Compile Include="Players\Setal.cs" />
     <Compile Include="Players\Jardik.cs" />
     <Compile Include="Players\Vazba\VazbaPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
