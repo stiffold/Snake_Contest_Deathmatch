@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Players\Jirka\Jirka.cs" />
     <Compile Include="Players\Setal\Setal.cs" />
     <Compile Include="Players\SoulEater\OtherPlayerInfo.cs" />
     <Compile Include="Players\SoulEater\Point.cs" />
