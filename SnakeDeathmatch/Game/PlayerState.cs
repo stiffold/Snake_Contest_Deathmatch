@@ -3,9 +3,10 @@
 	public enum PlayerState
 	{
         Playing = 1,
-        CollisionWithPlayer = 2,
-        CollisionWithTerrain = 3,
-        OneMoveCollission = 4,
-        CrossCollission = 5,
+        BoundaryCollision = 2,
+        HeadToTailCollision = 3,
+        HeadToHeadCollision = 4,
+        HeadToTailCrossCollision = 5,
+        HeadToHeadCrossCollision = 6,
 	}
 }

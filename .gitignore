@@ -9,6 +9,7 @@ obj
 _ReSharper.Snake2
 SnakeDeathmatch/Snake2.5.0.ReSharper.user
 SnakeDeathmatch/_ReSharper.Snake2
+SnakeDeathmatch/_ReSharper.SnakeDeathmatch
 SnakeDeathmatch/bin
 SnakeDeathmatch/obj
 SnakeDeathmatch/*.csproj.user
@@ -16,3 +17,4 @@ SnakeDeathmatch/*.suo
 _ReSharper.SnakeDeathmatch
 SnakeDeathmatch.5.0.ReSharper.user
 *.pdb
+SnakeDeathmatch/SnakeContestDeathmatch

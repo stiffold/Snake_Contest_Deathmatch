@@ -3,9 +3,12 @@ using SnakeDeathmatch.Game;
 using System.Threading;
 using SnakeDeathmatch.Interface;
 
-namespace SnakeDeathmatch.Players.Randomer
+namespace SnakeDeathmatch.Players.Fools
 {
-    public class RandomerPlayer : IPlayerBehavior
+    using Direction = SnakeDeathmatch.Interface.Direction;
+    using Move = SnakeDeathmatch.Interface.Move;
+
+    public class RandomPlayer : IPlayerBehavior
     {
         private Random _random;
 
@@ -22,7 +25,7 @@ namespace SnakeDeathmatch.Players.Randomer
 
         public string MyName()
         {
-            return "Randomer";
+            return "Random Fool";
         }
     }
 }

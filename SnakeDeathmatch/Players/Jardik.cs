@@ -271,7 +271,7 @@ namespace SnakeDeathmatch.Players
                     walkSet.Evaluate(round, position, direction, gameSurround);
                 }
                 var bestPro = _walkSetsPro.OrderByDescending(x => x.Score).FirstOrDefault();
-                if (bestPro.Score > 25)
+                if (bestPro.Score > 30)
                 {
                     return bestPro.Walks;
                 }            
@@ -293,9 +293,10 @@ namespace SnakeDeathmatch.Players
             int roundIndCollission = 0;
             foreach (Walk walk in planedWalks.Where(x=>x.Round> round))
             {
-                if (_ch.Collission(walk.Direction, gameSurround, walk.Position) && roundIndCollission == 0)
+                if (_ch.Collission(walk.Direction, gameSurround, walk.Position))
                 {
-                    roundIndCollission = walk.Round;                    
+                    roundIndCollission = walk.Round;
+                    continue;
                 }
             }
 
