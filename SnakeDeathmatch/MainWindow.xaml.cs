@@ -59,7 +59,7 @@ namespace SnakeDeathmatch
             int nextIdentifier = 1;
 
             var players = new List<Player>();
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Red, new SnakeDeathmatch.Players.Jardik(), nextIdentifier++));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Red, new SnakeDeathmatch.Players.Jardik.Jardik(), nextIdentifier++));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), nextIdentifier++));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), nextIdentifier++));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.White, new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior(), nextIdentifier++));
