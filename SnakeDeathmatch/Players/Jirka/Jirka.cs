@@ -3,78 +3,64 @@ using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.Jirka
 {
-    public class Jirka : IPlayerBehavior
+    public class Jirka : IPlayerBehaviour2
     {
-        private int identificator;
-        private int boardSize;
+        private int identifier;
+        private int playgroundSize;
         private Direction direction;
-        private GamePoint actualPosition;
-        private bool firstRun;
+        private Vector position;
 
         private int[,] localBoard;
 
         public Jirka()
         {
-            firstRun = true;
         }
 
-        public void Init(int direction, int identificator)
+        public void Init(int identifier, int playgroundSize, int x, int y, Direction direction)
         {
-            this.direction = (Direction)direction;
-            this.identificator = identificator;
+            this.identifier = identifier;
+            this.playgroundSize = playgroundSize;
+            this.position = new Vector(x, y);
+            this.direction = direction;
         }
 
-        public int NextMove(int[,] gameSurrond)
+        public Move GetNextMove(int[,] playground)
         {
-            if (firstRun)
-            {
-                boardSize = gameSurrond.GetUpperBound(0) + 1;
-                actualPosition = FindMySelf(gameSurrond);
-                firstRun = false;
-            }
 
-            return 2;
+
+
+            return Move.Straight;
         }
 
-        public string MyName()
+        public string Name
         {
-            return "Jirka";
-        }
-
-
-        private GamePoint FindMySelf(int[,] gameSurrond)
-        {
-            for (int i = 0; i < boardSize; i++)
-                for (int j = 0; j < boardSize; j++)
-                {
-                    if (gameSurrond[i, j] == identificator)
-                    {
-                        return new GamePoint(i, j);
-                    }
-                }
-            return new GamePoint(0, 0);
+            get { return "Jirka"; }
         }
     }
 
 
-    internal class GamePoint
+    internal struct Vector
     {
-        public GamePoint()
-        {
-        }
-
-        public GamePoint(int x, int y)
+        public Vector(int x, int y)
         {
             X = x;
             Y = y;
         }
 
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int X;
+        public int Y;
 
-        public bool IsMatch(int x, int y)
+        public override bool Equals(object obj)
         {
-            return ((X == x) && (Y == y));
+            if (!(obj is Vector))
+                return false;
+            Vector other = (Vector)obj;
+            return X == other.X && Y == other.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
