@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Tests\CollisionTests.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -76,7 +77,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Players\Randomer\RandomerPlayer.cs" />
+    <Compile Include="Players\Fools\BottomLeftPlayer.cs" />
+    <Compile Include="Players\Fools\BottomPlayer.cs" />
+    <Compile Include="Players\Fools\BottomRightPlayer.cs" />
+    <Compile Include="Players\Fools\FoolHelper.cs" />
+    <Compile Include="Players\Fools\LeftPlayer.cs" />
+    <Compile Include="Players\Fools\RandomPlayer.cs" />
+    <Compile Include="Players\Fools\RightPlayer.cs" />
+    <Compile Include="Players\Fools\TopLeftPlayer.cs" />
+    <Compile Include="Players\Fools\TopPlayer.cs" />
+    <Compile Include="Players\Fools\TopRightPlayer.cs" />
     <Compile Include="Players\Setal.cs" />
     <Compile Include="Players\Jardik.cs" />
     <Compile Include="Players\Vazba\VazbaPlayer.cs" />

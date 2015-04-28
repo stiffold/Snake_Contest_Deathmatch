@@ -23,23 +23,28 @@ namespace SnakeDeathmatch.Game
             _nextIdentifikator = 1;
         }
 
-        public Player Create<TPlayerBehvaiour>(Color color) where TPlayerBehvaiour : IPlayerBehavior, new()
+        public Player Create<TPlayerBehaviour>(Color color, int? x = null, int? y = null, Direction? direction = null)
+            where TPlayerBehaviour : IPlayerBehavior, new()
         {
-            var behavior = new TPlayerBehvaiour();
+            var behavior = new TPlayerBehaviour();
             var position = RandomPosition();
+            direction = direction ?? RandomDirection();
+
+            if (x.HasValue) position = new Position(x.Value, position.Y);
+            if (y.HasValue) position = new Position(position.X, y.Value);
 
             _game[position.X, position.Y] = _nextIdentifikator;
 
-            var player = new Player(position, RandomDirection(), color, behavior, _nextIdentifikator);
+            var player = new Player(position, direction.Value, color, behavior, _nextIdentifikator);
 
             _nextIdentifikator++;
 
             return player;
         }
 
-        public Player Create<TPlayerBehvaiour>(Color color, Position position) where TPlayerBehvaiour : IPlayerBehavior, new()
+        public Player Create<TPlayerBehaviour>(Color color, Position position) where TPlayerBehaviour : IPlayerBehavior, new()
         {
-            var behavior = new TPlayerBehvaiour();
+            var behavior = new TPlayerBehaviour();
             var player = new Player(position, RandomDirection(), color, behavior, _nextIdentifikator);
 
             _game[position.X, position.Y] = _nextIdentifikator;

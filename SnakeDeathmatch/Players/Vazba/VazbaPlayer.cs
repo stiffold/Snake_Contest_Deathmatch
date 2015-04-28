@@ -1,33 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using SnakeDeathmatch.Game;
 using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
+    using Direction = SnakeDeathmatch.Interface.Direction;
+
     public class VazbaPlayer : IPlayerBehavior
     {
         #region Init
-
-        public enum Direction
-        {
-            Unknown = 0,
-            Top = 1,
-            TopRight = 2,
-            Right = 3,
-            BottomRight = 4,
-            Bottom = 5,
-            BottomLeft = 6,
-            Left = 7,
-            TopLeft = 8,
-        }
-
-        public enum Move
-        {
-            Left = 1,
-            Straight = 2,
-            Right = 3,
-        }
 
         public struct Point
         {
@@ -73,12 +54,13 @@ namespace SnakeDeathmatch.Players.Vazba
         #endregion
 
         private int _myId;
-        private Direction _direction = Direction.Unknown;
+        private Direction _direction;
         private int _step = 0;
         private Point _p = new Point(-1, -1);
         private int _width = -1;
         private int _height = -1;
         private int[,] _playground;
+        private int wtf = 18;
 
         private void InitIfTheFirstMove()
         {
@@ -227,8 +209,6 @@ namespace SnakeDeathmatch.Players.Vazba
 
             return (int)move;
         }
-
-        private int wtf = 18;
 
         private Move DoNextMove()
         {

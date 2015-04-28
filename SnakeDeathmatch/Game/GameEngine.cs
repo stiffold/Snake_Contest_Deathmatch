@@ -5,79 +5,118 @@ using System.Text;
 using System.Threading;
 using System.Windows.Media;
 using SnakeDeathmatch.Interface;
-using SnakeDeathmatch.Players;
-using SnakeDeathmatch.Players.Vazba;
-using SnakeDeathmatch.Players.Randomer;
 using Direction = SnakeDeathmatch.Interface.Direction;
 
 namespace SnakeDeathmatch.Game
 {
     public class GameEngine
     {
-        private int _max;
+        public const int HeadToHeadCrash = -1;
+
         private List<Player> _players = new List<Player>();
         private int[,] _gameSurround;
         private bool _gameOver;
 
+        public int Size { get; private set; }
 
-        public GameEngine(int max)
+        public GameEngine(int size, IEnumerable<Player> players)
         {
-            //TODO Reflection
+            Size = size;
+            _gameSurround = new int[size, size];
+            _players = players.ToList();
 
-            _max = max;
-            _gameSurround = new int[max, max];
-
-            PlayerFactory playerFactory = new PlayerFactory(_gameSurround, _max);
-
-            _players.Add(playerFactory.Create<Jardik>(Colors.Red));
-            _players.Add(playerFactory.Create<VazbaPlayer>(Colors.Blue));
-            _players.Add(playerFactory.Create<Setal>(Colors.Aqua));
-            //_players.Add(playerFactory.Create<Randomer>(Colors.White));
+            foreach (Player player in players)
+            {
+                _gameSurround[player.Position.X, player.Position.Y] = player.Identificator;
+            }
         }
 
         public int[,] Move()
         {
-            foreach (Player player in _players.Where(p => p.State == PlayerState.Playing))
+            List<Player> livePlayers;
+
+            // necháme všechny přeživší odehrát svůj tah
+            livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
+            foreach (Player player in livePlayers)
             {
                 player.NextMove((int[,])_gameSurround.Clone());
+            }
 
-                //kolize s velikostí pole
-                if (player.Position.IsInCollission(_max))
+            // detekce kolize s okrajem pole
+            livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
+            foreach (Player player in livePlayers)
+            {
+                if (player.Position.IsInCollission(Size))
                 {
-                    player.State = PlayerState.CollisionWithTerrain;
-                    break;
-                }
-
-                //kolize s hráčem
-                if (_gameSurround[player.Position.X, player.Position.Y] != 0)
-                {
-                    player.State = PlayerState.CollisionWithPlayer;
-                    break;
-                }
-
-                //cross kolize
-                if (CrossCollision(player))
-                {
-                    player.State = PlayerState.CrossCollission;
-                    break;
-                }
-
-                //vlastní kolize v tahu
-                if (_players.Where(p => p.State == PlayerState.Playing).Any(p => player.Position.X == p.Position.X && player.Position.Y == p.Position.Y && p.Identificator != player.Identificator))
-                {
-                    player.State = PlayerState.OneMoveCollission;
-                    break;
-                }
-
-                //commit tahu
-                if (player.State == PlayerState.Playing)
-                {
-                    _gameSurround[player.Position.X, player.Position.Y] = player.Identificator;
+                    player.State = PlayerState.BoundaryCollision;
                 }
             }
 
-            FillUnreachableDots();
+            // detekce kolize do těla jiného hada
+            livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
+            foreach (Player player in livePlayers)
+            {
+                if (_gameSurround[player.Position.X, player.Position.Y] != 0)
+                {
+                    player.State = PlayerState.HeadToTailCollision;
+                }
+            }
 
+            // detekce snahy projet diagonálně skrz tělo jiného hada
+            livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
+            foreach (Player player in livePlayers)
+            {
+                if ((player.MyDirection == Direction.TopRight && (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0)) ||
+                    (player.MyDirection == Direction.BottomRight && (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0)) ||
+                    (player.MyDirection == Direction.BottomLeft && (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0)) ||
+                    (player.MyDirection == Direction.TopLeft && (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0)))
+                {
+                    player.State = PlayerState.HeadToTailCrossCollision;
+                }
+            }
+
+            // detekce srážky hlav dvou (a více) hadů
+            livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
+            var headToHeadCrashes = new List<Position>();
+            foreach (Player player in livePlayers)
+            {
+                if (livePlayers.Any(p => player.Position.X == p.Position.X && player.Position.Y == p.Position.Y && player.Identificator != p.Identificator))
+                {
+                    player.State = PlayerState.HeadToHeadCollision;
+                    headToHeadCrashes.Add(player.Position);
+                }
+            }
+            
+            // detekce diagonálního překřížení hlav dvou hadů
+            foreach (Player player in livePlayers)  // záměrně neupdatuju livePlayers
+            {
+                if ((player.MyDirection == Direction.TopRight && livePlayers.Any(p => p.MyDirection == Direction.TopLeft && player.Position.X == p.Position.X + 1 && player.Position.Y == p.Position.Y)) ||
+                    (player.MyDirection == Direction.TopLeft && livePlayers.Any(p => p.MyDirection == Direction.TopRight && player.Position.X == p.Position.X - 1 && player.Position.Y == p.Position.Y)) ||
+                    (player.MyDirection == Direction.BottomRight && livePlayers.Any(p => p.MyDirection == Direction.BottomLeft && player.Position.X == p.Position.X + 1 && player.Position.Y == p.Position.Y)) ||
+                    (player.MyDirection == Direction.BottomLeft && livePlayers.Any(p => p.MyDirection == Direction.BottomRight && player.Position.X == p.Position.X - 1 && player.Position.Y == p.Position.Y)) ||
+
+                    (player.MyDirection == Direction.TopRight && livePlayers.Any(p => p.MyDirection == Direction.BottomRight && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y - 1)) ||
+                    (player.MyDirection == Direction.BottomRight && livePlayers.Any(p => p.MyDirection == Direction.TopRight && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y + 1)) ||
+                    (player.MyDirection == Direction.TopLeft && livePlayers.Any(p => p.MyDirection == Direction.BottomLeft && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y - 1)) ||
+                    (player.MyDirection == Direction.BottomLeft && livePlayers.Any(p => p.MyDirection == Direction.TopLeft && player.Position.X == p.Position.X && player.Position.Y == p.Position.Y + 1)))
+                {
+                    if (player.State == PlayerState.Playing)
+                        player.State = PlayerState.HeadToHeadCrossCollision;
+                }
+            }
+
+            // zapsání tahu přeživších hadů do hracího pole
+            livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
+            foreach (Player player in livePlayers)
+            {
+                _gameSurround[player.Position.X, player.Position.Y] = player.Identificator;
+            }
+
+            // zapsání tahu přeživších hadů do hracího pole
+            foreach (Position position in headToHeadCrashes)
+            {
+                _gameSurround[position.X, position.Y] = -2;
+            }
 
             if (!_players.Any(p => p.State == PlayerState.Playing))
             {
@@ -87,41 +126,15 @@ namespace SnakeDeathmatch.Game
             return _gameSurround;
         }
 
-        private bool CrossCollision(Player player)
-        {
-            switch (player.MyDirection)
-            {
-                case Direction.TopRight: return (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0);
-                case Direction.BottomRight: return (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X - 1, player.Position.Y] != 0);
-                case Direction.BottomLeft: return (_gameSurround[player.Position.X, player.Position.Y - 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0);
-                case Direction.TopLeft: return (_gameSurround[player.Position.X, player.Position.Y + 1] != 0) && (_gameSurround[player.Position.X + 1, player.Position.Y] != 0);
-            }
-            return false;
-        }
-
         private bool IsEmpty(int x, int y)
         {
-            return (x >= 0 && x < _max && y >= 0 && y < _max) && (_gameSurround[x, y] == 0);
-        }
-
-        private void FillUnreachableDots()
-        {
-            for (int y = 0; y < _max; y++)
-            {
-                for (int x = 0; x < _max; x++)
-                {
-                    if (IsEmpty(x, y) && !IsEmpty(x, y-1) && !IsEmpty(x-1, y) && !IsEmpty(x, y+1) && !IsEmpty(x+1, y))
-                    {
-                        _gameSurround[x, y] = -1;
-                    }
-                }
-            }
+            return (x >= 0 && x < Size && y >= 0 && y < Size) && (_gameSurround[x, y] == 0);
         }
 
         public Color GetColorForIdentificator(int i)
         {
-            if (i == -1)
-                return Color.FromRgb(64, 64, 64);
+            if (i == HeadToHeadCrash)
+                return Colors.Magenta;
 
             var player = _players.Where(p => p.Identificator == i).FirstOrDefault();
             if (player != null)
@@ -136,7 +149,7 @@ namespace SnakeDeathmatch.Game
             var stringBuilder = new StringBuilder();
             foreach (Player player in _players.OrderByDescending(p => p.Score))
             {
-                stringBuilder.AppendLine(String.Format("Jméno {0}, Skóre {1}, Smrt {2}, Barva {3}", player.Name, player.Score, player.State, player.Color));
+                stringBuilder.AppendLine(String.Format("Jméno: {0}, Skóre: {1}, Smrt: {2}, Barva: {3}", player.Name, player.Score, player.State, player.Color));
             }
             return stringBuilder.ToString();
         }
