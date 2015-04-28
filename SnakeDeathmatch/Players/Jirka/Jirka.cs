@@ -1,82 +1,66 @@
 using System.Collections.Generic;
 using SnakeDeathmatch.Interface;
+using System;
 
 namespace SnakeDeathmatch.Players.Jirka
 {
-    public class Jirka : IPlayerBehavior
+    public class Jirka : IPlayerBehaviour2
     {
-        private int identificator;
-        private int boardSize;
+        private int identifier;
+        private int playgroundSize;
         private Direction direction;
-        private GamePoint actualPosition;
-        private bool firstRun;
+        private Vector position;
 
         private int[,] localBoard;
 
         public Jirka()
         {
-            firstRun = true;
         }
 
-        public void Init(int direction, int identificator)
+        public void Init(int identifier, int playgroundSize, int x, int y, Direction direction)
         {
-            this.direction = (Direction)direction;
-            this.identificator = identificator;
+            this.identifier = identifier;
+            this.playgroundSize = playgroundSize;
+            this.position = new Vector(x, y);
+            this.direction = direction;
         }
 
-        public int NextMove(int[,] gameSurrond)
+        public Move GetNextMove(int[,] playground)
         {
-            if (firstRun)
+            Vector nextPosition = position + direction;
+
+            if (nextPosition.WithinRangeBoth(0, playgroundSize) && playground[nextPosition.X, nextPosition.Y] == 0)
             {
-                boardSize = gameSurrond.GetUpperBound(0) + 1;
-                actualPosition = FindMySelf(gameSurrond);
-                firstRun = false;
-            }
-
-            return 2;
-        }
-
-        public string MyName()
-        {
-            return "Jirka";
-        }
-
-
-        private GamePoint FindMySelf(int[,] gameSurrond)
-        {
-            for (int i = 0; i < boardSize; i++)
-                for (int j = 0; j < boardSize; j++)
+                Vector nextPosition2 = nextPosition + direction;
+                if (nextPosition2.WithinRangeBoth(0, playgroundSize) && playground[nextPosition2.X, nextPosition2.Y] == 0)
                 {
-                    if (gameSurrond[i, j] == identificator)
-                    {
-                        return new GamePoint(i, j);
-                    }
+                    position = nextPosition;
+                    return Move.Straight;
                 }
-            return new GamePoint(0, 0);
+                nextPosition2 = nextPosition + direction.TurnLeft();
+                if (nextPosition2.WithinRangeBoth(0, playgroundSize) && playground[nextPosition2.X, nextPosition2.Y] == 0)
+                {
+                    position += direction.TurnLeft();
+                    return Move.Left;
+                }
+                position += direction.TurnRight();
+                return Move.Right;
+            }
+            nextPosition = position + direction.TurnLeft();
+            if (nextPosition.WithinRangeBoth(0, playgroundSize) && playground[nextPosition.X, nextPosition.Y] == 0)
+            {
+                position = nextPosition;
+                return Move.Left;
+            }
+            nextPosition = position + direction.TurnRight();
+            position = nextPosition;
+            return Move.Right;
         }
-    }
 
-
-    internal class GamePoint
-    {
-        public GamePoint()
+        public string Name
         {
+            get { return "Jirka"; }
         }
-
-        public GamePoint(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public int X { get; set; }
-        public int Y { get; set; }
-
-        public bool IsMatch(int x, int y)
-        {
-            return ((X == x) && (Y == y));
-        }
-
     }
 
 }
