@@ -6,23 +6,6 @@ namespace SnakeDeathmatch.Players.Vazba
 {
     public class VazbaPlayer : IPlayerBehaviour2
     {
-        public struct Point
-        {
-            public Point(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
-
-            public int X;
-            public int Y;
-
-            public override string ToString()
-            {
-                return string.Format("[{0},{1}]", X, Y);
-            }
-        }
-
         public class Next
         {
             public Direction LeftDirection;
@@ -41,20 +24,22 @@ namespace SnakeDeathmatch.Players.Vazba
 
         public string Name { get { return "Vazba"; } }
 
-        public void Init(int identifier, int playgroundSize, int x, int y, Direction direction)
+        public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)
         {
-            _myId = identifier;
+            _id = playerId;
             _p = new Point(x, y);
-            _direction = direction;
+            _dir = direction;
             _size = playgroundSize;
         }
 
-        private int _myId;
-        private Direction _direction;
+        private int _id;
         private Point _p = new Point(-1, -1);
+        private Direction _dir;
+        private Snakes _snakes = new Snakes();
         private int _size;
         private int[,] _playground;
         private int wtf = 18;
+        private int step = 0;
 
         private int GetValue(Point p)
         {
@@ -166,18 +151,19 @@ namespace SnakeDeathmatch.Players.Vazba
         public Move GetNextMove(int[,] playground)
         {
             _playground = playground;
-
+            _snakes.Update(playground);
+            
             Move move = DoNextMove();
 
-            _direction = GetNextDirection(_direction, move);
-            _p = GetNextPoint(_p, _direction);
+            _dir = GetNextDirection(_dir, move);
+            _p = GetNextPoint(_p, _dir);
 
             return move;
         }
 
         private Move DoNextMove()
         {
-            Next next = GetNextMove(_p, _direction);
+            Next next = GetNextMove(_p, _dir);
 
             int depthLeft = IsEmpty(next.LeftPoint) && !IsCrossCollision(next.LeftPoint, next.LeftDirection) ? GetEmptyDepth(next.LeftPoint, next.LeftDirection, 0) : 0;
             int depthStraight = (depthLeft != wtf) && IsEmpty(next.StraightPoint) && !IsCrossCollision(next.StraightPoint, next.StraightDirection) ? GetEmptyDepth(next.StraightPoint, next.StraightDirection, 0) : 0;
@@ -190,7 +176,7 @@ namespace SnakeDeathmatch.Players.Vazba
 
         private int GetEmptyDepth(Point p, Direction direction, int level)
         {
-            _playground[p.X, p.Y] = _myId;
+            _playground[p.X, p.Y] = _id;
 
             if (level >= wtf)
                 return wtf;

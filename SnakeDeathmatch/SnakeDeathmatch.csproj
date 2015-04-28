@@ -57,7 +57,8 @@
     </ApplicationDefinition>
     <Compile Include="Game\PlayerBehaviourWrapper.cs" />
     <Compile Include="Interface\IPlayerBehaviour2.cs" />
-    <Compile Include="Interface\PlayerIdentifier.cs" />
+    <Compile Include="Interface\PlayerId.cs" />
+    <Compile Include="Players\Fools\StraightPlayer.cs" />
     <Compile Include="Players\Jardik\CollissionHelper.cs" />
     <Compile Include="Players\Jardik\Direction.cs" />
     <Compile Include="Players\Jardik\Move.cs" />
@@ -72,6 +73,9 @@
     <Compile Include="Players\SoulEater\OtherPlayerInfo.cs" />
     <Compile Include="Players\SoulEater\Point.cs" />
     <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />
+    <Compile Include="Players\Vazba\Point.cs" />
+    <Compile Include="Players\Vazba\Snake.cs" />
+    <Compile Include="Players\Vazba\Snakes.cs" />
     <Compile Include="Tests\CollisionTests.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -93,16 +97,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Players\Fools\BottomLeftPlayer.cs" />
-    <Compile Include="Players\Fools\BottomPlayer.cs" />
-    <Compile Include="Players\Fools\BottomRightPlayer.cs" />
     <Compile Include="Players\Fools\FoolHelper.cs" />
-    <Compile Include="Players\Fools\LeftPlayer.cs" />
     <Compile Include="Players\Fools\RandomPlayer.cs" />
-    <Compile Include="Players\Fools\RightPlayer.cs" />
-    <Compile Include="Players\Fools\TopLeftPlayer.cs" />
-    <Compile Include="Players\Fools\TopPlayer.cs" />
-    <Compile Include="Players\Fools\TopRightPlayer.cs" />
     <Compile Include="Players\Jardik\Jardik.cs" />
     <Compile Include="Players\Vazba\VazbaPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

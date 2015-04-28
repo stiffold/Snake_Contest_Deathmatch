@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Media;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Game;
+using SnakeDeathmatch.Players.Fools;
 
 namespace SnakeDeathmatch.Tests
 {
@@ -14,8 +15,13 @@ namespace SnakeDeathmatch.Tests
         
         private int _nextIdentifier = 1;
 
+        private Player CreateStraightPlayer(Color color, int x, int y, Direction direction)
+        {
+            return new Player(new Position(x, y), direction, color, new StraightPlayer(direction), _nextIdentifier++, PlaygroundSize);
+        }
+
         private Player CreatePlayer<TPlayerBehaviour>(Color color, int x, int y, Direction direction)
-            where TPlayerBehaviour : IPlayerBehavior, new()
+            where TPlayerBehaviour : IPlayerBehaviour2, new()
         {
             return new Player(new Position(x, y), direction, color, new TPlayerBehaviour(), _nextIdentifier++, PlaygroundSize);
         }
@@ -25,7 +31,7 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopPlayer>(Colors.Red, 4, 3, Direction.Top),
+                CreateStraightPlayer(Colors.Red, 4, 3, Direction.Top),
             });
         }
 
@@ -33,7 +39,7 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomPlayer>(Colors.Red, 5, 6, Direction.Bottom),
+                CreateStraightPlayer(Colors.Red, 5, 6, Direction.Bottom),
             });
         }
 
@@ -41,7 +47,7 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.LeftPlayer>(Colors.Red, 3, 4, Direction.Left),
+                CreateStraightPlayer(Colors.Red, 3, 4, Direction.Left),
             });
         }
 
@@ -49,7 +55,7 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.RightPlayer>(Colors.Red, 6, 5, Direction.Right),
+                CreateStraightPlayer(Colors.Red, 6, 5, Direction.Right),
             });
         }
 
@@ -57,8 +63,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopPlayer>(Colors.Red, 6, 7, Direction.Top),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.RightPlayer>(Colors.Lime, 4, 3, Direction.Right),
+                CreateStraightPlayer(Colors.Red, 6, 7, Direction.Top),
+                CreateStraightPlayer(Colors.Lime, 4, 3, Direction.Right),
             });
         }
 
@@ -66,8 +72,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomPlayer>(Colors.Red, 6, 3, Direction.Bottom),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.RightPlayer>(Colors.Lime, 4, 7, Direction.Right),
+                CreateStraightPlayer(Colors.Red, 6, 3, Direction.Bottom),
+                CreateStraightPlayer(Colors.Lime, 4, 7, Direction.Right),
             });
         }
 
@@ -75,8 +81,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.RightPlayer>(Colors.Red, 2, 6, Direction.Right),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomPlayer>(Colors.Lime, 6, 4, Direction.Bottom),
+                CreateStraightPlayer(Colors.Red, 2, 6, Direction.Right),
+                CreateStraightPlayer(Colors.Lime, 6, 4, Direction.Bottom),
             });
         }
 
@@ -84,8 +90,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.LeftPlayer>(Colors.Red, 7, 6, Direction.Left),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomPlayer>(Colors.Lime, 3, 4, Direction.Bottom),
+                CreateStraightPlayer(Colors.Red, 7, 6, Direction.Left),
+                CreateStraightPlayer(Colors.Lime, 3, 4, Direction.Bottom),
             });
         }
 
@@ -93,8 +99,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.RightPlayer>(Colors.Red, 2, 4, Direction.Right),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.LeftPlayer>(Colors.DarkRed, 7, 4, Direction.Left),
+                CreateStraightPlayer(Colors.Red, 2, 4, Direction.Right),
+                CreateStraightPlayer(Colors.DarkRed, 7, 4, Direction.Left),
             });
         }
 
@@ -102,8 +108,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomPlayer>(Colors.Red, 4, 2, Direction.Bottom),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopPlayer>(Colors.DarkRed, 4, 7, Direction.Top),
+                CreateStraightPlayer(Colors.Red, 4, 2, Direction.Bottom),
+                CreateStraightPlayer(Colors.DarkRed, 4, 7, Direction.Top),
             });
         }
 
@@ -111,8 +117,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopRightPlayer>(Colors.Red, 1, 7, Direction.TopRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopLeftPlayer>(Colors.Lime, 6, 5, Direction.TopLeft),
+                CreateStraightPlayer(Colors.Red, 1, 7, Direction.TopRight),
+                CreateStraightPlayer(Colors.Lime, 6, 5, Direction.TopLeft),
             });
         }
 
@@ -120,8 +126,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopLeftPlayer>(Colors.Red, 6, 7, Direction.TopLeft),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopRightPlayer>(Colors.Lime, 1, 5, Direction.TopRight),
+                CreateStraightPlayer(Colors.Red, 6, 7, Direction.TopLeft),
+                CreateStraightPlayer(Colors.Lime, 1, 5, Direction.TopRight),
             });
         }
 
@@ -129,8 +135,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomRightPlayer>(Colors.Red, 1, 2, Direction.BottomRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomLeftPlayer>(Colors.Lime, 6, 4, Direction.BottomLeft),
+                CreateStraightPlayer(Colors.Red, 1, 2, Direction.BottomRight),
+                CreateStraightPlayer(Colors.Lime, 6, 4, Direction.BottomLeft),
             });
         }
 
@@ -138,8 +144,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomLeftPlayer>(Colors.Red, 6, 2, Direction.BottomLeft),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomRightPlayer>(Colors.Lime, 1, 4, Direction.BottomRight),
+                CreateStraightPlayer(Colors.Red, 6, 2, Direction.BottomLeft),
+                CreateStraightPlayer(Colors.Lime, 1, 4, Direction.BottomRight),
             });
         }
 
@@ -147,8 +153,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopRightPlayer>(Colors.Red, 3, 6, Direction.TopRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopLeftPlayer>(Colors.DarkRed, 7, 6, Direction.TopLeft),
+                CreateStraightPlayer(Colors.Red, 3, 6, Direction.TopRight),
+                CreateStraightPlayer(Colors.DarkRed, 7, 6, Direction.TopLeft),
             });
         }
 
@@ -156,8 +162,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomRightPlayer>(Colors.Red, 3, 4, Direction.BottomRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomLeftPlayer>(Colors.DarkRed, 7, 4, Direction.BottomLeft),
+                CreateStraightPlayer(Colors.Red, 3, 4, Direction.BottomRight),
+                CreateStraightPlayer(Colors.DarkRed, 7, 4, Direction.BottomLeft),
             });
         }
 
@@ -165,8 +171,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopLeftPlayer>(Colors.Red, 6, 7, Direction.TopLeft),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomLeftPlayer>(Colors.DarkRed, 6, 3, Direction.BottomLeft),
+                CreateStraightPlayer(Colors.Red, 6, 7, Direction.TopLeft),
+                CreateStraightPlayer(Colors.DarkRed, 6, 3, Direction.BottomLeft),
             });
         }
 
@@ -174,8 +180,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopRightPlayer>(Colors.Red, 4, 7, Direction.TopRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomRightPlayer>(Colors.DarkRed, 4, 3, Direction.BottomRight),
+                CreateStraightPlayer(Colors.Red, 4, 7, Direction.TopRight),
+                CreateStraightPlayer(Colors.DarkRed, 4, 3, Direction.BottomRight),
             });
         }
 
@@ -183,8 +189,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopRightPlayer>(Colors.Red, 2, 6, Direction.TopRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopLeftPlayer>(Colors.DarkRed, 7, 6, Direction.TopLeft),
+                CreateStraightPlayer(Colors.Red, 2, 6, Direction.TopRight),
+                CreateStraightPlayer(Colors.DarkRed, 7, 6, Direction.TopLeft),
             });
         }
 
@@ -192,8 +198,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomRightPlayer>(Colors.Red, 2, 4, Direction.BottomRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomLeftPlayer>(Colors.DarkRed, 7, 4, Direction.BottomLeft),
+                CreateStraightPlayer(Colors.Red, 2, 4, Direction.BottomRight),
+                CreateStraightPlayer(Colors.DarkRed, 7, 4, Direction.BottomLeft),
             });
         }
 
@@ -201,8 +207,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopLeftPlayer>(Colors.Red, 6, 7, Direction.TopLeft),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomLeftPlayer>(Colors.DarkRed, 6, 2, Direction.BottomLeft),
+                CreateStraightPlayer(Colors.Red, 6, 7, Direction.TopLeft),
+                CreateStraightPlayer(Colors.DarkRed, 6, 2, Direction.BottomLeft),
             });
         }
 
@@ -210,8 +216,8 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopRightPlayer>(Colors.Red, 4, 7, Direction.TopRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomRightPlayer>(Colors.DarkRed, 4, 2, Direction.BottomRight),
+                CreateStraightPlayer(Colors.Red, 4, 7, Direction.TopRight),
+                CreateStraightPlayer(Colors.DarkRed, 4, 2, Direction.BottomRight),
             });
         }
 
@@ -219,9 +225,9 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomLeftPlayer>(Colors.Red, 6, 3, Direction.BottomLeft),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopLeftPlayer>(Colors.DarkRed, 6, 7, Direction.TopLeft),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopRightPlayer>(Colors.Orange, 3, 7, Direction.TopRight),
+                CreateStraightPlayer(Colors.Red, 6, 3, Direction.BottomLeft),
+                CreateStraightPlayer(Colors.DarkRed, 6, 7, Direction.TopLeft),
+                CreateStraightPlayer(Colors.Orange, 3, 7, Direction.TopRight),
             });
         }
 
@@ -229,14 +235,14 @@ namespace SnakeDeathmatch.Tests
         {
             return new GameEngine(PlaygroundSize, new[]
             {
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomRightPlayer>(Colors.Red, 1, 1, Direction.BottomRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomPlayer>(Colors.DarkRed, 4, 1, Direction.Bottom),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.BottomLeftPlayer>(Colors.Orange, 7, 1, Direction.BottomLeft),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.LeftPlayer>(Colors.DarkOrange, 7, 4, Direction.Left),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopLeftPlayer>(Colors.Pink, 7, 7, Direction.TopLeft),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopPlayer>(Colors.LightPink, 4, 7, Direction.Top),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.TopRightPlayer>(Colors.MediumVioletRed, 1, 7, Direction.TopRight),
-                CreatePlayer<SnakeDeathmatch.Players.Fools.RightPlayer>(Colors.Violet, 1, 4, Direction.Right)
+                CreateStraightPlayer(Colors.Red, 1, 1, Direction.BottomRight),
+                CreateStraightPlayer(Colors.DarkRed, 4, 1, Direction.Bottom),
+                CreateStraightPlayer(Colors.Orange, 7, 1, Direction.BottomLeft),
+                CreateStraightPlayer(Colors.DarkOrange, 7, 4, Direction.Left),
+                CreateStraightPlayer(Colors.Pink, 7, 7, Direction.TopLeft),
+                CreateStraightPlayer(Colors.LightPink, 4, 7, Direction.Top),
+                CreateStraightPlayer(Colors.MediumVioletRed, 1, 7, Direction.TopRight),
+                CreateStraightPlayer(Colors.Violet, 1, 4, Direction.Right)
             });
         }
     }

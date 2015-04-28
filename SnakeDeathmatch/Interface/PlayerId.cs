@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SnakeDeathmatch.Interface
 {
-    public enum PlayerIdentifier
+    public enum PlayerId
     {
         Jardik = 1,
         Vazba = 2,

@@ -57,11 +57,11 @@ namespace SnakeDeathmatch
         private IEnumerable<Player> GetPlayers()
         {
             var players = new List<Player>();
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Red, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerIdentifier.Jardik, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), (int)PlayerIdentifier.Vazba, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerIdentifier.Setal, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.White, new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior(), (int)PlayerIdentifier.SoulEater, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerIdentifier.Jirka, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Red, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.White, new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
             return players;
         }
 
