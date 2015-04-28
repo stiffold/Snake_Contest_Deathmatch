@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using SnakeDeathmatch.Interface;
+using System;
 
 namespace SnakeDeathmatch.Players.Jirka
 {
@@ -26,43 +27,40 @@ namespace SnakeDeathmatch.Players.Jirka
 
         public Move GetNextMove(int[,] playground)
         {
+            Vector nextPosition = position + direction;
 
-
-
-            return Move.Straight;
+            if (nextPosition.WithinRangeBoth(0, playgroundSize) && playground[nextPosition.X, nextPosition.Y] == 0)
+            {
+                Vector nextPosition2 = nextPosition + direction;
+                if (nextPosition2.WithinRangeBoth(0, playgroundSize) && playground[nextPosition2.X, nextPosition2.Y] == 0)
+                {
+                    position = nextPosition;
+                    return Move.Straight;
+                }
+                nextPosition2 = nextPosition + direction.TurnLeft();
+                if (nextPosition2.WithinRangeBoth(0, playgroundSize) && playground[nextPosition2.X, nextPosition2.Y] == 0)
+                {
+                    position += direction.TurnLeft();
+                    return Move.Left;
+                }
+                position += direction.TurnRight();
+                return Move.Right;
+            }
+            nextPosition = position + direction.TurnLeft();
+            if (nextPosition.WithinRangeBoth(0, playgroundSize) && playground[nextPosition.X, nextPosition.Y] == 0)
+            {
+                position = nextPosition;
+                return Move.Left;
+            }
+            nextPosition = position + direction.TurnRight();
+            position = nextPosition;
+            return Move.Right;
         }
 
         public string Name
         {
             get { return "Jirka"; }
         }
-    }
-
-
-    internal struct Vector
-    {
-        public Vector(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public int X;
-        public int Y;
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is Vector))
-                return false;
-            Vector other = (Vector)obj;
-            return X == other.X && Y == other.Y;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
     }
 
 }
