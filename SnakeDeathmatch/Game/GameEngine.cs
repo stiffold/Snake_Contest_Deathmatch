@@ -112,7 +112,7 @@ namespace SnakeDeathmatch.Game
                 _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
             }
 
-            // zapsání tahu přeživších hadů do hracího pole
+            // zapsání tahu společného pole kolize hlav
             foreach (Position position in headToHeadCrashes)
             {
                 _gameSurround[position.X, position.Y] = -2;

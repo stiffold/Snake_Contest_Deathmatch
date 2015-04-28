@@ -63,7 +63,7 @@
     <Compile Include="Players\Jardik\Move.cs" />
     <Compile Include="Players\Jardik\Planner.cs" />
     <Compile Include="Players\Jardik\Position.cs" />
-    <Compile Include="Players\Jardik\StepSetType.cs" />
+    <Compile Include="Players\Jardik\WalkSetType.cs" />
     <Compile Include="Players\Jardik\Walk.cs" />
     <Compile Include="Players\Jardik\WalkSetBase.cs" />
     <Compile Include="Players\Jardik\WalkSets.cs" />

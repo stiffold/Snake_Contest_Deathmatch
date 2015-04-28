@@ -80,6 +80,9 @@ namespace SnakeDeathmatch.Players.Jardik
         }
 
         protected abstract void DoEvaluate(Position position, Direction direction, int[,] gameSurrond);
+
+        public abstract WalkSetType Type();
+
         public int Score { get { return _score; } }
 
         public List<Walk> Walks

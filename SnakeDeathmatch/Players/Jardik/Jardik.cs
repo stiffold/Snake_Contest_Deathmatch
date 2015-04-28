@@ -30,22 +30,25 @@ namespace SnakeDeathmatch.Players.Jardik
         public int NextMove(int[,] gameSurrond)
         {
             _round++;
-            InitOrUpdateMyState(gameSurrond);
+            InitMyState(gameSurrond);
 
             if (!_myPlanedMoves.Any(s=>s.Round ==_round))
             {
                 _myPlanedMoves.AddRange(_planner.GetBestWalksToMe(_round, _myPosition, _myDirection, gameSurrond));
+                //_myPlanedMoves.AddRange(_planner.GetVariant(_round, _myPosition, _myDirection, gameSurrond,WalkSetType.Quaker));
             }
             else
             {
-                _planner.RepairSteps(_round,_myPlanedMoves, gameSurrond);
+                _planner.RepairSteps(_round+1,_myPlanedMoves, gameSurrond);
             }
 
                       
             var nextMove = _myPlanedMoves.Where(x => x.Round == _round).FirstOrDefault();
             if (nextMove!=null)
             {
-                return (int)nextMove.Move;
+                _myDirection = _myDirection.GetNewDirection(nextMove.Move);
+                _myPosition.Update(_myDirection);
+                return (int)nextMove.Move;                
             }
             else
             {
@@ -53,7 +56,7 @@ namespace SnakeDeathmatch.Players.Jardik
             }
         }
 
-        private void InitOrUpdateMyState(int[,] gameSurrond)
+        private void InitMyState(int[,] gameSurrond)
         {
             if (_round == 1)
             {
@@ -72,12 +75,7 @@ namespace SnakeDeathmatch.Players.Jardik
                     }
                 }
             }
-            else
-            {
-                var lastMove = _myPlanedMoves.OrderByDescending(m => m.Round).First();
-                _myPosition = lastMove.Position;
-                _myDirection = lastMove.Direction;
-            }            
+        
         }
 
         public string MyName()
