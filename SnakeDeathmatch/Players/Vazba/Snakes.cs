@@ -46,8 +46,9 @@ namespace SnakeDeathmatch.Players.Vazba
                     if (_oldPlayground[x, y] == 0 && _newPlayground[x, y] != 0)
                     {
                         int snakeId = _newPlayground[x, y];
-                        Snake snake = this.Single(s => s.Id == snakeId);
-                        snake.UpdatePosition(new Point(x, y));
+                        Snake snake = this.SingleOrDefault(s => s.Id == snakeId);
+                        if (snake != null)
+                            snake.UpdatePosition(new Point(x, y));
                     }
                 }
             }
