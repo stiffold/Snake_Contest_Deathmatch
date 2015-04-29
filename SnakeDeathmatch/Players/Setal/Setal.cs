@@ -11,10 +11,11 @@ namespace SnakeDeathmatch.Players.Setal
         private byte[,] _possibilities;
         private int _identificator;
         private int _size;
+        private int _roundCounter;
+
         private Direction _direction;
         private GamePoint _actualPosition;
-        private Stack<Step> _steps;
-
+        private List<GamePoint> _possibleHeads;
 
         public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)
         {
@@ -22,16 +23,17 @@ namespace SnakeDeathmatch.Players.Setal
             _direction = direction;
             _identificator = playerId;
             _actualPosition = new GamePoint(x, y);
-            _steps = new Stack<Step>();
             _possibilities = new byte[_size, _size];
+            _roundCounter = 0;
         }
 
         public Move GetNextMove(int[,] playground)
         {
+            _roundCounter++;
+
             EvaluateGame(playground);
 
-            _steps.Clear();
-
+            SafeMap safePath = new SafeMap(10, _actualPosition, _direction, _possibilities, _size);
             safePath.Start();
 
             if (safePath.Steps.Count > 0)
@@ -39,10 +41,11 @@ namespace SnakeDeathmatch.Players.Setal
                 var next = safePath.Steps.Pop();
                 _actualPosition = next.FinalPosition;
                 _direction = Service.UpdateDirection(_direction, next.Move);
-                //MessageBox.Show("Jdu:" + next.Move);
+               // MessageBox.Show("Jdu:" + next.Move);
                 return next.Move;
             }
 
+            DangerMap dangerPath = new DangerMap(4, _actualPosition, _direction, _possibilities, _size);
             dangerPath.Start();
 
             if (dangerPath.Steps.Count > 0)
@@ -61,7 +64,6 @@ namespace SnakeDeathmatch.Players.Setal
         {
             get { return "Setal(Šimík)"; }
         }
-
 
         private void EvaluateGame(int[,] gameSurrond)
         {
@@ -87,6 +89,35 @@ namespace SnakeDeathmatch.Players.Setal
                     }
                 }
             throw new InvalidOperationException("Nejsem na herní ploše!");
+        }
+
+        private bool IsTaken(int x, int y)
+        {
+            //overit jeslti vubec bod existuje
+            if (x < 0 || x >= _size || y < 0 || y >= _size)
+                return true;
+
+            //overit jestli bod je obsazeny
+            return _possibilities[x, y] == 2;
+        }
+
+        private bool IsHead(int x, int y)
+        {
+            //Jestli je obsazene proveruji sousedni pole
+            if (IsTaken(x, y))
+            {
+                if ((IsTaken(x - 1, y)) || (IsTaken(x + 1, y)) || (IsTaken(x, y - 1)) || (IsTaken(x, y + 1)))
+                {
+                    return false;
+                }
+                if ((IsTaken(x - 1, y + 1)) || (IsTaken(x + 1, y + 1)) || (IsTaken(x - 1, y - 1)) || (IsTaken(x + 1, y - 1)))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            else return false;
         }
 
         /// <summary>
@@ -116,6 +147,31 @@ namespace SnakeDeathmatch.Players.Setal
                 if (_possibilities[x, y + 1] == 0)
                     _possibilities[x, y + 1] = 1;
             }
+
+            if ((x - 1 > 0) && (y - 1 > 0))
+            {
+                if (_possibilities[x - 1, y - 1] == 0)
+                    _possibilities[x - 1, y - 1] = 1;
+            }
+
+            if ((x + 1 < _size) && (y - 1 > 0))
+            {
+                if (_possibilities[x + 1, y - 1] == 0)
+                    _possibilities[x + 1, y - 1] = 1;
+            }
+
+            if ((x + 1 < _size) && (y + 1 < _size))
+            {
+                if (_possibilities[x + 1, y + 1] == 0)
+                    _possibilities[x + 1, y + 1] = 1;
+            }
+
+            if ((x - 1 > 0) && (y + 1 < _size))
+            {
+                if (_possibilities[x - 1, y + 1] == 0)
+                    _possibilities[x - 1, y + 1] = 1;
+            }
+
         }
 
     }
@@ -183,7 +239,6 @@ namespace SnakeDeathmatch.Players.Setal
             Count(_start, _origin, 0, new List<GamePoint>());
         }
 
-
         /// <summary>
         /// Vraci bezpecne kroky v mape
         /// </summary>
@@ -234,7 +289,6 @@ namespace SnakeDeathmatch.Players.Setal
                 case Direction.TopRight:
                     if (!IsTaken(gamePoint.X, gamePoint.Y - 1))
                     {
-
                         var move = Move.Left;
                         var dir = Service.UpdateDirection(direction, Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
@@ -248,7 +302,7 @@ namespace SnakeDeathmatch.Players.Setal
                         var move = Move.Straight;
                         var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
-                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point, safe));
                     }
@@ -479,25 +533,6 @@ namespace SnakeDeathmatch.Players.Setal
             return _possibilities[x, y] == 2;
         }
 
-        private bool IsHead(int x, int y)
-        {
-            //Jestli je obsazene proveruji sousedni pole
-            if (IsTaken(x, y))
-            {
-                if ((IsTaken(x - 1, y)) || (IsTaken(x + 1, y)) || (IsTaken(x, y - 1)) || (IsTaken(x, y + 1)))
-                {
-                    return false;
-                }
-                if ((IsTaken(x - 1, y + 1)) || (IsTaken(x + 1, y + 1)) || (IsTaken(x - 1, y - 1)) || (IsTaken(x + 1, y - 1)))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            else return false;
-        }
-
         private bool Count(GamePoint point, Direction direction, int depth, List<GamePoint> occupied)
         {
             if (depth == _depth)
@@ -522,7 +557,6 @@ namespace SnakeDeathmatch.Players.Setal
 
             return false;
         }
-
     }
 
     //Plan B
@@ -552,7 +586,7 @@ namespace SnakeDeathmatch.Players.Setal
 
 
         /// <summary>
-        /// Vraci kroky v mapï¿½
+        /// Vraci kroky v mape
         /// </summary>
         public int Fitness
         {
@@ -834,25 +868,6 @@ namespace SnakeDeathmatch.Players.Setal
 
             //overit jestli bod je obsazeny
             return _possibilities[x, y] == 2;
-        }
-
-        private bool IsHead(int x, int y)
-        {
-            //Jestli je obsazene proveruji sousedni pole
-            if (IsTaken(x, y))
-            {
-                if ((IsTaken(x - 1, y)) || (IsTaken(x + 1, y)) || (IsTaken(x, y - 1)) || (IsTaken(x, y + 1)))
-                {
-                    return false;
-                }
-                if ((IsTaken(x - 1, y + 1)) || (IsTaken(x + 1, y + 1)) || (IsTaken(x - 1, y - 1)) || (IsTaken(x + 1, y - 1)))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            else return false;
         }
 
         private bool Count(GamePoint point, Direction direction, int depth, List<GamePoint> occupied)
