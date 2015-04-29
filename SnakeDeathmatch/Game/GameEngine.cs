@@ -11,7 +11,7 @@ namespace SnakeDeathmatch.Game
 {
     public class GameEngine
     {
-        public const int HeadToHeadCrash = -1;
+        public const int HeadToHeadCrashId = -1;
 
         private List<Player> _players = new List<Player>();
         private int[,] _gameSurround;
@@ -115,7 +115,7 @@ namespace SnakeDeathmatch.Game
             // zapsání tahu společného pole kolize hlav
             foreach (Position position in headToHeadCrashes)
             {
-                _gameSurround[position.X, position.Y] = -2;
+                _gameSurround[position.X, position.Y] = HeadToHeadCrashId;
             }
 
             if (!_players.Any(p => p.State == PlayerState.Playing))
@@ -131,12 +131,12 @@ namespace SnakeDeathmatch.Game
             return (x >= 0 && x < Size && y >= 0 && y < Size) && (_gameSurround[x, y] == 0);
         }
 
-        public Color GetColorForIdentificator(int i)
+        public Color GetColorForIdentificator(int id)
         {
-            if (i == HeadToHeadCrash)
+            if (id == HeadToHeadCrashId)
                 return Colors.Magenta;
 
-            var player = _players.Where(p => p.Identifier == i).FirstOrDefault();
+            var player = _players.Where(p => p.Identifier == id).FirstOrDefault();
             if (player != null)
             {
                 return player.Color;
