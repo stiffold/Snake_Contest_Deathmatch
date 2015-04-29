@@ -13,8 +13,6 @@ namespace SnakeDeathmatch.Players.Setal
         private int _size;
         private Direction _direction;
         private GamePoint _actualPosition;
-        private bool _firstRun;
-        private int _depth = 6;
         private Stack<Step> _steps;
 
 
@@ -33,38 +31,29 @@ namespace SnakeDeathmatch.Players.Setal
             EvaluateGame(playground);
 
             _steps.Clear();
-            Count(_actualPosition, _direction, 0, new List<GamePoint>());
 
-            if (_steps.Count > 0)
+            safePath.Start();
+
+            if (safePath.Steps.Count > 0)
             {
-                var next = _steps.Pop();
+                var next = safePath.Steps.Pop();
                 _actualPosition = next.FinalPosition;
-                _direction = UpdateDirection(_direction, next.Move);
+                _direction = Service.UpdateDirection(_direction, next.Move);
                 //MessageBox.Show("Jdu:" + next.Move);
                 return next.Move;
             }
-            //Prioritizuj kroky ktere jsou bezpecne
-            //var steps = PossibleSteps(_direction, _actualPosition).OrderByDescending(x => x.IsSafe);
 
-            //foreach (var step in steps)
-            //{
-            //    //zkontroluj ze muzes tahnout i dalsi tah
-            //    var innerStep = PossibleSteps(step.FinalDirection, step.FinalPosition);
-            //    if (innerStep.Count >= 2)
-            //    {
-            //        foreach (var instep in innerStep)
-            //        {
-            //            var innStep = PossibleSteps(instep.FinalDirection, instep.FinalPosition);
-            //            if (innStep.Count > 1)
-            //            {
-            //                //rozhodl jsem se pro tah, aktualizuj polohu
-            //                _direction = UpdateDirection(_direction, step.Move);
-            //                _actualPosition = step.FinalPosition;
-            //                return (int)step.Move;
-            //            }
-            //        }
-            //    }
-            //}
+            dangerPath.Start();
+
+            if (dangerPath.Steps.Count > 0)
+            {
+                var next = dangerPath.Steps.Pop();
+                _actualPosition = next.FinalPosition;
+                _direction = Service.UpdateDirection(_direction, next.Move);
+                //MessageBox.Show("Jdu:" + next.Move);
+                return next.Move;
+            }
+
             return Move.Straight;
         }
 
@@ -129,6 +118,80 @@ namespace SnakeDeathmatch.Players.Setal
             }
         }
 
+    }
+
+    internal class GamePoint
+    {
+        public GamePoint()
+        {
+        }
+
+        public GamePoint(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public bool IsMatch(int x, int y)
+        {
+            return ((X == x) && (Y == y));
+        }
+
+    }
+
+    internal class Step
+    {
+        public Step(Move move, Direction finalDirection, GamePoint finalPosition, bool isSafe)
+        {
+            Move = move;
+            FinalDirection = finalDirection;
+            FinalPosition = finalPosition;
+            IsSafe = isSafe;
+        }
+
+        public Move Move { get; set; }
+        public Direction FinalDirection { get; set; }
+        public GamePoint FinalPosition { get; set; }
+        public bool IsSafe { get; set; }
+    }
+
+    //STD cestovani
+    internal class SafeMap
+    {
+        public Stack<Step> Steps { get; set; }
+        private byte[,] _possibilities;
+        private int _depth;
+        private readonly int _size;
+        private readonly GamePoint _start;
+        private readonly Direction _origin;
+
+        public SafeMap(int depth, GamePoint start, Direction origin, byte[,] possibilities, int size)
+        {
+            _depth = depth;
+            _size = size;
+            _possibilities = possibilities;
+            _start = start;
+            _origin = origin;
+            Steps = new Stack<Step>();
+        }
+
+        public void Start()
+        {
+            Count(_start, _origin, 0, new List<GamePoint>());
+        }
+
+
+        /// <summary>
+        /// Vraci bezpecne kroky v mape
+        /// </summary>
+        public int Fitness
+        {
+            get { return Steps.Where(x => x.IsSafe).Count(); }
+        }
+
         private List<Step> PossibleSteps(Direction direction, GamePoint gamePoint)
         {
             var steps = new List<Step>();
@@ -140,7 +203,7 @@ namespace SnakeDeathmatch.Players.Setal
                     {
 
                         var move = Move.Left;
-                        var dir = UpdateDirection(direction, Move.Left);
+                        var dir = Service.UpdateDirection(direction, Move.Left);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
 
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
@@ -150,7 +213,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X, gamePoint.Y - 1))
                     {
                         var move = Move.Straight;
-                        var dir = UpdateDirection(direction, Move.Straight);
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
                         var safe = IsViable(gamePoint.X, gamePoint.Y - 1);
 
@@ -160,7 +223,7 @@ namespace SnakeDeathmatch.Players.Setal
                     {
 
                         var move = Move.Right;
-                        var dir = UpdateDirection(direction, Move.Right);
+                        var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
                         var safe = IsViable(gamePoint.X + 1, gamePoint.Y - 1);
 
@@ -173,7 +236,7 @@ namespace SnakeDeathmatch.Players.Setal
                     {
 
                         var move = Move.Left;
-                        var dir = UpdateDirection(direction, Move.Left);
+                        var dir = Service.UpdateDirection(direction, Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
                         var safe = IsViable(gamePoint.X, gamePoint.Y - 1);
 
@@ -183,7 +246,7 @@ namespace SnakeDeathmatch.Players.Setal
                     {
 
                         var move = Move.Straight;
-                        var dir = UpdateDirection(direction, Move.Straight);
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
 
@@ -192,7 +255,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X + 1, gamePoint.Y))
                     {
                         var move = Move.Right;
-                        var dir = UpdateDirection(direction, Move.Right);
+                        var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
                         var safe = IsViable(gamePoint.X + 1, gamePoint.Y);
 
@@ -204,7 +267,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X + 1, gamePoint.Y - 1))
                     {
                         var move = Move.Left;
-                        var dir = UpdateDirection(direction, Move.Left);
+                        var dir = Service.UpdateDirection(direction, Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
                         var safe = IsViable(gamePoint.X + 1, gamePoint.Y - 1);
 
@@ -214,7 +277,7 @@ namespace SnakeDeathmatch.Players.Setal
                     {
 
                         var move = Move.Straight;
-                        var dir = UpdateDirection(direction, Move.Straight);
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
                         var safe = IsViable(gamePoint.X + 1, gamePoint.Y);
 
@@ -223,7 +286,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X + 1, gamePoint.Y + 1))
                     {
                         var move = Move.Right;
-                        var dir = UpdateDirection(direction, Move.Right);
+                        var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X + 1, gamePoint.Y + 1);
 
@@ -235,7 +298,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X + 1, gamePoint.Y))
                     {
                         var move = Move.Left;
-                        var dir = UpdateDirection(direction, Move.Left);
+                        var dir = Service.UpdateDirection(direction, Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
                         var safe = IsViable(gamePoint.X + 1, gamePoint.Y);
 
@@ -245,7 +308,7 @@ namespace SnakeDeathmatch.Players.Setal
                     {
 
                         var move = Move.Straight;
-                        var dir = UpdateDirection(direction, Move.Straight);
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X + 1, gamePoint.Y + 1);
 
@@ -254,7 +317,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = Move.Right;
-                        var dir = UpdateDirection(direction, Move.Right);
+                        var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X, gamePoint.Y + 1);
 
@@ -266,7 +329,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X + 1, gamePoint.Y + 1))
                     {
                         var move = Move.Left;
-                        var dir = UpdateDirection(direction, Move.Left);
+                        var dir = Service.UpdateDirection(direction, Move.Left);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X + 1, gamePoint.Y + 1);
 
@@ -275,7 +338,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = Move.Straight;
-                        var dir = UpdateDirection(direction, Move.Straight);
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X, gamePoint.Y + 1);
 
@@ -284,7 +347,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = Move.Right;
-                        var dir = UpdateDirection(direction, Move.Right);
+                        var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y + 1);
 
@@ -296,7 +359,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X, gamePoint.Y + 1))
                     {
                         var move = Move.Left;
-                        var dir = UpdateDirection(direction, Move.Left);
+                        var dir = Service.UpdateDirection(direction, Move.Left);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X, gamePoint.Y + 1);
 
@@ -305,7 +368,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = Move.Straight;
-                        var dir = UpdateDirection(direction, Move.Straight);
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y + 1);
 
@@ -314,7 +377,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = Move.Right;
-                        var dir = UpdateDirection(direction, Move.Right);
+                        var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y);
 
@@ -326,7 +389,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X - 1, gamePoint.Y + 1))
                     {
                         var move = Move.Left;
-                        var dir = UpdateDirection(direction, Move.Left);
+                        var dir = Service.UpdateDirection(direction, Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y + 1);
 
@@ -335,7 +398,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = Move.Straight;
-                        var dir = UpdateDirection(direction, Move.Straight);
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y);
 
@@ -344,7 +407,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X - 1, gamePoint.Y - 1))
                     {
                         var move = Move.Right;
-                        var dir = UpdateDirection(direction, Move.Right);
+                        var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
 
@@ -356,7 +419,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X - 1, gamePoint.Y))
                     {
                         var move = Move.Left;
-                        var dir = UpdateDirection(direction, Move.Left);
+                        var dir = Service.UpdateDirection(direction, Move.Left);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y);
 
@@ -365,7 +428,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X - 1, gamePoint.Y - 1))
                     {
                         var move = Move.Straight;
-                        var dir = UpdateDirection(direction, Move.Straight);
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
                         var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
 
@@ -374,7 +437,7 @@ namespace SnakeDeathmatch.Players.Setal
                     if (!IsTaken(gamePoint.X, gamePoint.Y - 1))
                     {
                         var move = Move.Right;
-                        var dir = UpdateDirection(direction, Move.Right);
+                        var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
                         var safe = IsViable(gamePoint.X, gamePoint.Y - 1);
 
@@ -452,7 +515,7 @@ namespace SnakeDeathmatch.Players.Setal
 
                 if (Count(step.FinalPosition, step.FinalDirection, depth + 1, copy))
                 {
-                    _steps.Push(step);
+                    Steps.Push(step);
                     return true;
                 }
             }
@@ -460,7 +523,368 @@ namespace SnakeDeathmatch.Players.Setal
             return false;
         }
 
-        private Direction UpdateDirection(Direction direction, Move move)
+    }
+
+    //Plan B
+    internal class DangerMap
+    {
+        public Stack<Step> Steps { get; set; }
+        private byte[,] _possibilities;
+        private int _depth;
+        private readonly int _size;
+        private readonly GamePoint _start;
+        private readonly Direction _origin;
+
+        public DangerMap(int depth, GamePoint start, Direction origin, byte[,] possibilities, int size)
+        {
+            _depth = depth;
+            _size = size;
+            _possibilities = possibilities;
+            _start = start;
+            _origin = origin;
+            Steps = new Stack<Step>();
+        }
+
+        public void Start()
+        {
+            Count(_start, _origin, 0, new List<GamePoint>());
+        }
+
+
+        /// <summary>
+        /// Vraci kroky v map�
+        /// </summary>
+        public int Fitness
+        {
+            get { return Steps.Count(); }
+        }
+
+        private List<Step> PossibleSteps(Direction direction, GamePoint gamePoint)
+        {
+            var steps = new List<Step>();
+
+            switch (direction)
+            {
+                case Direction.Top:
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y - 1))
+                    {
+
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
+
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X, gamePoint.Y - 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y - 1))
+                    {
+
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    break;
+
+                case Direction.TopRight:
+                    if (!IsTaken(gamePoint.X, gamePoint.Y - 1))
+                    {
+
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y - 1))
+                    {
+
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    break;
+
+                case Direction.Right:
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y))
+                    {
+
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    break;
+
+                case Direction.BottomRight:
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y + 1))
+                    {
+
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X, gamePoint.Y + 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    break;
+
+                case Direction.Bottom:
+                    if (!IsTaken(gamePoint.X + 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X, gamePoint.Y + 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    break;
+
+                case Direction.BottomLeft:
+                    if (!IsTaken(gamePoint.X, gamePoint.Y + 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    break;
+
+                case Direction.Left:
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    break;
+
+                case Direction.TopLeft:
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X - 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    if (!IsTaken(gamePoint.X, gamePoint.Y - 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, safe));
+                    }
+                    break;
+            }
+
+            return steps;
+        }
+
+        private bool IsViable(int x, int y)
+        {
+            //overit jeslti vubec bod existuje
+            if (x < 0 || x >= _size || y < 0 || y >= _size)
+                return false;
+
+            //overit jestli je bod dostupny
+            return _possibilities[x, y] == 0;
+        }
+
+        private bool IsTaken(int x, int y)
+        {
+            //overit jeslti vubec bod existuje
+            if (x < 0 || x >= _size || y < 0 || y >= _size)
+                return true;
+
+            //overit jestli bod je obsazeny
+            return _possibilities[x, y] == 2;
+        }
+
+        private bool IsHead(int x, int y)
+        {
+            //Jestli je obsazene proveruji sousedni pole
+            if (IsTaken(x, y))
+            {
+                if ((IsTaken(x - 1, y)) || (IsTaken(x + 1, y)) || (IsTaken(x, y - 1)) || (IsTaken(x, y + 1)))
+                {
+                    return false;
+                }
+                if ((IsTaken(x - 1, y + 1)) || (IsTaken(x + 1, y + 1)) || (IsTaken(x - 1, y - 1)) || (IsTaken(x + 1, y - 1)))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            else return false;
+        }
+
+        private bool Count(GamePoint point, Direction direction, int depth, List<GamePoint> occupied)
+        {
+            if (depth == _depth)
+                return true;
+
+            var steps = PossibleSteps(direction, point);
+
+            foreach (var step in steps)
+            {
+                if (occupied.Contains(step.FinalPosition))
+                    continue;
+
+                List<GamePoint> copy = occupied.Select(x => new GamePoint(x.X, x.Y)).ToList();
+                copy.Add(step.FinalPosition);
+
+                if (Count(step.FinalPosition, step.FinalDirection, depth + 1, copy))
+                {
+                    Steps.Push(step);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+    }
+
+    internal static class Service
+    {
+        public static Direction UpdateDirection(Direction direction, Move move)
         {
             switch (move)
             {
@@ -493,83 +917,7 @@ namespace SnakeDeathmatch.Players.Setal
             return direction;
         }
 
-    }
 
-    internal class GamePoint
-    {
-        public GamePoint()
-        {
-        }
-
-        public GamePoint(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public int X { get; set; }
-        public int Y { get; set; }
-
-        public bool IsMatch(int x, int y)
-        {
-            return ((X == x) && (Y == y));
-        }
-
-    }
-
-    internal class Step
-    {
-        public Step(Move move, Direction finalDirection, GamePoint finalPosition, bool isSafe)
-        {
-            Move = move;
-            FinalDirection = finalDirection;
-            FinalPosition = finalPosition;
-            IsSafe = isSafe;
-        }
-
-        public Move Move { get; set; }
-        public Direction FinalDirection { get; set; }
-        public GamePoint FinalPosition { get; set; }
-        public bool IsSafe { get; set; }
-    }
-
-    internal class Map
-    {
-        public List<Step> Steps { get; set; }
-        private int _depth;
-        private readonly GamePoint _start;
-        private readonly Direction _origin;
-
-        public Map(int depth, GamePoint start, Direction origin)
-        {
-            _depth = depth;
-            _start = start;
-            _origin = origin;
-            Steps = new List<Step>();
-        }
-
-        //public void Start()
-        //{
-
-        //}
-
-        //private bool Count (GamePoint point, Direction direction, int depth)
-        //{
-        //    if (depth == _depth)
-        //        return true;
-
-
-
-        //}
-
-
-        /// <summary>
-        /// Vraci bezpecne kroky v mape
-        /// </summary>
-        public int Fitness
-        {
-            get { return Steps.Where(x => x.IsSafe).Count(); }
-        }
 
     }
 
