@@ -6,7 +6,7 @@ using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.Setal
 {
-    public class Setal : IPlayerBehavior
+    public class Setal : IPlayerBehaviour2
     {
         private byte[,] _possibilities;
         private int _identificator;
@@ -17,29 +17,20 @@ namespace SnakeDeathmatch.Players.Setal
         private int _depth = 6;
         private Stack<Step> _steps;
 
-        public Setal()
-        {
-            _firstRun = true;
-        }
 
-        public void Init(int direction, int identificator)
+        public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)
         {
-            _direction = (Direction)direction;
-            _identificator = identificator;
+            _size = playgroundSize;
+            _direction = direction;
+            _identificator = playerId;
+            _actualPosition = new GamePoint(x, y);
             _steps = new Stack<Step>();
+            _possibilities = new byte[_size, _size];
         }
 
-        public int NextMove(int[,] gameSurrond)
+        public Move GetNextMove(int[,] playground)
         {
-            if (_firstRun)
-            {
-                _size = gameSurrond.GetUpperBound(0) + 1;
-                _possibilities = new byte[_size, _size];
-                _actualPosition = FindMySelf(gameSurrond);
-                _firstRun = false;
-            }
-
-            EvaluateGame(gameSurrond);
+            EvaluateGame(playground);
 
             _steps.Clear();
             Count(_actualPosition, _direction, 0, new List<GamePoint>());
@@ -50,7 +41,7 @@ namespace SnakeDeathmatch.Players.Setal
                 _actualPosition = next.FinalPosition;
                 _direction = UpdateDirection(_direction, next.Move);
                 //MessageBox.Show("Jdu:" + next.Move);
-                return (int)next.Move;
+                return next.Move;
             }
             //Prioritizuj kroky ktere jsou bezpecne
             //var steps = PossibleSteps(_direction, _actualPosition).OrderByDescending(x => x.IsSafe);
@@ -74,13 +65,14 @@ namespace SnakeDeathmatch.Players.Setal
             //        }
             //    }
             //}
-            return 2;
+            return Move.Straight;
         }
 
-        public string MyName()
+        public string Name
         {
-            return "Setal(Šimík)";
+            get { return "Setal(Šimík)"; }
         }
+
 
         private void EvaluateGame(int[,] gameSurrond)
         {
@@ -94,6 +86,7 @@ namespace SnakeDeathmatch.Players.Setal
                 }
         }
 
+        [Obsolete]
         private GamePoint FindMySelf(int[,] gameSurrond)
         {
             for (int i = 0; i < _size; i++)
@@ -447,11 +440,11 @@ namespace SnakeDeathmatch.Players.Setal
             if (depth == _depth)
                 return true;
 
-            var steps = PossibleSteps(direction, point).Where(x=>x.IsSafe);
+            var steps = PossibleSteps(direction, point).Where(x => x.IsSafe);
 
             foreach (var step in steps)
             {
-                if(occupied.Contains(step.FinalPosition))
+                if (occupied.Contains(step.FinalPosition))
                     continue;
 
                 List<GamePoint> copy = occupied.Select(x => new GamePoint(x.X, x.Y)).ToList();
@@ -499,6 +492,7 @@ namespace SnakeDeathmatch.Players.Setal
 
             return direction;
         }
+
     }
 
     internal class GamePoint
