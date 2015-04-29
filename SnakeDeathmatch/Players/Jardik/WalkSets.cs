@@ -174,6 +174,83 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
+
+    class Safer : WalkSetBase
+    {
+        List<Move> _moveList = new List<Move> { Move.Straight, Move.Left, Move.Right };
+        public Safer(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public override WalkSetType Type()
+        {
+            return WalkSetType.Safer;
+        }
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            _walks = MoveIt(_round, 9, position, direction, gameSurrond);
+        }
+
+        private List<Walk> MoveIt(int round,int moves, Position position, Direction direction, int[,] gameSurrond)
+        {
+            foreach (Move move in _moveList)
+            {
+                List<Walk> walks = GetWalks(round,position.Copy(), direction, move, moves, gameSurrond, new List<Walk>());
+                if (walks.Count >= moves-1 )
+                    return walks;
+            }
+
+            return MoveIt(round,--moves,position.Copy(),direction, gameSurrond);
+        }
+
+        private List<Walk> GetWalks(int round,Position position, Direction currentDirection, Move move, int moves, int[,] gameSurrond, List<Walk> walks)
+        {
+            moves--;
+            if (moves <= 0) return walks;
+            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            
+
+            Direction simulateDirection = currentDirection;
+            Position simulatePosition = position.Copy();
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+
+            if (_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            {
+                moves = 0;
+                return new List<Walk>();
+            }
+            simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+            var myWalk = new Walk(round + walks.Count, move, simulateDirection, simulatePosition);
+            walks.Add(myWalk);
+
+            
+            List<Walk> straightWalks = GetWalks(round, simulatePosition, simulateDirection, Move.Straight, moves, simulateGameSurround, walks.ToList());
+            List<Walk> leftWalks = GetWalks(round, simulatePosition, simulateDirection, Move.Left, moves, simulateGameSurround, walks.ToList());
+            List<Walk> rightWalks = GetWalks(round, simulatePosition, simulateDirection, Move.Right, moves, simulateGameSurround, walks.ToList());            
+            
+
+            int max = new[]{leftWalks.Count, rightWalks.Count, straightWalks.Count}.Max();
+
+            if (straightWalks.Count == max) 
+            {
+                straightWalks.Add(myWalk);
+                return straightWalks;
+            }
+            if (leftWalks.Count == max)
+            {
+                leftWalks.Add(myWalk);
+                return leftWalks;
+            }
+            if (rightWalks.Count == max)
+            {
+                rightWalks.Add(myWalk);
+                return rightWalks;
+            }
+                                
+            
+            return new List<Walk>();
+        }
+    }
+    
+
     class RollRight : WalkSetBase
     {
         public RollRight(CollissionHelper ch, int myId) : base(ch, myId, true) { }

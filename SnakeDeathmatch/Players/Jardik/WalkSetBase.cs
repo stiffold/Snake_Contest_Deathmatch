@@ -89,11 +89,16 @@ namespace SnakeDeathmatch.Players.Jardik
         {
             get
             {
+                if (Type() == WalkSetType.Safer)
+                {
+                    return _walks;
+                }
+                
                 if (_isPro)
                 {
                     return _walks.OrderBy(x => x.Round).Take(_walks.Count - 2).ToList();
                 }
-                return _walks.OrderBy(x => x.Round).Take(10).ToList();
+                return _walks.OrderBy(x => x.Round).Take(2).ToList();
             }
         }
     }

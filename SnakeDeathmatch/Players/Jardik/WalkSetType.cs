@@ -24,6 +24,7 @@ namespace SnakeDeathmatch.Players.Jardik
         SquareRight,
         Snaker,
         Quaker,
-        FunkyTerror
+        FunkyTerror,
+        Safer
     }
 }
