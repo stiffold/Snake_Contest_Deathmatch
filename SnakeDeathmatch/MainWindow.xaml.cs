@@ -26,6 +26,9 @@ namespace SnakeDeathmatch
         private string _lastTestName;
         private Random _random = new Random();
 
+        private int[,] _previousArray;
+        private bool _shouldClearWindowAfterRestartGame;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -85,7 +88,7 @@ namespace SnakeDeathmatch
                 _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / Speed);
                 _lastTestName = null;
             }
-
+            _shouldClearWindowAfterRestartGame = true;
             _timer.Start();
         }
 
@@ -139,9 +142,26 @@ namespace SnakeDeathmatch
             }
         }
 
+        private bool IsPointInArrayChanged(int[,] array, int x, int y)
+        {
+
+            if (_previousArray == null)
+                return true;
+
+            if (array[x, y] != _previousArray[x, y])
+                return true;
+
+            return false;
+        }
+
         private void RenderArray(int[,] array)
         {
-            _canvas.Children.Clear();
+            if (_shouldClearWindowAfterRestartGame)
+            {
+                _canvas.Children.Clear();
+                _previousArray = null;
+                _shouldClearWindowAfterRestartGame = false;
+            }
 
             int dotSizeInPixels = PlaygroundSizeInPixels / _gameEngine.Size;
 
@@ -149,12 +169,14 @@ namespace SnakeDeathmatch
             {
                 for (int y = 0; y <= array.GetUpperBound(1); y++)
                 {
-                    if (array[x, y] != 0)
+                    if (array[x, y] != 0 && IsPointInArrayChanged(array, x, y))
                     {
                         AddRectangle(x, y, _gameEngine.GetColorForIdentificator(array[x, y]), dotSizeInPixels);
                     }
                 }
             }
+            _previousArray = (int[,])array.Clone();
+
         }
 
         private void AddRectangle(int x, int y, Color color, int dotSizeInPixels)

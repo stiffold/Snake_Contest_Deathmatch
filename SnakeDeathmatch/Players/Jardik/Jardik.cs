@@ -7,12 +7,10 @@ using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.Jardik
 {
-    public class Jardik : IPlayerBehavior
+    public class Jardik : IPlayerBehaviour2
     {
-        private Direction _myFirstDirection;
-
         Direction _myDirection;
-        Position _myPosition = new Position(1, 1);
+        Position _myPosition;
         Planner _planner;
 
         private int _myID;
@@ -20,18 +18,19 @@ namespace SnakeDeathmatch.Players.Jardik
         private int _max = 100;
 
         private List<Walk> _myPlanedMoves = new List<Walk>();
-        public void Init(int direction, int identificator)
+        public void Init(int identificator, int max, int x, int y, SnakeDeathmatch.Interface.Direction direction)
         {
-            _myFirstDirection = (Direction)direction;
+            _max = max;
+            _myDirection = (Direction)direction;
+            _myPosition = new Position(x, y);
             _myID = identificator;
-            _round = 0;            
+            _round = 0;
+            _planner = new Planner(_max, _myID);
         }
 
-        public int NextMove(int[,] gameSurrond)
+        public SnakeDeathmatch.Interface.Move GetNextMove(int[,] gameSurrond)
         {
             _round++;
-            InitMyState(gameSurrond);
-
             if (!_myPlanedMoves.Any(s=>s.Round ==_round))
             {
                 _myPlanedMoves.AddRange(_planner.GetBestWalksToMe(_round, _myPosition, _myDirection, gameSurrond));
@@ -48,40 +47,15 @@ namespace SnakeDeathmatch.Players.Jardik
             {
                 _myDirection = _myDirection.GetNewDirection(nextMove.Move);
                 _myPosition.Update(_myDirection);
-                return (int)nextMove.Move;                
+                return (SnakeDeathmatch.Interface.Move)nextMove.Move;                
             }
             else
             {
-                return (int)Move.Straight;
+                return (SnakeDeathmatch.Interface.Move)Move.Straight;
             }
         }
 
-        private void InitMyState(int[,] gameSurrond)
-        {
-            if (_round == 1)
-            {
-                _myDirection = _myFirstDirection;
-                _max = (int)Math.Sqrt(gameSurrond.Length);
-                _planner = new Planner(_max, _myID);
-
-                for (int x = 0; x < _max; x++)
-                {
-                    for (int y = 0; y < _max; y++)
-                    {
-                        if (gameSurrond[x, y] == _myID)
-                        {
-                            _myPosition = new Position(x, y);
-                        }
-                    }
-                }
-            }
-        
-        }
-
-        public string MyName()
-        {
-            return "Jardík";
-        }      
+        public string Name { get { return "Jardík"; } }
     }
 
        
