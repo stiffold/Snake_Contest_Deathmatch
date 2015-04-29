@@ -279,11 +279,11 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (_count > 5 && _count <= 7) move = Move.Right;
                 if (_count > 7 && _count <= 11) move = Move.Straight;
                 if (_count > 11 && _count <= 13) move = Move.Left;
-                if (_count > 13 && _count <= 15) move = Move.Straight;
-                if (_count > 15 && _count <= 17) move = Move.Left;
-                if (_count > 17 && _count <= 21) move = Move.Straight;
-                if (_count > 21 && _count <= 23) move = Move.Right;
-                if (_count > 23) _count = 1;
+                //if (_count > 13 && _count <= 15) move = Move.Straight;
+                if (_count > 13 && _count <= 15) move = Move.Left;
+                if (_count > 15 && _count <= 19) move = Move.Straight;
+                if (_count > 19 && _count <= 21) move = Move.Right;
+                if (_count > 21) _count = 1;
             }
         }
     }
@@ -368,6 +368,95 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (_count > 30 && _count <= 38) move = Move.Straight;
                 if (_count > 36 && _count <= 37) move = Move.Right;
                 if (_count > 37) move = Move.Straight;
+            }
+        }
+    }
+
+    class FunkyTerror : WalkSetBase
+    {
+        List<Tuple<int, Move>> leftMoves = new List<Tuple<int, Move>>();
+        List<Tuple<int, Move>> rightMoves = new List<Tuple<int, Move>>();
+
+        public FunkyTerror(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+
+            leftMoves.Add(new Tuple<int, Move>(1, Move.Left));
+            leftMoves.Add(new Tuple<int, Move>(2, Move.Left));
+            leftMoves.Add(new Tuple<int, Move>(3, Move.Straight));
+            leftMoves.Add(new Tuple<int, Move>(4, Move.Right));
+            leftMoves.Add(new Tuple<int, Move>(5, Move.Right));
+            leftMoves.Add(new Tuple<int, Move>(6, Move.Right));
+            leftMoves.Add(new Tuple<int, Move>(7, Move.Right));
+            leftMoves.Add(new Tuple<int, Move>(8, Move.Straight));
+            leftMoves.Add(new Tuple<int, Move>(9, Move.Straight));
+            leftMoves.Add(new Tuple<int, Move>(10, Move.Straight));
+            leftMoves.Add(new Tuple<int, Move>(11, Move.Right));
+            leftMoves.Add(new Tuple<int, Move>(12, Move.Right));
+
+            rightMoves.Add(new Tuple<int, Move>(1, Move.Right));
+            rightMoves.Add(new Tuple<int, Move>(2, Move.Right));                      
+            rightMoves.Add(new Tuple<int, Move>(3, Move.Straight));
+            rightMoves.Add(new Tuple<int, Move>(4, Move.Left));
+            rightMoves.Add(new Tuple<int, Move>(5, Move.Left));
+            rightMoves.Add(new Tuple<int, Move>(6, Move.Left));
+            rightMoves.Add(new Tuple<int, Move>(7, Move.Left));
+            rightMoves.Add(new Tuple<int, Move>(8, Move.Straight));
+            rightMoves.Add(new Tuple<int, Move>(9, Move.Straight));
+            rightMoves.Add(new Tuple<int, Move>(10, Move.Straight));
+            rightMoves.Add(new Tuple<int, Move>(11, Move.Left));
+            rightMoves.Add(new Tuple<int, Move>(12, Move.Left));
+        }
+        public override WalkSetType Type()
+        {
+            return WalkSetType.FunkyTerror;
+        }
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            _score = 1;
+            int _straightMoves = 5;
+            int _moves = 1;
+            bool left = true;
+            bool doStraightmoves = false;
+            Move move = Move.Straight;
+            Direction simulateDirection = direction;
+            Position simulatePosition = position.Copy();
+            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            {
+                if (doStraightmoves)
+                {
+                    move = Move.Straight;
+                }
+                else
+                {
+                    move = left ? leftMoves.Where(l => l.Item1 == _moves).First().Item2 : rightMoves.Where(l => l.Item1 == _moves).First().Item2;
+                }
+                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                _moves++;
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+                if (_moves > 12 && doStraightmoves == false)
+                {
+                    doStraightmoves = true;
+                    _moves = 1;
+                }
+
+                if (_moves > _straightMoves && doStraightmoves == true)
+                {
+                    doStraightmoves = false;
+                    _straightMoves += 6;
+                    left = !left;
+                    _moves = 1;
+                }
             }
         }
     }

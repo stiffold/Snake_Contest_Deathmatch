@@ -24,23 +24,12 @@ namespace SnakeDeathmatch.Players.Jardik
 
         bool CrossColision(Direction direction, int[,] gameSurround, Position position)
         {
-            if (position.X <= 0 || position.Y <= 0 || position.X >= _max - 1 || position.Y >= _max - 1)
-            {
-                return false;
-            }
+            if (position.X <= 0 || position.Y <= 0 || position.X >= _max - 1 || position.Y >= _max - 1) return false;
 
-            switch (direction)
-            {
-                case Direction.TopRight: return (gameSurround[position.X, position.Y + 1] != 0) && (gameSurround[position.X - 1, position.Y] != 0);
-
-                case Direction.BottomRight: return (gameSurround[position.X, position.Y - 1] != 0) && (gameSurround[position.X - 1, position.Y] != 0);
-
-                case Direction.BottomLeft: return (gameSurround[position.X, position.Y - 1] != 0) && (gameSurround[position.X + 1, position.Y] != 0);
-
-                case Direction.TopLeft: return (gameSurround[position.X, position.Y + 1] != 0) && (gameSurround[position.X + 1, position.Y] != 0);
-            }
-
-            return false;
+            return (direction == Direction.TopRight && (gameSurround[position.X, position.Y + 1] != 0) && (gameSurround[position.X - 1, position.Y] != 0)) ||
+                    (direction == Direction.BottomRight && (gameSurround[position.X, position.Y - 1] != 0) && (gameSurround[position.X - 1, position.Y] != 0)) ||
+                    (direction == Direction.BottomLeft && (gameSurround[position.X, position.Y - 1] != 0) && (gameSurround[position.X + 1, position.Y] != 0)) ||
+                    (direction == Direction.TopLeft && (gameSurround[position.X, position.Y + 1] != 0) && (gameSurround[position.X + 1, position.Y] != 0));
         }
     }
 }

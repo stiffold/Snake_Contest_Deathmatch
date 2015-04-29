@@ -32,6 +32,7 @@ namespace SnakeDeathmatch.Players.Jardik
             _walkSetsPro.Add(new SquareLeft(_ch, _myId));
             _walkSetsPro.Add(new Snaker(_ch, _myId));
             _walkSetsPro.Add(new Quaker(_ch, _myId));
+            _walkSetsPro.Add(new FunkyTerror(_ch, _myId));
 
 
         }
@@ -55,6 +56,11 @@ namespace SnakeDeathmatch.Players.Jardik
             foreach (var walkSet in _walkSetsPro)
             {
                 walkSet.Evaluate(round, position, direction, gameSurround);
+            }
+            var funky = _walkSetsPro.Where(x => x.Type() == WalkSetType.FunkyTerror).FirstOrDefault();
+            if (funky.Score > 30)
+            {
+                return funky.Walks;
             }
             var randomWalkSet = _walkSetsPro[rnd.Next(_walkSetsPro.Count)];
             if (randomWalkSet.Score > 30)
