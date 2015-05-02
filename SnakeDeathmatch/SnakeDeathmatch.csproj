@@ -59,6 +59,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Game\PlayerBehaviourWrapper.cs" />
+    <Compile Include="Game\RecordLine.cs" />
     <Compile Include="Interface\IPlayerBehaviour2.cs" />
     <Compile Include="Interface\PlayerId.cs" />
     <Compile Include="Players\Fools\StraightPlayer.cs" />
@@ -82,6 +83,12 @@
     <Compile Include="Players\Vazba\Snake.cs" />
     <Compile Include="Players\Vazba\Snakes.cs" />
     <Compile Include="Tests\CollisionTests.cs" />
+    <Compile Include="Views\EndGameDialog.xaml.cs">
+      <DependentUpon>EndGameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OpenReplayDialog.xaml.cs">
+      <DependentUpon>OpenReplayDialog.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +107,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\EndGameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OpenReplayDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Players\Fools\FoolHelper.cs" />
