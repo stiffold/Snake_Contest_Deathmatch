@@ -35,8 +35,8 @@ namespace SnakeDeathmatch
         private int[,] _previousArray;
         private bool _shouldClearWindowAfterRestartGame;
 
-        EndGameDialog _dialog = new EndGameDialog();
-        OpenReplayDialog _opendialog = new OpenReplayDialog();
+        EndGameDialog _endDialog = new EndGameDialog();
+        OpenReplayDialog _openDialog = new OpenReplayDialog();
         List<RecordLine> _records = new List<RecordLine>();
         int _round = 1;
         int _replayStep = 1;
@@ -60,13 +60,13 @@ namespace SnakeDeathmatch
             _timer.Tick += UpdateGameSurround;
             _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / Speed);
 
-            _dialog.Title = Title;
-            _dialog.btnYes.Focus();
-            _dialog.btnYes.Click += (s, n) => { Restart(); };
-            _dialog.btnSave.Click += (s, n) => { Save(); };
-            _dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            _endDialog.Title = Title;
+            _endDialog.btnYes.Focus();
+            _endDialog.btnYes.Click += (s, n) => { Restart(); };
+            _endDialog.btnSave.Click += (s, n) => { Save(); };
+            _endDialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
 
-            _opendialog.btnOpen.Click += (s, n) => { Open(); };
+            _openDialog.btnOpen.Click += (s, n) => { Open(); };
 
             //Restart();
         }
@@ -94,7 +94,7 @@ namespace SnakeDeathmatch
 
         private void Save()
         {
-            if (String.IsNullOrEmpty(_dialog.txtFileName.Text)) 
+            if (String.IsNullOrEmpty(_endDialog.txtFileName.Text)) 
             {
                 MessageBox.Show("Název souboru musí být vyplněn!");
                 return;
@@ -102,7 +102,7 @@ namespace SnakeDeathmatch
 
             //generate csv
             string path = Environment.CurrentDirectory;
-            string filename = String.Format("{0}\\{1:MMddyyyy}{2}.csv", path, DateTime.Now, _dialog.txtFileName.Text);
+            string filename = String.Format("{0}\\{1:MMddyyyy}{2}.csv", path, DateTime.Now, _endDialog.txtFileName.Text);
 
             if (!File.Exists(filename))
             {
@@ -173,7 +173,7 @@ namespace SnakeDeathmatch
             }
 
             MessageBox.Show(filename +" uploadován :-)");
-            _dialog.txtFileName.Text = null;
+            _endDialog.txtFileName.Text = null;
         }
 
         private void Restart()
@@ -256,9 +256,9 @@ namespace SnakeDeathmatch
             else
             {
                 _timer.Stop();
-                _dialog.lblResult.Content = _gameEngine.ScoreMessage();
-                _dialog.lblRestart.Content = _isShowingTests ? "Spustit další test?" : "Spustit další deathmatch?";
-                _dialog.ShowDialog();
+                _endDialog.lblResult.Content = _gameEngine.ScoreMessage();
+                _endDialog.lblRestart.Content = _isShowingTests ? "Spustit další test?" : "Spustit další deathmatch?";
+                _endDialog.ShowDialog();
                 _isGameActive = false;
             }
         }
@@ -317,6 +317,7 @@ namespace SnakeDeathmatch
             else
             {
                 _replayTimer.Stop();
+
                 var result = _records.Where(x=>x.Name != "-1").GroupBy(x => x.Name).OrderByDescending(s=>s.Max(l => l.Round)).Select(g => g.Key.ToString() +" "+ g.Max(y => y.Round).ToString());
                 string message = "";
                 foreach (var r in result)
@@ -378,13 +379,13 @@ namespace SnakeDeathmatch
             reader.Close();
             response.Close();
 
-            _opendialog.lstFiles.Items.Clear();
+            _openDialog.lstFiles.Items.Clear();
 
             foreach (var f in files.Where(x=>x.Contains(".csv")))
             {
-                _opendialog.lstFiles.Items.Add(f);
+                _openDialog.lstFiles.Items.Add(f);
             }
-            _opendialog.Show();            
+            _openDialog.Show();            
         }
 
         private void Replay()
@@ -404,7 +405,7 @@ namespace SnakeDeathmatch
 
         private void LoadReplay()
         {
-            string fileName = _opendialog.lstFiles.SelectedItem.ToString();
+            string fileName = _openDialog.lstFiles.SelectedItem.ToString();
             List<string> records = new List<string>();
             WebClient request = new WebClient();
             string url = "ftp://"+_ftpServerIP + fileName;
