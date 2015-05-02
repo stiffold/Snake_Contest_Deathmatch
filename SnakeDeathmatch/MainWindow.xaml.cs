@@ -60,6 +60,9 @@ namespace SnakeDeathmatch
             _timer.Tick += UpdateGameSurround;
             _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / Speed);
 
+            _replayTimer.Tick += RenderReplayArray;
+            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / Speed);
+
             _endDialog.Title = Title;
             _endDialog.btnYes.Focus();
             _endDialog.btnYes.Click += (s, n) => { Restart(); };
@@ -67,7 +70,6 @@ namespace SnakeDeathmatch
             _endDialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
 
             _openDialog.btnOpen.Click += (s, n) => { Open(); };
-
             //Restart();
         }
 
@@ -442,8 +444,6 @@ namespace SnakeDeathmatch
         {
             _replayStep = 1;
             _canvas.Children.Clear();
-            _replayTimer.Tick += RenderReplayArray;
-            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / Speed);
             _replayTimer.Start();
         }
 
