@@ -32,8 +32,9 @@ namespace SnakeDeathmatch.Players.Setal
             _roundCounter++;
 
             EvaluateGame(playground);
+            Move preferMove = Move.Left;
 
-            SafeMap safePath = new SafeMap(10, _actualPosition, _direction, _possibilities, _size);
+            SafeMap safePath = new SafeMap(15, _actualPosition, _direction, preferMove, _possibilities, _size);
             safePath.Start();
 
             if (safePath.Steps.Count > 0)
@@ -41,9 +42,10 @@ namespace SnakeDeathmatch.Players.Setal
                 var next = safePath.Steps.Pop();
                 _actualPosition = next.FinalPosition;
                 _direction = Service.UpdateDirection(_direction, next.Move);
-               // MessageBox.Show("Jdu:" + next.Move);
+                // MessageBox.Show("Jdu:" + next.Move);
                 return next.Move;
             }
+
 
             DangerMap dangerPath = new DangerMap(4, _actualPosition, _direction, _possibilities, _size);
             dangerPath.Start();
@@ -70,9 +72,9 @@ namespace SnakeDeathmatch.Players.Setal
             for (int i = 0; i < _size; i++)
                 for (int j = 0; j < _size; j++)
                 {
-                    if ((gameSurrond[i, j] != 0) && (!_actualPosition.IsMatch(i, j)))
+                    if ((gameSurrond[i, j] != 0))
                     {
-                        MarkPoint(i, j);
+                        MarkPoint(i, j, (gameSurrond[i, j] != _identificator));
                     }
                 }
         }
@@ -91,41 +93,25 @@ namespace SnakeDeathmatch.Players.Setal
             throw new InvalidOperationException("Nejsem na herní ploše!");
         }
 
-        private bool IsTaken(int x, int y)
+        private bool IsTakenByEnemy(int[,] playground, int x, int y)
         {
             //overit jeslti vubec bod existuje
             if (x < 0 || x >= _size || y < 0 || y >= _size)
-                return true;
+                return false;
 
             //overit jestli bod je obsazeny
-            return _possibilities[x, y] == 2;
-        }
-
-        private bool IsHead(int x, int y)
-        {
-            //Jestli je obsazene proveruji sousedni pole
-            if (IsTaken(x, y))
-            {
-                if ((IsTaken(x - 1, y)) || (IsTaken(x + 1, y)) || (IsTaken(x, y - 1)) || (IsTaken(x, y + 1)))
-                {
-                    return false;
-                }
-                if ((IsTaken(x - 1, y + 1)) || (IsTaken(x + 1, y + 1)) || (IsTaken(x - 1, y - 1)) || (IsTaken(x + 1, y - 1)))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            else return false;
+            return ((playground[x, y] != 0) && (playground[x, y] != _identificator));
         }
 
         /// <summary>
         /// Oznacení nedostupnosti pole
         /// </summary>
-        private void MarkPoint(int x, int y)
+        private void MarkPoint(int x, int y, bool isEnemy)
         {
             _possibilities[x, y] = 2;
+
+            if (!isEnemy)
+                return;
 
             if (x - 1 > 0)
             {
@@ -174,6 +160,19 @@ namespace SnakeDeathmatch.Players.Setal
 
         }
 
+        private bool IsEnemyNearBy(GamePoint head, int[,] playground)
+        {
+            for (int i = (head.X - 5); i < (head.X + 5); i++)
+                for (int j = (head.Y - 5); j < (head.Y + 5); j++)
+                {
+                    if (IsTakenByEnemy(playground, i, j))
+                        return true;
+                }
+
+            return false;
+
+        }
+
     }
 
     internal class GamePoint
@@ -214,7 +213,7 @@ namespace SnakeDeathmatch.Players.Setal
         public bool IsSafe { get; set; }
     }
 
-    //STD cestovani
+    //Safe travel and long live the snake
     internal class SafeMap
     {
         public Stack<Step> Steps { get; set; }
@@ -223,10 +222,12 @@ namespace SnakeDeathmatch.Players.Setal
         private readonly int _size;
         private readonly GamePoint _start;
         private readonly Direction _origin;
+        private readonly Move _prefer;
 
-        public SafeMap(int depth, GamePoint start, Direction origin, byte[,] possibilities, int size)
+        public SafeMap(int depth, GamePoint start, Direction origin, Move prefer, byte[,] possibilities, int size)
         {
             _depth = depth;
+            _prefer = prefer;
             _size = size;
             _possibilities = possibilities;
             _start = start;
@@ -237,14 +238,6 @@ namespace SnakeDeathmatch.Players.Setal
         public void Start()
         {
             Count(_start, _origin, 0, new List<GamePoint>());
-        }
-
-        /// <summary>
-        /// Vraci bezpecne kroky v mape
-        /// </summary>
-        public int Fitness
-        {
-            get { return Steps.Where(x => x.IsSafe).Count(); }
         }
 
         private List<Step> PossibleSteps(Direction direction, GamePoint gamePoint)
@@ -533,16 +526,22 @@ namespace SnakeDeathmatch.Players.Setal
             return _possibilities[x, y] == 2;
         }
 
+        private bool IsCrossCollision(GamePoint start, GamePoint final)
+        {
+            return ((_possibilities[start.X, final.Y] == 2) && (_possibilities[final.X, start.Y] == 2));
+        }
+
         private bool Count(GamePoint point, Direction direction, int depth, List<GamePoint> occupied)
         {
             if (depth == _depth)
                 return true;
 
-            var steps = PossibleSteps(direction, point).Where(x => x.IsSafe);
+            var steps = PossibleSteps(direction, point).OrderBy(x => x.Move == _prefer ? 0 : 1);
+            //&& (IsCrossCollision(point, x.FinalPosition) == false)
 
             foreach (var step in steps)
             {
-                if (occupied.Contains(step.FinalPosition))
+                if ((occupied.Contains(step.FinalPosition)) || (IsCrossCollision(point, step.FinalPosition)) || (!step.IsSafe))
                     continue;
 
                 List<GamePoint> copy = occupied.Select(x => new GamePoint(x.X, x.Y)).ToList();
@@ -550,7 +549,9 @@ namespace SnakeDeathmatch.Players.Setal
 
                 if (Count(step.FinalPosition, step.FinalDirection, depth + 1, copy))
                 {
-                    Steps.Push(step);
+                    //zajima me jen posledni bod
+                    if (depth == 0)
+                        Steps.Push(step);
                     return true;
                 }
             }
@@ -582,15 +583,6 @@ namespace SnakeDeathmatch.Players.Setal
         public void Start()
         {
             Count(_start, _origin, 0, new List<GamePoint>());
-        }
-
-
-        /// <summary>
-        /// Vraci kroky v mape
-        /// </summary>
-        public int Fitness
-        {
-            get { return Steps.Count(); }
         }
 
         private List<Step> PossibleSteps(Direction direction, GamePoint gamePoint)
@@ -870,16 +862,22 @@ namespace SnakeDeathmatch.Players.Setal
             return _possibilities[x, y] == 2;
         }
 
+        private bool IsCrossCollision(GamePoint start, GamePoint final)
+        {
+            return ((_possibilities[start.X, final.Y] == 2) && (_possibilities[start.Y, final.X] == 2));
+        }
+
         private bool Count(GamePoint point, Direction direction, int depth, List<GamePoint> occupied)
         {
             if (depth == _depth)
                 return true;
 
-            var steps = PossibleSteps(direction, point);
+            //Mozne nebezpecne kroky setridene bezecnymi napred
+            var steps = PossibleSteps(direction, point).OrderBy(x => x.IsSafe ? 0 : 1).ToList();
 
             foreach (var step in steps)
             {
-                if (occupied.Contains(step.FinalPosition))
+                if ((occupied.Contains(step.FinalPosition)) || (!IsCrossCollision(point, step.FinalPosition)))
                     continue;
 
                 List<GamePoint> copy = occupied.Select(x => new GamePoint(x.X, x.Y)).ToList();
@@ -887,14 +885,13 @@ namespace SnakeDeathmatch.Players.Setal
 
                 if (Count(step.FinalPosition, step.FinalDirection, depth + 1, copy))
                 {
-                    Steps.Push(step);
+                    if (depth == 0)
+                        Steps.Push(step);
                     return true;
                 }
             }
-
             return false;
         }
-
     }
 
     internal static class Service
