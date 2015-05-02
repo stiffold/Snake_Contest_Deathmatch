@@ -12,10 +12,14 @@ namespace SnakeDeathmatch.Players.Setal
         private int _identificator;
         private int _size;
         private int _roundCounter;
+        //private int _moveCounter;
 
         private Direction _direction;
         private GamePoint _actualPosition;
-        private List<GamePoint> _possibleHeads;
+
+        //private Statistik _statistik;
+        private Move _preferMove;
+        // private bool _locationChoosed;
 
         public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)
         {
@@ -25,40 +29,41 @@ namespace SnakeDeathmatch.Players.Setal
             _actualPosition = new GamePoint(x, y);
             _possibilities = new byte[_size, _size];
             _roundCounter = 0;
+
+            _preferMove = (int)_direction < 5 ? Move.Right : Move.Left;
+
+            //_moveCounter = 0;
         }
 
         public Move GetNextMove(int[,] playground)
         {
             _roundCounter++;
+           // _statistik = new Statistik();
 
             EvaluateGame(playground);
-            Move preferMove = Move.Left;
 
-            SafeMap safePath = new SafeMap(15, _actualPosition, _direction, preferMove, _possibilities, _size);
+            SafeMap safePath = new SafeMap(15, _actualPosition, _direction, _preferMove, _possibilities, _size);
             safePath.Start();
 
-            if (safePath.Steps.Count > 0)
+            if (safePath.Result != null)
             {
-                var next = safePath.Steps.Pop();
-                _actualPosition = next.FinalPosition;
-                _direction = Service.UpdateDirection(_direction, next.Move);
-                // MessageBox.Show("Jdu:" + next.Move);
-                return next.Move;
+                _actualPosition = safePath.Result.FinalPosition;
+                _direction = Service.UpdateDirection(_direction, safePath.Result.Move);
+                // MessageBox.Show("Jdu:" + safePath.Result.Move);
+                return safePath.Result.Move;
             }
 
 
-            DangerMap dangerPath = new DangerMap(4, _actualPosition, _direction, _possibilities, _size);
+            DangerMap dangerPath = new DangerMap(6, _actualPosition, _direction, _possibilities, _size);
             dangerPath.Start();
 
-            if (dangerPath.Steps.Count > 0)
+            if (dangerPath.Result != null)
             {
-                var next = dangerPath.Steps.Pop();
-                _actualPosition = next.FinalPosition;
-                _direction = Service.UpdateDirection(_direction, next.Move);
-                //MessageBox.Show("Jdu:" + next.Move);
-                return next.Move;
+                _actualPosition = dangerPath.Result.FinalPosition;
+                _direction = Service.UpdateDirection(_direction, dangerPath.Result.Move);
+                MessageBox.Show("Danger Jdu:" + dangerPath.Result.Move);
+                return dangerPath.Result.Move;
             }
-
             return Move.Straight;
         }
 
@@ -75,22 +80,31 @@ namespace SnakeDeathmatch.Players.Setal
                     if ((gameSurrond[i, j] != 0))
                     {
                         MarkPoint(i, j, (gameSurrond[i, j] != _identificator));
-                    }
-                }
-        }
 
-        [Obsolete]
-        private GamePoint FindMySelf(int[,] gameSurrond)
-        {
-            for (int i = 0; i < _size; i++)
-                for (int j = 0; j < _size; j++)
-                {
-                    if (gameSurrond[i, j] == _identificator)
-                    {
-                        return new GamePoint(i, j);
+                        //if (i < (_size / 2))
+                        //{
+                        //    if (j < (_size / 2))
+                        //    {
+                        //        _statistik.TopLeft++;
+                        //    }
+                        //    else
+                        //    {
+                        //        _statistik.BottomLeft++;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (j < (_size / 2))
+                        //    {
+                        //        _statistik.TopRight++;
+                        //    }
+                        //    else
+                        //    {
+                        //        _statistik.BottomRight++;
+                        //    }
+                        //}
                     }
                 }
-            throw new InvalidOperationException("Nejsem na herní ploše!");
         }
 
         private bool IsTakenByEnemy(int[,] playground, int x, int y)
@@ -113,7 +127,7 @@ namespace SnakeDeathmatch.Players.Setal
             if (!isEnemy)
                 return;
 
-            if (x - 1 > 0)
+            if (x - 1 >= 0)
             {
                 if (_possibilities[x - 1, y] == 0)
                     _possibilities[x - 1, y] = 1;
@@ -123,7 +137,7 @@ namespace SnakeDeathmatch.Players.Setal
                 if (_possibilities[x + 1, y] == 0)
                     _possibilities[x + 1, y] = 1;
             }
-            if (y - 1 > 0)
+            if (y - 1 >= 0)
             {
                 if (_possibilities[x, y - 1] == 0)
                     _possibilities[x, y - 1] = 1;
@@ -134,13 +148,13 @@ namespace SnakeDeathmatch.Players.Setal
                     _possibilities[x, y + 1] = 1;
             }
 
-            if ((x - 1 > 0) && (y - 1 > 0))
+            if ((x - 1 >= 0) && (y - 1 > 0))
             {
                 if (_possibilities[x - 1, y - 1] == 0)
                     _possibilities[x - 1, y - 1] = 1;
             }
 
-            if ((x + 1 < _size) && (y - 1 > 0))
+            if ((x + 1 < _size) && (y - 1 >= 0))
             {
                 if (_possibilities[x + 1, y - 1] == 0)
                     _possibilities[x + 1, y - 1] = 1;
@@ -152,7 +166,7 @@ namespace SnakeDeathmatch.Players.Setal
                     _possibilities[x + 1, y + 1] = 1;
             }
 
-            if ((x - 1 > 0) && (y + 1 < _size))
+            if ((x - 1 >= 0) && (y + 1 < _size))
             {
                 if (_possibilities[x - 1, y + 1] == 0)
                     _possibilities[x - 1, y + 1] = 1;
@@ -216,7 +230,7 @@ namespace SnakeDeathmatch.Players.Setal
     //Safe travel and long live the snake
     internal class SafeMap
     {
-        public Stack<Step> Steps { get; set; }
+        public Step Result { get; set; }
         private byte[,] _possibilities;
         private int _depth;
         private readonly int _size;
@@ -232,7 +246,7 @@ namespace SnakeDeathmatch.Players.Setal
             _possibilities = possibilities;
             _start = start;
             _origin = origin;
-            Steps = new Stack<Step>();
+            Result = null;
         }
 
         public void Start()
@@ -269,7 +283,6 @@ namespace SnakeDeathmatch.Players.Setal
                     }
                     if (!IsTaken(gamePoint.X + 1, gamePoint.Y - 1))
                     {
-
                         var move = Move.Right;
                         var dir = Service.UpdateDirection(direction, Move.Right);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
@@ -291,7 +304,6 @@ namespace SnakeDeathmatch.Players.Setal
                     }
                     if (!IsTaken(gamePoint.X + 1, gamePoint.Y - 1))
                     {
-
                         var move = Move.Straight;
                         var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
@@ -536,23 +548,34 @@ namespace SnakeDeathmatch.Players.Setal
             if (depth == _depth)
                 return true;
 
-            var steps = PossibleSteps(direction, point).OrderBy(x => x.Move == _prefer ? 0 : 1);
-            //&& (IsCrossCollision(point, x.FinalPosition) == false)
+            var steps = PossibleSteps(direction, point);
+            if (_prefer == Move.Right)
+            {
+                steps = steps.OrderByDescending(x => x.Move).ToList();
+            }
+            else
+            {
+                steps = steps.OrderBy(x => x.Move).ToList();
+            }
 
             foreach (var step in steps)
             {
                 if ((occupied.Contains(step.FinalPosition)) || (IsCrossCollision(point, step.FinalPosition)) || (!step.IsSafe))
                     continue;
 
-                List<GamePoint> copy = occupied.Select(x => new GamePoint(x.X, x.Y)).ToList();
-                copy.Add(step.FinalPosition);
+                //List<GamePoint> copy = occupied.Select(x => new GamePoint(x.X, x.Y)).ToList();
+                occupied.Add(step.FinalPosition);
 
-                if (Count(step.FinalPosition, step.FinalDirection, depth + 1, copy))
+                if (Count(step.FinalPosition, step.FinalDirection, depth + 1, occupied))
                 {
                     //zajima me jen posledni bod
                     if (depth == 0)
-                        Steps.Push(step);
+                        Result = step;
                     return true;
+                }
+                else
+                {
+                    occupied.Remove(step.FinalPosition);
                 }
             }
 
@@ -563,7 +586,7 @@ namespace SnakeDeathmatch.Players.Setal
     //Plan B
     internal class DangerMap
     {
-        public Stack<Step> Steps { get; set; }
+        public Step Result { get; set; }
         private byte[,] _possibilities;
         private int _depth;
         private readonly int _size;
@@ -577,7 +600,7 @@ namespace SnakeDeathmatch.Players.Setal
             _possibilities = possibilities;
             _start = start;
             _origin = origin;
-            Steps = new Stack<Step>();
+            Result = null;
         }
 
         public void Start()
@@ -886,7 +909,7 @@ namespace SnakeDeathmatch.Players.Setal
                 if (Count(step.FinalPosition, step.FinalDirection, depth + 1, copy))
                 {
                     if (depth == 0)
-                        Steps.Push(step);
+                        Result = step;
                     return true;
                 }
             }
@@ -929,8 +952,76 @@ namespace SnakeDeathmatch.Players.Setal
             return direction;
         }
 
+        public static Move GuesMove(Direction wanted, Direction actual)
+        {
+            switch (wanted)
+            {
+                case Direction.TopLeft:
+                    if (actual == Direction.TopLeft)
+                        return Move.Straight;
+                    if (actual == Direction.Top)
+                        return Move.Left;
+                    if (actual == Direction.Left)
+                        return Move.Right;
+                    return Move.Left;
 
+                case Direction.TopRight:
+                    if (actual == Direction.TopRight)
+                        return Move.Straight;
+                    if (actual == Direction.Top)
+                        return Move.Right;
+                    if (actual == Direction.Right)
+                        return Move.Left;
+                    return Move.Left;
 
+                case Direction.BottomRight:
+                    if (actual == Direction.BottomRight)
+                        return Move.Straight;
+                    if (actual == Direction.Bottom)
+                        return Move.Right;
+                    if (actual == Direction.Right)
+                        return Move.Left;
+                    return Move.Left;
+
+                case Direction.BottomLeft:
+                    if (actual == Direction.BottomLeft)
+                        return Move.Straight;
+                    if (actual == Direction.Bottom)
+                        return Move.Left;
+                    if (actual == Direction.Left)
+                        return Move.Left;
+                    return Move.Left;
+
+                default:
+                    throw new NotImplementedException();
+
+            }
+        }
+    }
+
+    internal class Statistik
+    {
+        public int TopLeft { get; set; }
+        public int TopRight { get; set; }
+        public int BottomLeft { get; set; }
+        public int BottomRight { get; set; }
+
+        public int StarWayToHeaven()
+        {
+            if ((TopLeft < TopRight) && (TopLeft < BottomLeft) && (TopLeft < BottomRight))
+                return (int)Direction.TopLeft;
+
+            if ((TopRight < TopLeft) && (TopRight < BottomLeft) && (TopRight < BottomRight))
+                return (int)Direction.TopRight;
+
+            if ((BottomLeft < TopRight) && (BottomLeft < TopLeft) && (BottomLeft < BottomRight))
+                return (int)Direction.BottomLeft;
+
+            if ((BottomRight < TopRight) && (BottomRight < BottomLeft) && (BottomRight < TopLeft))
+                return (int)Direction.BottomRight;
+
+            return 0;
+        }
     }
 
 }
