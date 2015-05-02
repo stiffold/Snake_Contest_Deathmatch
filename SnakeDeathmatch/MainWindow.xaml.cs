@@ -63,14 +63,28 @@ namespace SnakeDeathmatch
             _replayTimer.Tick += RenderReplayArray;
             _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / Speed);
 
+            InitOpenDialog();
+            InitEndDialog();         
+                        
+            //Restart();
+        }
+
+        private void InitOpenDialog()
+        {
+            _openDialog = new OpenReplayDialog();
+            _openDialog.btnOpen.Click += (s, n) => { Open();};
+            _openDialog.Closing += (s, n) => { InitOpenDialog();};
+        }
+
+        private void InitEndDialog()
+        {
+            _endDialog = new EndGameDialog();
             _endDialog.Title = Title;
             _endDialog.btnYes.Focus();
             _endDialog.btnYes.Click += (s, n) => { Restart(); };
             _endDialog.btnSave.Click += (s, n) => { Save(); };
+            _endDialog.Closing += (s, n) => { InitEndDialog(); };
             _endDialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-
-            _openDialog.btnOpen.Click += (s, n) => { Open(); };
-            //Restart();
         }
 
         private Direction GetRandomDirection()
@@ -451,6 +465,14 @@ namespace SnakeDeathmatch
         {
             _isShowingTests = true;
             Restart();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _openDialog.Close();
+            _endDialog.Close();
+            _timer.Stop();
+            _replayTimer.Stop();
         }
     }
 }
