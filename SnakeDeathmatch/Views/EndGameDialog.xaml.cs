@@ -21,6 +21,7 @@ namespace SnakeDeathmatch.Views
         public EndGameDialog()
         {
             InitializeComponent();
+            ResizeMode = ResizeMode.NoResize;
         }
 
         private void btnNo_Click(object sender, RoutedEventArgs e)

@@ -21,6 +21,7 @@ namespace SnakeDeathmatch.Views
         public OpenReplayDialog()
         {
             InitializeComponent();
+            ResizeMode = ResizeMode.NoResize;
         }
 
         private void btnOpen_Click(object sender, RoutedEventArgs e)
