@@ -61,7 +61,7 @@ namespace SnakeDeathmatch.Players.Setal
             {
                 _actualPosition = dangerPath.Result.FinalPosition;
                 _direction = Service.UpdateDirection(_direction, dangerPath.Result.Move);
-                MessageBox.Show("Danger Jdu:" + dangerPath.Result.Move);
+                //MessageBox.Show("Danger Jdu:" + dangerPath.Result.Move);
                 return dangerPath.Result.Move;
             }
             return Move.Straight;
