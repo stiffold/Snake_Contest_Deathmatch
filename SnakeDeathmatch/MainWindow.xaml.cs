@@ -27,7 +27,8 @@ namespace SnakeDeathmatch
         private DispatcherTimer _replayTimer = new DispatcherTimer();
         private GameEngine _gameEngine;
         private bool _isShowingTests = false;
-        private bool _isShowingReply = false;
+        private bool _isGameActive = false;
+
         private string _lastTestName;
         private Random _random = new Random();
 
@@ -180,6 +181,7 @@ namespace SnakeDeathmatch
             _timer.Stop();
             _round = 1;
             _records.Clear();
+            _isGameActive = true;
 
             if (_isShowingTests)
             {
@@ -206,6 +208,7 @@ namespace SnakeDeathmatch
             _timer.Stop();
             _round = 1;
             _records.Clear();
+            _isGameActive = false;
         }
 
 
@@ -256,6 +259,7 @@ namespace SnakeDeathmatch
                 _dialog.lblResult.Content = _gameEngine.ScoreMessage();
                 _dialog.lblRestart.Content = _isShowingTests ? "Spustit další test?" : "Spustit další deathmatch?";
                 _dialog.ShowDialog();
+                _isGameActive = false;
             }
         }
 
@@ -343,19 +347,21 @@ namespace SnakeDeathmatch
         private void _buttonRestart_Click(object sender, RoutedEventArgs e)
         {
             _isShowingTests = false;
-            _isShowingReply = false;
             Restart();
         }
 
         private void _buttonReplay_Click(object sender, RoutedEventArgs e)
         {
             _isShowingTests = false;
-            _isShowingReply = true;            
             Replay();
         }
 
         private void _buttonOpen_Click(object sender, RoutedEventArgs e)
         {
+            if (_isGameActive)
+            {
+                return;
+            }
             // Get the object used to communicate with the server.
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://"+_ftpServerIP);
             request.Method = WebRequestMethods.Ftp.ListDirectory;
@@ -383,7 +389,10 @@ namespace SnakeDeathmatch
 
         private void Replay()
         {
-             StartReplay();
+            if (!_isGameActive)
+            {
+                StartReplay();
+            }             
         }
 
         private void Open()
@@ -440,7 +449,6 @@ namespace SnakeDeathmatch
         private void _buttonTests_Click(object sender, RoutedEventArgs e)
         {
             _isShowingTests = true;
-            _isShowingReply = false;
             Restart();
         }
     }
