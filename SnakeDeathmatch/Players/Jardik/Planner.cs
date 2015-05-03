@@ -29,14 +29,15 @@ namespace SnakeDeathmatch.Players.Jardik
             _walkSets.Add(new Left90(_ch, _myId));
             _walkSets.Add(new Left125(_ch, _myId));
             _walkSets.Add(new Left180(_ch, _myId));
+            _walkSets.Add(new LeftGap(_ch, _myId));
+            _walkSets.Add(new RightGap(_ch, _myId));
 
             _walkSetsPro.Add(new RollLeft(_ch, _myId));
             _walkSetsPro.Add(new RollRight(_ch, _myId));
-            _walkSetsPro.Add(new SquareRight(_ch, _myId));
-            _walkSetsPro.Add(new SquareLeft(_ch, _myId));
             _walkSetsPro.Add(new Snaker(_ch, _myId));
             _walkSetsPro.Add(new Quaker(_ch, _myId));
             _walkSetsPro.Add(new FunkyTerror(_ch, _myId));
+            _walkSetsPro.Add(new Roll100(_ch, _myId));
 
 
         }
@@ -64,17 +65,18 @@ namespace SnakeDeathmatch.Players.Jardik
         }
 
         public List<Walk> GetBestWalksToMe(int round, Position position, Direction direction, int[,] gameSurround)
-        {
-            if (round > 500) 
-            { 
-                _safer.Evaluate(round, position, direction, gameSurround);
-                return _safer.Walks;
-            }
-            
+        {           
             foreach (var walkSet in _walkSetsPro)
             {
                 walkSet.Evaluate(round, position, direction, gameSurround);
             }
+
+            var roll = _walkSetsPro.Where(x => x.Type() == WalkSetType.Roll100).FirstOrDefault();
+            if (roll.Score > 30)
+            {
+                return roll.Walks;
+            }
+
             var funky = _walkSetsPro.Where(x => x.Type() == WalkSetType.FunkyTerror).FirstOrDefault();
             if (funky.Score > 30)
             {

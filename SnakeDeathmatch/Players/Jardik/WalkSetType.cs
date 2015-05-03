@@ -20,6 +20,8 @@ namespace SnakeDeathmatch.Players.Jardik
         Roll100,
         RollLeft,
         RollRight,
+        LeftGap,
+        RightGap,
         SquareLeft,
         SquareRight,
         Snaker,

@@ -122,6 +122,111 @@ namespace SnakeDeathmatch.Players.Jardik
             Cut(3);
         }
     }
+
+    class RightGap : WalkSetBase
+    {
+        List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public RightGap(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+
+            m.Add(new Tuple<int, Move>(1, Move.Right));
+            m.Add(new Tuple<int, Move>(2, Move.Left));
+            m.Add(new Tuple<int, Move>(3, Move.Left));
+            
+        }
+        public override WalkSetType Type()
+        {
+            return WalkSetType.RightGap;
+        }
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            _score = 1;
+            int _moves = 1;
+            Move move = Move.Right;
+            Direction simulateDirection = direction;
+            Position simulatePosition = position.Copy();
+            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            {
+                if (_moves > 3)
+                {
+                    move = Move.Straight;
+                }
+                else
+                {
+                    move =  m.Where(l => l.Item1 == _moves).First().Item2;
+                }
+                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                _moves++;
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));               
+            }
+            Cut(3);
+        }
+    }
+
+    class LeftGap : WalkSetBase
+    {
+        List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public LeftGap(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+
+            m.Add(new Tuple<int, Move>(1, Move.Left));
+            m.Add(new Tuple<int, Move>(2, Move.Right));
+            m.Add(new Tuple<int, Move>(3, Move.Right));
+
+        }
+        public override WalkSetType Type()
+        {
+            return WalkSetType.LeftGap;
+        }
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            _score = 1;
+            int _moves = 1;
+            Move move = Move.Left;
+            Direction simulateDirection = direction;
+            Position simulatePosition = position.Copy();
+            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            {
+                if (_moves > 3)
+                {
+                    move = Move.Straight;
+                }
+                else
+                {
+                    move = m.Where(l => l.Item1 == _moves).First().Item2;
+                }
+                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                _moves++;
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+            }
+            Cut(3);
+        }
+    }
+
     class GetToWall : WalkSetBase
     {
         public GetToWall(CollissionHelper ch, int myId) : base(ch, myId) { }
@@ -144,7 +249,42 @@ namespace SnakeDeathmatch.Players.Jardik
         }
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            throw new NotImplementedException();
+            _score = 1;
+            int iteration = 1;
+            int limit = 1;
+            Move move = direction.IsDiagonal() ? Move.Straight : Move.Right;
+            Direction simulateDirection = direction;
+            Position simulatePosition = position.Copy();
+            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            {
+                if (iteration < limit)
+                {
+                    move = Move.Straight;
+                }
+                else if (iteration < limit + 1)
+                {
+                    move = Move.Right; ;
+                }
+                else
+                {
+                    iteration = 1;
+                    limit++;
+                }
+
+                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                iteration++;
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+            }
             Cut(3);
         }
     }
@@ -511,7 +651,7 @@ namespace SnakeDeathmatch.Players.Jardik
             int _moves = 1;
             bool left = true;
             bool doStraightmoves = false;
-            Move move = Move.Straight;
+            Move move = direction.IsDiagonal() ? Move.Straight : Move.Right;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
             int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
