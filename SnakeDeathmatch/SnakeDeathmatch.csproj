@@ -79,6 +79,8 @@
     <Compile Include="Players\SoulEater\OtherPlayerInfo.cs" />
     <Compile Include="Players\SoulEater\Point.cs" />
     <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />
+    <Compile Include="Players\Vazba\DirectionExt.cs" />
+    <Compile Include="Players\Vazba\Next.cs" />
     <Compile Include="Players\Vazba\Point.cs" />
     <Compile Include="Players\Vazba\Snake.cs" />
     <Compile Include="Players\Vazba\Snakes.cs" />
