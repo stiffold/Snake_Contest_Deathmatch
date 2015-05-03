@@ -65,12 +65,12 @@ namespace SnakeDeathmatch.Players.Jardik
 
         public List<Walk> GetBestWalksToMe(int round, Position position, Direction direction, int[,] gameSurround)
         {
-            if (ImInShits(position, gameSurround))
-            {
+            if (round > 500) 
+            { 
                 _safer.Evaluate(round, position, direction, gameSurround);
                 return _safer.Walks;
             }
-
+            
             foreach (var walkSet in _walkSetsPro)
             {
                 walkSet.Evaluate(round, position, direction, gameSurround);
@@ -96,6 +96,12 @@ namespace SnakeDeathmatch.Players.Jardik
                 walkSet.Evaluate(round, position, direction, gameSurround);
             }
             var best = _walkSets.OrderByDescending(x => x.Score).FirstOrDefault();
+
+            if (best.Score < 50 && ImInShits(position, gameSurround))
+            {
+                _safer.Evaluate(round, position, direction, gameSurround);
+                return _safer.Walks;
+            }
 
             if (best != null) return best.Walks;
             return new List<Walk>();

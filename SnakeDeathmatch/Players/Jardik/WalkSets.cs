@@ -15,6 +15,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollission(Move.Straight, position, direction, gameSurrond);
+            Cut(3);
         }
     }
     class Left45 : WalkSetBase
@@ -27,6 +28,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 1);
+            Cut(3);
         }
     }
     class Left90 : WalkSetBase
@@ -39,6 +41,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 2);
+            Cut(3);
         }
     }
     class Left125 : WalkSetBase
@@ -51,6 +54,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 3);
+            Cut(3);
         }
     }
     class Left180 : WalkSetBase
@@ -63,6 +67,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 4);
+            Cut(3);
         }
     }
     class Right45 : WalkSetBase
@@ -75,6 +80,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 1);
+            Cut(3);
         }
     }
     class Right90 : WalkSetBase
@@ -87,6 +93,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 2);
+            Cut(3);
         }
     }
     class Right125 : WalkSetBase
@@ -99,6 +106,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 3);
+            Cut(3);
         }
     }
     class Right180 : WalkSetBase
@@ -111,6 +119,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 4);
+            Cut(3);
         }
     }
     class GetToWall : WalkSetBase
@@ -123,6 +132,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             throw new NotImplementedException();
+            Cut(3);
         }
     }
     class Roll100 : WalkSetBase
@@ -135,6 +145,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             throw new NotImplementedException();
+            Cut(3);
         }
     }
 
@@ -171,6 +182,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (_count > 4) move = Move.Right;
                 if (_count == 8) _count = 1;
             }
+            Cut(3);
         }
     }
 
@@ -284,7 +296,9 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (_count > 4) move = Move.Left;
                 if (_count == 8) _count = 1;
             }
+            Cut(3);
         }
+
     }
 
     class Snaker : WalkSetBase
@@ -401,9 +415,10 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (_count > 20 && _count <= 28) move = Move.Straight;
                 if (_count > 28 && _count <= 30) move = Move.Right;
                 if (_count > 30 && _count <= 38) move = Move.Straight;
-                if (_count > 36 && _count <= 37) move = Move.Left;
-                if (_count > 37) move = Move.Straight;
+                if (_count > 38 && _count <= 40) move = Move.Left;
+                if (_count > 40) move = Move.Straight;
             }
+            Cut(3);
         }
     }
 
@@ -443,9 +458,10 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (_count > 20 && _count <= 28) move = Move.Straight;
                 if (_count > 28 && _count <= 30) move = Move.Left;
                 if (_count > 30 && _count <= 38) move = Move.Straight;
-                if (_count > 36 && _count <= 37) move = Move.Right;
-                if (_count > 37) move = Move.Straight;
+                if (_count > 38 && _count <= 40) move = Move.Right;
+                if (_count > 40) move = Move.Straight;
             }
+            Cut(3);
         }
     }
 
@@ -535,6 +551,7 @@ namespace SnakeDeathmatch.Players.Jardik
                     _moves = 1;
                 }
             }
+            Cut(3);
         }
     }
 }

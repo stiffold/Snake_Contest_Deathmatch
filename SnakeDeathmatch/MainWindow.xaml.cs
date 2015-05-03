@@ -13,12 +13,13 @@ using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Views;
 using System.IO;
 using System.Net;
+using System.Windows.Media.Imaging;
 
 namespace SnakeDeathmatch
 {
     public partial class MainWindow : Window
     {
-        public int PlaygroundSizeInDots = 100;
+        public int PlaygroundSizeInDots = 25;
         public const int PlaygroundSizeInPixels = 600;
         public const int Speed = 60;
         public const int TestsSpeed = 5;
@@ -135,7 +136,49 @@ namespace SnakeDeathmatch
             }
        
             //save to FTP
+            UploadToFTP(filename);
+            
+            MessageBox.Show(filename +" uploadován :-)");
+            UpdateWeb();
+            _endDialog.txtFileName.Text = null;
 
+            
+
+        }
+
+        private void UpdateWeb()
+        {
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)_canvas.Width,
+            (int)_canvas.Height+30, 96d, 96d, System.Windows.Media.PixelFormats.Default);
+            rtb.Render(_canvas);
+
+            BitmapEncoder pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            string filename = _endDialog.txtFileName.Text + ".png";
+
+            using (var fs = System.IO.File.OpenWrite(filename))
+            {
+                pngEncoder.Save(fs);
+            }
+
+            UploadToFTP(filename);
+            string html = DownloadFromFTP("index.html");
+
+            string message = _gameEngine.ScoreMessage();
+            message = message.Replace(System.Environment.NewLine, "<br/>");            
+
+            string mytag = @"<body><h2>" +DateTime.Now.ToString()+" "+ _endDialog.txtFileName.Text + "</h2><img src=\"" + filename + "\" height=\"300\" width=\"300\"><p>" + message + "</p>";
+
+            html = html.Replace("<body>", mytag);
+
+            System.IO.File.WriteAllText(@"index.html", html, System.Text.Encoding.UTF8);
+
+            UploadToFTP("index.html");
+        }
+
+        private void UploadToFTP(string filename)
+        {
 
             FileInfo objFile = new FileInfo(filename);
             FtpWebRequest objFTPRequest;
@@ -188,8 +231,6 @@ namespace SnakeDeathmatch
                 throw ex;
             }
 
-            MessageBox.Show(filename +" uploadován :-)");
-            _endDialog.txtFileName.Text = null;
         }
 
         private void Restart()
@@ -397,7 +438,7 @@ namespace SnakeDeathmatch
 
             _openDialog.lstFiles.Items.Clear();
 
-            foreach (var f in files.Where(x=>x.Contains(".csv")))
+            foreach (var f in files.Where(x=>x.Contains(".csv")).OrderByDescending(x=>x.ToString()))
             {
                 _openDialog.lstFiles.Items.Add(f);
             }
@@ -423,22 +464,10 @@ namespace SnakeDeathmatch
         {
             string fileName = _openDialog.lstFiles.SelectedItem.ToString();
             List<string> records = new List<string>();
-            WebClient request = new WebClient();
-            string url = "ftp://"+_ftpServerIP + fileName;
-            request.Credentials = new NetworkCredential(_ftpUserName, _ftpPassword);
-            request.Proxy = null;
 
-            try
-            {
-                byte[] newFileData = request.DownloadData(url);
-                string fileString = System.Text.Encoding.UTF8.GetString(newFileData);
-                records = (fileString).Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            }            
-            catch (WebException e)
-            {
-                // Do something such as log error, but this is based on OP's original code
-                // so for now we do nothing.
-            }
+            string fileString = DownloadFromFTP(fileName);
+
+            records = (fileString).Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             if (records.Any())
             {
@@ -452,6 +481,28 @@ namespace SnakeDeathmatch
 
             Replay();
 
+        }
+
+        private string DownloadFromFTP(string fileName)
+        {
+            string result = "";
+            WebClient request = new WebClient();
+            string url = "ftp://" + _ftpServerIP + fileName;
+            request.Credentials = new NetworkCredential(_ftpUserName, _ftpPassword);
+            request.Proxy = null;
+
+            try
+            {
+                byte[] newFileData = request.DownloadData(url);
+                result = System.Text.Encoding.UTF8.GetString(newFileData);
+
+            }
+            catch (WebException e)
+            {
+                // Do something such as log error, but this is based on OP's original code
+                // so for now we do nothing.
+            }
+            return result;
         }
 
         private void StartReplay()

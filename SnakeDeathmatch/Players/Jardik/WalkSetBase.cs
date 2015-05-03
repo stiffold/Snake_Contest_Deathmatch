@@ -79,27 +79,22 @@ namespace SnakeDeathmatch.Players.Jardik
             return _score;
         }
 
+        protected void Cut(int count)
+        {
+            if (count > _walks.Count)
+            {
+                _walks.Clear();
+                return;
+            }
+            _walks.RemoveRange(_walks.Count - count, count);
+        }
+
         protected abstract void DoEvaluate(Position position, Direction direction, int[,] gameSurrond);
 
         public abstract WalkSetType Type();
 
         public int Score { get { return _score; } }
 
-        public List<Walk> Walks
-        {
-            get
-            {
-                if (Type() == WalkSetType.Safer)
-                {
-                    return _walks;
-                }
-                
-                if (_isPro)
-                {
-                    return _walks.OrderBy(x => x.Round).Take(_walks.Count - 2).ToList();
-                }
-                return _walks.OrderBy(x => x.Round).Take(2).ToList();
-            }
-        }
+        public List<Walk> Walks {get { return _walks;}}
     }
 }
