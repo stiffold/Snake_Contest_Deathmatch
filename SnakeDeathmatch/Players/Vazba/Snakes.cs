@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
@@ -11,6 +12,12 @@ namespace SnakeDeathmatch.Players.Vazba
         private int[,] _newPlayground;
         private int _size;
 
+        public Snakes(Me me)
+        {
+            this.Me = me;
+        }
+
+        public Me Me { get; private set; }
         public bool IsInitialized { get; private set; }
         public void Update(int[,] playground)
         {
@@ -22,9 +29,14 @@ namespace SnakeDeathmatch.Players.Vazba
                 _size = playground.GetUpperBound(0) + 1;
 
                 for (int y = 0; y < _size; y++)
+                {
                     for (int x = 0; x < _size; x++)
-                        if (playground[x, y] != 0)
-                            this.Add(new Snake(id: playground[x, y], initialPosition: new Point(x, y)));
+                    {
+                        int playerId = playground[x, y];
+                        if (playerId != 0 && playerId != Me.Id)
+                            this.Add(new Snake(playerId, initialPosition: new Point(x, y)));
+                    }
+                }
                 return;
             }
 
@@ -45,13 +57,33 @@ namespace SnakeDeathmatch.Players.Vazba
                 {
                     if (_oldPlayground[x, y] == 0 && _newPlayground[x, y] != 0)
                     {
-                        int snakeId = _newPlayground[x, y];
-                        Snake snake = this.SingleOrDefault(s => s.Id == snakeId);
-                        if (snake != null)
-                            snake.UpdatePosition(new Point(x, y));
+                        int playerId = _newPlayground[x, y];
+                        Point newPoint = new Point(x, y);
+                        if (playerId == Me.Id)
+                            this.Me = new Me(newPoint, GetDirection(this.Me.P, newPoint));
+                        else
+                        {
+                            Snake snake = this.SingleOrDefault(s => s.Id == playerId);
+                            if (snake != null)
+                                snake.Update(newPoint, GetDirection(snake.P, newPoint));
+                        }
                     }
                 }
             }
+        }
+
+        private Direction GetDirection(Point oldP, Point newP)
+        {
+            if (oldP.X == newP.X && oldP.Y - 1 == newP.Y) return Direction.Top;
+            if (oldP.X == newP.X && oldP.Y + 1 == newP.Y) return Direction.Bottom;
+            if (oldP.X + 1 == newP.X && oldP.Y == newP.Y) return Direction.Right;
+            if (oldP.X - 1 == newP.X && oldP.Y == newP.Y) return Direction.Left;
+            if (oldP.X + 1 == newP.X && oldP.Y - 1 == newP.Y) return Direction.TopRight;
+            if (oldP.X - 1 == newP.X && oldP.Y - 1 == newP.Y) return Direction.TopLeft;
+            if (oldP.X + 1 == newP.X && oldP.Y + 1 == newP.Y) return Direction.BottomRight;
+            if (oldP.X - 1 == newP.X && oldP.Y + 1 == newP.Y) return Direction.BottomLeft;
+
+            throw new Exception(string.Format("Old point {0} and new point {1} are not next to each other.", oldP, newP));
         }
     }
 }

@@ -18,24 +18,13 @@ namespace SnakeDeathmatch.Players.Vazba
             IsDead = false;
         }
 
-        public void UpdatePosition(Point newP)
+        public void Update(Point newPosition, Direction newDirection)
         {
-            Dir = GetDirection(P, newP);
-            P = newP;
-        }
+//            Dir = GetDirection(P, newP);
+//            P = newP;
 
-        private Direction GetDirection(Point oldP, Point newP)
-        {
-            if (oldP.X == newP.X && oldP.Y - 1 == newP.Y) return Direction.Top;
-            if (oldP.X == newP.X && oldP.Y + 1 == newP.Y) return Direction.Bottom;
-            if (oldP.X + 1 == newP.X && oldP.Y == newP.Y) return Direction.Right;
-            if (oldP.X - 1 == newP.X && oldP.Y == newP.Y) return Direction.Left;
-            if (oldP.X + 1 == newP.X && oldP.Y - 1 == newP.Y) return Direction.TopRight;
-            if (oldP.X - 1 == newP.X && oldP.Y - 1 == newP.Y) return Direction.TopLeft;
-            if (oldP.X + 1 == newP.X && oldP.Y + 1 == newP.Y) return Direction.BottomRight;
-            if (oldP.X - 1 == newP.X && oldP.Y + 1 == newP.Y) return Direction.BottomLeft;
-
-            throw new Exception(string.Format("Old point {0} and new point {1} are not next to each other.", oldP, newP));
+            P = newPosition;
+            Dir = newDirection;
         }
     }
 }

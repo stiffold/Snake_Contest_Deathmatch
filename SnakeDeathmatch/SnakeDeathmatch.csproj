@@ -80,6 +80,9 @@
     <Compile Include="Players\SoulEater\Point.cs" />
     <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />
     <Compile Include="Players\Vazba\DirectionExt.cs" />
+    <Compile Include="Players\Vazba\FirstStrategy.cs" />
+    <Compile Include="Players\Vazba\IStrategy.cs" />
+    <Compile Include="Players\Vazba\Me.cs" />
     <Compile Include="Players\Vazba\Next.cs" />
     <Compile Include="Players\Vazba\Point.cs" />
     <Compile Include="Players\Vazba\Snake.cs" />

@@ -63,22 +63,5 @@ namespace SnakeDeathmatch.Players.Vazba
             }
             throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
         }
-
-        public Next GetNext(Direction direction, int[,] playground)
-        {
-            Direction leftDirection = direction.TurnLeft();
-            Direction straightDirection = direction;
-            Direction rightDirection = direction.TurnRight();
-
-            return new Next()
-            {
-                LeftDirection = leftDirection,
-                StraightDirection = straightDirection,
-                RightDirection = rightDirection,
-                LeftPoint = CanMove(leftDirection, playground) ? Move(leftDirection) : (Point?)null,
-                StraightPoint = CanMove(straightDirection, playground) ? Move(straightDirection) : (Point?)null,
-                RightPoint = CanMove(rightDirection, playground) ? Move(rightDirection) : (Point?)null,
-            };
-        }
     }
 }
