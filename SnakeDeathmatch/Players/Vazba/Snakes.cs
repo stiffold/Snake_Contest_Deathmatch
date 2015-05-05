@@ -35,7 +35,7 @@ namespace SnakeDeathmatch.Players.Vazba
                     {
                         int playerId = playground[x, y];
                         if (playerId != 0 && playerId != Me.Id)
-                            this.Add(new Snake(playerId, new Point(x, y), Direction.Top));
+                            this.Add(new Snake(playerId, x, y, Direction.Top));
                     }
                 }
                 return;
@@ -61,15 +61,14 @@ namespace SnakeDeathmatch.Players.Vazba
                     if (_oldPlayground[x, y] == 0 && _newPlayground[x, y] != 0)
                     {
                         int playerId = _newPlayground[x, y];
-                        Point newPoint = new Point(x, y);
                         if (playerId == Me.Id)
-                            this.Me = new Snake((int)PlayerId.Vazba, newPoint, GetDirection(this.Me.P, newPoint));
+                            this.Me = new Snake((int)PlayerId.Vazba, x, y, GetDirection(Me.X, Me.Y, x, y));
                         else
                         {
                             Snake? snake = this.SingleOrDefault(s => s.Id == playerId);
                             if (snake.HasValue)
                             {
-                                liveSnakes.Add(new Snake(snake.Value.Id, newPoint, GetDirection(snake.Value.P, newPoint)));
+                                liveSnakes.Add(new Snake(snake.Value.Id, x, y, GetDirection(snake.Value.X, snake.Value.Y, x, y)));
                             }
                         }
                     }
@@ -80,18 +79,18 @@ namespace SnakeDeathmatch.Players.Vazba
             AddRange(liveSnakes);
         }
 
-        private Direction GetDirection(Point oldP, Point newP)
+        private Direction GetDirection(int oldX, int oldY, int newX, int newY)
         {
-            if (oldP.X == newP.X && oldP.Y - 1 == newP.Y) return Direction.Top;
-            if (oldP.X == newP.X && oldP.Y + 1 == newP.Y) return Direction.Bottom;
-            if (oldP.X + 1 == newP.X && oldP.Y == newP.Y) return Direction.Right;
-            if (oldP.X - 1 == newP.X && oldP.Y == newP.Y) return Direction.Left;
-            if (oldP.X + 1 == newP.X && oldP.Y - 1 == newP.Y) return Direction.TopRight;
-            if (oldP.X - 1 == newP.X && oldP.Y - 1 == newP.Y) return Direction.TopLeft;
-            if (oldP.X + 1 == newP.X && oldP.Y + 1 == newP.Y) return Direction.BottomRight;
-            if (oldP.X - 1 == newP.X && oldP.Y + 1 == newP.Y) return Direction.BottomLeft;
+            if (oldX == newX && oldY - 1 == newY) return Direction.Top;
+            if (oldX == newX && oldY + 1 == newY) return Direction.Bottom;
+            if (oldX + 1 == newX && oldY == newY) return Direction.Right;
+            if (oldX - 1 == newX && oldY == newY) return Direction.Left;
+            if (oldX + 1 == newX && oldY - 1 == newY) return Direction.TopRight;
+            if (oldX - 1 == newX && oldY - 1 == newY) return Direction.TopLeft;
+            if (oldX + 1 == newX && oldY + 1 == newY) return Direction.BottomRight;
+            if (oldX - 1 == newX && oldY + 1 == newY) return Direction.BottomLeft;
 
-            throw new Exception(string.Format("Old point {0} and new point {1} are not next to each other.", oldP, newP));
+            throw new Exception(string.Format("Old position [{0},{1}] and new position [{2},{3}] are not next to each other.", oldX, oldY, newX, newY));
         }
     }
 }

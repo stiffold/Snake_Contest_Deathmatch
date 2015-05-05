@@ -83,7 +83,6 @@
     <Compile Include="Players\Vazba\Strategy1.cs" />
     <Compile Include="Players\Vazba\IStrategy.cs" />
     <Compile Include="Players\Vazba\Next.cs" />
-    <Compile Include="Players\Vazba\Point.cs" />
     <Compile Include="Players\Vazba\Snake.cs" />
     <Compile Include="Players\Vazba\Snakes.cs" />
     <Compile Include="Players\Vazba\Strategy2.cs" />

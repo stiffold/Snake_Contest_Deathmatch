@@ -1,20 +1,23 @@
 ﻿using SnakeDeathmatch.Interface;
 
-public class OtherPlayerInfo
+namespace SnakeDeathmatch.Players.SoulEater
 {
-    public OtherPlayerInfo(int x, int y, int identificator)
+    public class OtherPlayerInfo
     {
-        CurrentPosition = new Point(x, y);
-        IsDown = false;
-        Direction = null;
-        Identificator = identificator;
+        public OtherPlayerInfo(int x, int y, int identificator)
+        {
+            CurrentPosition = new Point(x, y);
+            IsDown = false;
+            Direction = null;
+            Identificator = identificator;
+        }
+
+        public Direction? Direction { get; set; }
+
+        public Point CurrentPosition { get; set; }
+
+        public int Identificator { get; set; }
+
+        public bool IsDown { get; set; }
     }
-
-    public Direction? Direction { get; set; }
-
-    public Point CurrentPosition { get; set; }
-
-    public int Identificator { get; set; }
-
-    public bool IsDown { get; set; }
 }

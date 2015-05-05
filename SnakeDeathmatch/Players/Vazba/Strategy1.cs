@@ -5,7 +5,7 @@ namespace SnakeDeathmatch.Players.Vazba
 {
     public class Strategy1 : IStrategy
     {
-        private const int WTF = 18;
+        private const int WTF = 15;
 
         private int[,] _playground = null;
 
