@@ -1,21 +1,24 @@
-﻿public struct Point
+﻿namespace SnakeDeathmatch.Players.SoulEater
 {
-    public Point(int x, int y)
+    public struct Point
     {
-        X = x;
-        Y = y;
-    }
+        public Point(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
 
-    public int X;
-    public int Y;
+        public int X;
+        public int Y;
 
-    public bool Equals(Point point)
-    {
-        return X == point.X && Y == point.Y;
-    }
+        public bool Equals(Point point)
+        {
+            return X == point.X && Y == point.Y;
+        }
 
-    public override string ToString()
-    {
-        return string.Format("[{0},{1}]", X, Y);
+        public override string ToString()
+        {
+            return string.Format("[{0},{1}]", X, Y);
+        }
     }
 }

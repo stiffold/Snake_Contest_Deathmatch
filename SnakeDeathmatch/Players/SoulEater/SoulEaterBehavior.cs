@@ -44,7 +44,7 @@ namespace SnakeDeathmatch.Players.SoulEater
                 _currentGameGround.Update(gameSurrond);
             }
 
-            Move nextMove = GetSafeMove(20);
+            Move nextMove = GetSafeMove(10);
 
             return (int)nextMove;
         }
@@ -75,9 +75,15 @@ namespace SnakeDeathmatch.Players.SoulEater
             if (numberOfSafeMoves == 0)
                 return Move.Straight;
 
+            var copyOfGround = _currentGameGround.MakeACopy();
+            copyOfGround.SimulateStateAfterOtherPlayersMove();
+            copyOfGround.SimulateStateAfterOtherPlayersMove();
+            copyOfGround.SimulateStateAfterOtherPlayersMove();
+            copyOfGround.SimulateStateAfterOtherPlayersMove();
+
             foreach (Move move in _moveList)
             {
-                bool isMoveSafe = GetIfMoveIsSafe(_currentGameGround.OurHeroicPlayer.CurrentPosition, _currentGameGround.OurHeroicPlayer.Direction.Value, move, numberOfSafeMoves);
+                bool isMoveSafe = GetIfMoveIsSafe(copyOfGround, move, numberOfSafeMoves);
                 if (isMoveSafe)
                     return move;
             }
@@ -85,19 +91,21 @@ namespace SnakeDeathmatch.Players.SoulEater
             return GetSafeMove(--numberOfSafeMoves);
         }
 
-        private bool GetIfMoveIsSafe(Point currentPosition, Direction currentDirection, Move move, int numberOfSafeMoves)
+        private bool GetIfMoveIsSafe(GameGround gameGround, Move move, int numberOfSafeMoves)
         {
             if (numberOfSafeMoves == 0)
                 return true;
 
-            Direction absoluteDirection = DirectionHelper.GetAbsoluteDirection(currentDirection, move);
+            var ourPlayer = gameGround.OurHeroicPlayer;
 
-            Point nextPoint = DirectionHelper.GetNextPoint(currentPosition, absoluteDirection);
+            Direction absoluteDirection = DirectionHelper.GetAbsoluteDirection(ourPlayer.Direction.Value, move);
 
-            if (nextPoint.X >= _currentGameGround.SizeOfTable || nextPoint.X < 0 || nextPoint.Y >= _currentGameGround.SizeOfTable || nextPoint.Y < 0)
+            Point nextPoint = DirectionHelper.GetNextPoint(ourPlayer.CurrentPosition, absoluteDirection);
+
+            if (nextPoint.X >= gameGround.SizeOfTable || nextPoint.X < 0 || nextPoint.Y >= gameGround.SizeOfTable || nextPoint.Y < 0)
                 return false;
 
-            if (_currentGameGround[nextPoint.X, nextPoint.Y] != 0)
+            if (gameGround[nextPoint.X, nextPoint.Y] != 0)
                 return false;
 
             if (IsCrossColision(nextPoint, absoluteDirection))
@@ -108,9 +116,13 @@ namespace SnakeDeathmatch.Players.SoulEater
 
             numberOfSafeMoves--;
 
+            var newGround = gameGround.MakeACopy();
+
+            newGround.SimulateStateAfterOurMove(nextPoint);
+
             foreach (var nextMove in _moveList)
             {
-                if (GetIfMoveIsSafe(nextPoint, absoluteDirection, nextMove, numberOfSafeMoves))
+                if (GetIfMoveIsSafe(newGround, nextMove, numberOfSafeMoves))
                     return true;
             }
             return false;

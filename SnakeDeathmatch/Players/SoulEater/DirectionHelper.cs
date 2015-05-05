@@ -40,26 +40,26 @@ namespace SnakeDeathmatch.Players.SoulEater
             return Interface.Direction.BottomRight;
         }
 
-        public static Point GetNextPoint(Point myPosition, Interface.Direction absoluteDirection)
+        public static Point GetNextPoint(Point position, Interface.Direction absoluteDirection)
         {
             switch (absoluteDirection)
             {
                 case Interface.Direction.Top:
-                    return new Point(myPosition.X, myPosition.Y - 1);
+                    return new Point(position.X, position.Y - 1);
                 case Interface.Direction.TopRight:
-                    return new Point(myPosition.X + 1, myPosition.Y - 1);
+                    return new Point(position.X + 1, position.Y - 1);
                 case Interface.Direction.Right:
-                    return new Point(myPosition.X + 1, myPosition.Y);
+                    return new Point(position.X + 1, position.Y);
                 case Interface.Direction.BottomRight:
-                    return new Point(myPosition.X + 1, myPosition.Y + 1);
+                    return new Point(position.X + 1, position.Y + 1);
                 case Interface.Direction.Bottom:
-                    return new Point(myPosition.X, myPosition.Y + 1);
+                    return new Point(position.X, position.Y + 1);
                 case Interface.Direction.BottomLeft:
-                    return new Point(myPosition.X - 1, myPosition.Y + 1);
+                    return new Point(position.X - 1, position.Y + 1);
                 case Interface.Direction.Left:
-                    return new Point(myPosition.X - 1, myPosition.Y);
+                    return new Point(position.X - 1, position.Y);
                 case Interface.Direction.TopLeft:
-                    return new Point(myPosition.X - 1, myPosition.Y - 1);
+                    return new Point(position.X - 1, position.Y - 1);
             }
             throw new InvalidProgramException("uuu");
         }
