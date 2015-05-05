@@ -5,9 +5,9 @@ namespace SnakeDeathmatch.Players.Vazba
 {
     public class Next
     {
-        public Me? Left;
-        public Me? Straight;
-        public Me? Right;
+        public Snake? Left;
+        public Snake? Straight;
+        public Snake? Right;
 
         public override string ToString()
         {

@@ -5,14 +5,14 @@ namespace SnakeDeathmatch.Players.Vazba
 {
     public struct Point
     {
-        public Point(int x, int y)
+        public Point(int x, int y) : this()
         {
             X = x;
             Y = y;
         }
 
-        public int X;
-        public int Y;
+        public int X { get; private set; }
+        public int Y { get; private set; }
 
         public override string ToString()
         {

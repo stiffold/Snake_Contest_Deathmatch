@@ -12,13 +12,14 @@ namespace SnakeDeathmatch.Players.Vazba
         private int[,] _newPlayground;
         private int _size;
 
-        public Snakes(Me me)
+        public Snakes(Snake me)
         {
             this.Me = me;
         }
 
-        public Me Me { get; private set; }
+        public Snake Me { get; private set; }
         public bool IsInitialized { get; private set; }
+
         public void Update(int[,] playground)
         {
             playground = (int[,])playground.Clone();
@@ -34,7 +35,7 @@ namespace SnakeDeathmatch.Players.Vazba
                     {
                         int playerId = playground[x, y];
                         if (playerId != 0 && playerId != Me.Id)
-                            this.Add(new Snake(playerId, initialPosition: new Point(x, y)));
+                            this.Add(new Snake(playerId, new Point(x, y), Direction.Top));
                     }
                 }
                 return;
@@ -50,7 +51,9 @@ namespace SnakeDeathmatch.Players.Vazba
                 _oldPlayground = _newPlayground;
                 _newPlayground = playground;
             }
-            
+
+            var liveSnakes = new List<Snake>();
+
             for (int y = 0; y < _size; y++)
             {
                 for (int x = 0; x < _size; x++)
@@ -60,16 +63,21 @@ namespace SnakeDeathmatch.Players.Vazba
                         int playerId = _newPlayground[x, y];
                         Point newPoint = new Point(x, y);
                         if (playerId == Me.Id)
-                            this.Me = new Me(newPoint, GetDirection(this.Me.P, newPoint));
+                            this.Me = new Snake((int)PlayerId.Vazba, newPoint, GetDirection(this.Me.P, newPoint));
                         else
                         {
-                            Snake snake = this.SingleOrDefault(s => s.Id == playerId);
-                            if (snake != null)
-                                snake.Update(newPoint, GetDirection(snake.P, newPoint));
+                            Snake? snake = this.SingleOrDefault(s => s.Id == playerId);
+                            if (snake.HasValue)
+                            {
+                                liveSnakes.Add(new Snake(snake.Value.Id, newPoint, GetDirection(snake.Value.P, newPoint)));
+                            }
                         }
                     }
                 }
             }
+
+            Clear();
+            AddRange(liveSnakes);
         }
 
         private Direction GetDirection(Point oldP, Point newP)

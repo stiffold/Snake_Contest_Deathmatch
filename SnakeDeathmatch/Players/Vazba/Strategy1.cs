@@ -3,16 +3,16 @@ using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
-    public class FirstStrategy : IStrategy
+    public class Strategy1 : IStrategy
     {
         private const int WTF = 18;
 
         private int[,] _playground = null;
 
-        public Move GetNextMove(int[,] playground, Snakes snakes)
+        public Move GetNextMove(int[,] playground, Snakes liveSnakes)
         {
             _playground = playground;
-            Me me = snakes.Me;
+            Snake me = liveSnakes.Me;
 
             Next next = me.GetNext(playground);
 
@@ -27,9 +27,9 @@ namespace SnakeDeathmatch.Players.Vazba
             return Move.Right;
         }
 
-        private int GetDepth(Me me, int level)
+        private int GetDepth(Snake me, int level)
         {
-            _playground[me.P.X, me.P.Y] = Me.Id;
+            _playground[me.X, me.Y] = me.Id;
 
             if (level >= WTF)
                 return WTF;
@@ -47,7 +47,7 @@ namespace SnakeDeathmatch.Players.Vazba
             if (next.Right.HasValue)
                 result = Math.Max(result, GetDepth(next.Right.Value, level + 1));
 
-            _playground[me.P.X, me.P.Y] = 0;
+            _playground[me.X, me.Y] = 0;
 
             return result;
         }

@@ -6,6 +6,7 @@ using System.Windows.Media;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Game;
 using SnakeDeathmatch.Players.Fools;
+using SnakeDeathmatch.Players.Vazba;
 
 namespace SnakeDeathmatch.Tests
 {
@@ -243,6 +244,15 @@ namespace SnakeDeathmatch.Tests
                 CreateStraightPlayer(Colors.LightPink, 4, 7, Direction.Top),
                 CreateStraightPlayer(Colors.MediumVioletRed, 1, 7, Direction.TopRight),
                 CreateStraightPlayer(Colors.Violet, 1, 4, Direction.Right)
+            });
+        }
+
+        public GameEngine Test00()
+        {
+            return new GameEngine(PlaygroundSize, new[]
+            {
+                CreateStraightPlayer(Colors.Red, 0, 4, Direction.Right),
+                CreatePlayer<VazbaPlayer>(Colors.Blue, 6, 3, Direction.TopLeft),
             });
         }
     }
