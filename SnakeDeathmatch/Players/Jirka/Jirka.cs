@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using SnakeDeathmatch.Interface;
 using System;
+using System.Diagnostics;
 
 namespace SnakeDeathmatch.Players.Jirka
 {
@@ -23,6 +24,7 @@ namespace SnakeDeathmatch.Players.Jirka
             this.playgroundSize = playgroundSize;
             this.position = new Vector(x, y);
             this.direction = direction;
+            //Console.WriteLine("StartingPosition:" + position.ToString());
         }
 
         public Move GetNextMove(int[,] playground)
@@ -34,27 +36,38 @@ namespace SnakeDeathmatch.Players.Jirka
                 Vector nextPosition2 = nextPosition + direction;
                 if (nextPosition2.WithinRangeBoth(0, playgroundSize) && playground[nextPosition2.X, nextPosition2.Y] == 0)
                 {
-                    position = nextPosition;
-                    return Move.Straight;
+                    return moveTo(Move.Straight, nextPosition, (Vector)direction, direction);
                 }
                 nextPosition2 = nextPosition + direction.TurnLeft();
                 if (nextPosition2.WithinRangeBoth(0, playgroundSize) && playground[nextPosition2.X, nextPosition2.Y] == 0)
                 {
-                    position += direction.TurnLeft();
-                    return Move.Left;
+                    return moveTo(Move.Left, position + direction.TurnLeft(), (Vector)direction, direction);
                 }
-                position += direction.TurnRight();
-                return Move.Right;
+                return moveTo(Move.Right, position + direction.TurnRight(), (Vector)direction, direction);
             }
             nextPosition = position + direction.TurnLeft();
             if (nextPosition.WithinRangeBoth(0, playgroundSize) && playground[nextPosition.X, nextPosition.Y] == 0)
             {
-                position = nextPosition;
-                return Move.Left;
+                return moveTo(Move.Left, nextPosition, (Vector)direction, direction);
             }
             nextPosition = position + direction.TurnRight();
-            position = nextPosition;
-            return Move.Right;
+            return moveTo(Move.Right, nextPosition,(Vector)direction,direction);
+        }
+
+        private Move moveTo(Move move, Vector position, Vector directionV, Direction direction)
+        {
+            //Console.WriteLine("turning: " + move.ToString() + "to position: " + position + "[" + directionV + "|" + direction + "]");
+            this.position = position;
+            switch (move)
+            {
+                case Move.Left:
+                    this.direction = this.direction.TurnLeft();
+                    break;
+                case Move.Right:
+                    this.direction = this.direction.TurnRight();
+                    break;
+            }
+            return move;
         }
 
         public string Name
