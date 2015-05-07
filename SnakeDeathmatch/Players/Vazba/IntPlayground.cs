@@ -21,7 +21,7 @@ namespace SnakeDeathmatch.Players.Vazba
 
         public IntPlayground(int[,] array)
         {
-            _array = array;
+            _array = (int[,])array.Clone();
             Size = array.GetUpperBound(0) + 1;
         }
 
@@ -29,6 +29,11 @@ namespace SnakeDeathmatch.Players.Vazba
         { 
             get { return _array[x, y]; }
             set { _array[x, y] = value; }
+        }
+
+        public IntPlayground Clone()
+        {
+            return new IntPlayground(_array);
         }
     }
 
@@ -61,6 +66,14 @@ namespace SnakeDeathmatch.Players.Vazba
                 form.ResumeLayout(false);
 
                 pictureBox.Image = CreateBitmapFromPlayground(playground);
+                pictureBox.MouseMove += (sender, e) =>
+                {
+                    int xx = e.X / 4;
+                    int yy = e.Y / 4;
+                    int id = (xx >= 0 && xx < playground.Size && yy >= 0 && yy < playground.Size) ? playground[xx, yy] : -999;
+                    PlayerId player = ((PlayerId)id);
+                    form.Text = string.Format("Int Playground Visualizer [{0},{1}] {2} ({3})", xx, yy, id, player);
+                };
                 windowService.ShowDialog(form);
             }
         }

@@ -19,10 +19,10 @@ namespace SnakeDeathmatch.Players.Vazba
 
         public int Size { get; private set; }
 
-        public DecimalPlayground(decimal[,] array)
+        public DecimalPlayground(int size)
         {
-            _array = array;
-            Size = array.GetUpperBound(0) + 1;
+            _array = new decimal[size, size];
+            Size = size;
         }
 
         public decimal this[int x, int y]
@@ -55,12 +55,20 @@ namespace SnakeDeathmatch.Players.Vazba
                 form.ClientSize = pictureBox.Size;
                 form.Controls.Add(pictureBox);
                 form.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                form.Text = "Int Playground Visualizer";
+                form.Text = "Decimal Playground Visualizer";
 
                 ((ISupportInitialize)(pictureBox)).EndInit();
                 form.ResumeLayout(false);
 
                 pictureBox.Image = CreateBitmapFromPlayground(playground);
+
+                pictureBox.MouseMove += (sender, e) =>
+                {
+                    int xx = e.X / 4;
+                    int yy = e.Y / 4;
+                    form.Text = string.Format("Decimal Playground Visualizer [{0},{1}] {2:0.0000000000}", xx, yy, (xx >= 0 && xx < playground.Size && yy >= 0 && yy < playground.Size) ? playground[xx, yy] : -1);
+                };
+
                 windowService.ShowDialog(form);
             }
         }

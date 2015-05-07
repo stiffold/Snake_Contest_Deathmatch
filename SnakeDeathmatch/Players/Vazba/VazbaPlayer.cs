@@ -21,11 +21,13 @@ namespace SnakeDeathmatch.Players.Vazba
 
         public Move GetNextMove(int[,] playground)
         {
-            _snakes.Update(playground);
+            var intPlayground = new IntPlayground(playground);
+
+            _snakes.Update(intPlayground);
 
             var snakes = _snakes.IsInitialized ? _snakes : new Snakes(_snakes.Me);
 
-            return _strategy.GetNextMove(new IntPlayground(playground), snakes);
+            return _strategy.GetNextMove(intPlayground, snakes);
         }
     }
 }

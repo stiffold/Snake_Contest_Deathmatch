@@ -8,9 +8,8 @@ namespace SnakeDeathmatch.Players.Vazba
 {
     public class Snakes : List<Snake>
     {
-        private int[,] _oldPlayground;
-        private int[,] _newPlayground;
-        private int _size;
+        private IntPlayground _oldPlayground;
+        private IntPlayground _newPlayground;
 
         public Snakes(Snake me)
         {
@@ -20,18 +19,17 @@ namespace SnakeDeathmatch.Players.Vazba
         public Snake Me { get; private set; }
         public bool IsInitialized { get; private set; }
 
-        public void Update(int[,] playground)
+        public void Update(IntPlayground playground)
         {
-            playground = (int[,])playground.Clone();
+            playground = playground.Clone();
 
             if (_oldPlayground == null && _newPlayground == null)
             {
                 _oldPlayground = playground;
-                _size = playground.GetUpperBound(0) + 1;
 
-                for (int y = 0; y < _size; y++)
+                for (int y = 0; y < playground.Size; y++)
                 {
-                    for (int x = 0; x < _size; x++)
+                    for (int x = 0; x < playground.Size; x++)
                     {
                         int playerId = playground[x, y];
                         if (playerId != 0 && playerId != Me.Id)
@@ -54,9 +52,9 @@ namespace SnakeDeathmatch.Players.Vazba
 
             var liveSnakes = new List<Snake>();
 
-            for (int y = 0; y < _size; y++)
+            for (int y = 0; y < _oldPlayground.Size; y++)
             {
-                for (int x = 0; x < _size; x++)
+                for (int x = 0; x < _oldPlayground.Size; x++)
                 {
                     if (_oldPlayground[x, y] == 0 && _newPlayground[x, y] != 0)
                     {
@@ -65,10 +63,11 @@ namespace SnakeDeathmatch.Players.Vazba
                             this.Me = new Snake((int)PlayerId.Vazba, x, y, GetDirection(Me.X, Me.Y, x, y));
                         else
                         {
-                            Snake? snake = this.SingleOrDefault(s => s.Id == playerId);
-                            if (snake.HasValue)
+                            IEnumerable<Snake> snakes = this.Where(s => s.Id == playerId);
+                            if (snakes.Count() == 1)
                             {
-                                liveSnakes.Add(new Snake(snake.Value.Id, x, y, GetDirection(snake.Value.X, snake.Value.Y, x, y)));
+                                Snake snake = snakes.Single();
+                                liveSnakes.Add(new Snake(snake.Id, x, y, GetDirection(snake.X, snake.Y, x, y)));
                             }
                         }
                     }
