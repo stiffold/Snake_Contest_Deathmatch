@@ -5,11 +5,11 @@ namespace SnakeDeathmatch.Players.Vazba
 {
     public class Strategy1 : IStrategy
     {
-        private const int WTF = 15;
+        private const int WTF = 18;
 
-        private int[,] _playground = null;
+        private IntPlayground _playground = null;
 
-        public Move GetNextMove(int[,] playground, Snakes liveSnakes)
+        public Move GetNextMove(IntPlayground playground, Snakes liveSnakes)
         {
             _playground = playground;
             Snake me = liveSnakes.Me;
@@ -29,10 +29,10 @@ namespace SnakeDeathmatch.Players.Vazba
 
         private int GetDepth(Snake me, int level)
         {
-            _playground[me.X, me.Y] = me.Id;
-
             if (level >= WTF)
                 return WTF;
+
+            _playground[me.X, me.Y] = me.Id;
 
             int result = level;
 
@@ -41,10 +41,10 @@ namespace SnakeDeathmatch.Players.Vazba
             if (next.Left.HasValue)
                 result = Math.Max(result, GetDepth(next.Left.Value, level + 1));
 
-            if (next.Straight.HasValue)
+            if (result < WTF && next.Straight.HasValue)
                 result = Math.Max(result, GetDepth(next.Straight.Value, level + 1));
 
-            if (next.Right.HasValue)
+            if (result < WTF && next.Right.HasValue)
                 result = Math.Max(result, GetDepth(next.Right.Value, level + 1));
 
             _playground[me.X, me.Y] = 0;

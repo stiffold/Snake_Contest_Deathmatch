@@ -17,7 +17,7 @@ namespace SnakeDeathmatch.Players.Vazba
         }
 
         private Snakes _snakes;
-        private IStrategy _strategy = new Strategy1();
+        private IStrategy _strategy = new Strategy2();
 
         public Move GetNextMove(int[,] playground)
         {
@@ -25,7 +25,7 @@ namespace SnakeDeathmatch.Players.Vazba
 
             var snakes = _snakes.IsInitialized ? _snakes : new Snakes(_snakes.Me);
 
-            return _strategy.GetNextMove(playground, snakes);
+            return _strategy.GetNextMove(new IntPlayground(playground), snakes);
         }
     }
 }

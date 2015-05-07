@@ -23,7 +23,7 @@ namespace SnakeDeathmatch.Players.Vazba
             return string.Format("[{0},{1}] {2}", X, Y, Direction);
         }
 
-        public Next GetNext(int[,] playground)
+        public Next GetNext(IntPlayground playground)
         {
             Direction leftDirection = Direction.TurnLeft();
             Direction straightDirection = Direction;
@@ -37,13 +37,12 @@ namespace SnakeDeathmatch.Players.Vazba
             };
         }
 
-        public bool CanMove(Direction direction, int[,] playground)
+        public bool CanMove(Direction direction, IntPlayground playground)
         {
             Snake s = Move(direction);
 
             // detekce kolize s okrajem pole
-            int size = playground.GetUpperBound(0) + 1;
-            if (s.X < 0 || s.Y < 0 || s.X >= size || s.Y >= size)
+            if (s.X < 0 || s.Y < 0 || s.X >= playground.Size || s.Y >= playground.Size)
             {
                 return false;
             }

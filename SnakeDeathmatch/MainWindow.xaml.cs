@@ -267,6 +267,7 @@ namespace SnakeDeathmatch
             if (!_gameEngine.GameOver)
             {
                 RenderArray(_gameEngine.Move());
+                //MessageBox.Show("Krokuju");
                 _round++;
             }
             else

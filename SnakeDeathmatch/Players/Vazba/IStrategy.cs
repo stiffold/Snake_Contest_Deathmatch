@@ -4,6 +4,6 @@ namespace SnakeDeathmatch.Players.Vazba
 {
     public interface IStrategy
     {
-        Move GetNextMove(int[,] playground, Snakes liveSnakes);
+        Move GetNextMove(IntPlayground playground, Snakes liveSnakes);
     }
 }
