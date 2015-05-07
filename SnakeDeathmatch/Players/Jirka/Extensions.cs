@@ -12,14 +12,14 @@ namespace SnakeDeathmatch.Players.Jirka
         {
             if (direction == Direction.Top)
                 return Direction.TopLeft;
-            return direction--;
+            return --direction;
         }
 
         public static Direction TurnRight(this Direction direction)
         {
             if (direction == Direction.TopLeft)
                 return Direction.Top;
-            return direction++;
+            return ++direction;
         }
     }
 }

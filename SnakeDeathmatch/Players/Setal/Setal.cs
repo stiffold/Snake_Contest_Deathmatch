@@ -38,7 +38,7 @@ namespace SnakeDeathmatch.Players.Setal
         public Move GetNextMove(int[,] playground)
         {
             _roundCounter++;
-           // _statistik = new Statistik();
+            // _statistik = new Statistik();
 
             EvaluateGame(playground);
 
@@ -64,6 +64,7 @@ namespace SnakeDeathmatch.Players.Setal
                 //MessageBox.Show("Danger Jdu:" + dangerPath.Result.Move);
                 return dangerPath.Result.Move;
             }
+
             return Move.Straight;
         }
 
@@ -664,7 +665,7 @@ namespace SnakeDeathmatch.Players.Setal
                         var move = Move.Straight;
                         var dir = Service.UpdateDirection(direction, Move.Straight);
                         var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
-                        var safe = IsViable(gamePoint.X - 1, gamePoint.Y - 1);
+                        var safe = IsViable(gamePoint.X + 1, gamePoint.Y - 1);
 
                         steps.Add(new Step(move, dir, point, safe));
                     }
@@ -887,7 +888,10 @@ namespace SnakeDeathmatch.Players.Setal
 
         private bool IsCrossCollision(GamePoint start, GamePoint final)
         {
-            return ((_possibilities[start.X, final.Y] == 2) && (_possibilities[start.Y, final.X] == 2));
+            if ((start.X == final.X) || (start.Y == final.Y))
+                return false;
+
+            return ((_possibilities[start.X, final.Y] == 2) && (_possibilities[final.X, start.Y] == 2));
         }
 
         private bool Count(GamePoint point, Direction direction, int depth, List<GamePoint> occupied)
@@ -900,17 +904,21 @@ namespace SnakeDeathmatch.Players.Setal
 
             foreach (var step in steps)
             {
-                if ((occupied.Contains(step.FinalPosition)) || (!IsCrossCollision(point, step.FinalPosition)))
+                if ((occupied.Contains(step.FinalPosition)) || (IsCrossCollision(point, step.FinalPosition)))
                     continue;
 
-                List<GamePoint> copy = occupied.Select(x => new GamePoint(x.X, x.Y)).ToList();
-                copy.Add(step.FinalPosition);
+                //List<GamePoint> copy = occupied.Select(x => new GamePoint(x.X, x.Y)).ToList();
+                occupied.Add(step.FinalPosition);
 
-                if (Count(step.FinalPosition, step.FinalDirection, depth + 1, copy))
+                if (Count(step.FinalPosition, step.FinalDirection, depth + 1, occupied))
                 {
                     if (depth == 0)
                         Result = step;
                     return true;
+                }
+                else
+                {
+                    occupied.Remove(step.FinalPosition);
                 }
             }
             return false;
