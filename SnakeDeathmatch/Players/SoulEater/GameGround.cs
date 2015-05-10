@@ -8,7 +8,7 @@ namespace SnakeDeathmatch.Players.SoulEater
 {
     public class GameGround
     {
-        #region props
+        #region props and fields
 
         public int[,] Ground { get; protected set; }
 
@@ -17,6 +17,10 @@ namespace SnakeDeathmatch.Players.SoulEater
         public IList<PlayerInfo> OtherPlayers { get; protected set; }
 
         public PlayerInfo OurHeroicPlayer { get; protected set; }
+
+        private IDictionary<int, VersionRecord> _versionRecordDictionary = new Dictionary<int, VersionRecord>();
+        
+        public int CurrentVersion = 0;
 
         #endregion
 
@@ -73,12 +77,6 @@ namespace SnakeDeathmatch.Players.SoulEater
             return new GameGround((int[,])Ground.Clone(), SizeOfTable, players, OurHeroicPlayer.MakeACopy());
         }
 
-        public void SimulateStateAfterOurMove(Point nextPoint)
-        {
-            Ground[nextPoint.X, nextPoint.Y] = OurHeroicPlayer.Identificator;
-            UpdatePlayerPositionAndDirection(OurHeroicPlayer, nextPoint);
-        }
-
         public void SimulateStateAfterOtherPlayersMove()
         {
             foreach (var player in OtherPlayers.Where(x => x.IsDown == false))
@@ -92,6 +90,42 @@ namespace SnakeDeathmatch.Players.SoulEater
 
                 Ground[nextPoint.X, nextPoint.Y] = 666;
                 UpdatePlayerPositionAndDirection(player, nextPoint);               
+            }
+        }
+
+        public void VersionUp(Point nextPointForOurPlayer)
+        {
+            CurrentVersion++;
+            _versionRecordDictionary.Add(new KeyValuePair<int, VersionRecord>(
+                CurrentVersion,
+                new VersionRecord(new List<Point> { nextPointForOurPlayer }, OurHeroicPlayer.CurrentPosition, OurHeroicPlayer.Direction)));
+            
+            Ground[nextPointForOurPlayer.X, nextPointForOurPlayer.Y] = OurHeroicPlayer.Identificator;
+            UpdatePlayerPositionAndDirection(OurHeroicPlayer, nextPointForOurPlayer);
+        }
+
+        //public void SimulateOurMove(Point nextPointForOurPlayer)
+        //{
+        //    Ground[nextPointForOurPlayer.X, nextPointForOurPlayer.Y] = OurHeroicPlayer.Identificator;
+        //    UpdatePlayerPositionAndDirection(OurHeroicPlayer, nextPointForOurPlayer);
+        //}
+
+        public void VersionDownTo(int version)
+        {
+            for (int i = CurrentVersion; i > version; i--)
+            {
+                var versionRecord = _versionRecordDictionary[i];
+                _versionRecordDictionary.Remove(i);
+                
+                foreach (var point in versionRecord.ChangedPoints)
+                {
+                    Ground[point.X, point.Y] = 0;
+                }
+
+                OurHeroicPlayer.CurrentPosition = versionRecord.PreviousPoint;
+                OurHeroicPlayer.Direction = versionRecord.PreviousDirection;
+
+                CurrentVersion--;
             }
         }
 
@@ -178,5 +212,19 @@ namespace SnakeDeathmatch.Players.SoulEater
         }
 
         #endregion
+
+        private class VersionRecord
+        {
+            public VersionRecord(IList<Point> points, Point previousPoint, Direction? previousDirection)
+            {
+                ChangedPoints = points;
+                PreviousPoint = previousPoint;
+                PreviousDirection = previousDirection;
+            }
+
+            public IList<Point> ChangedPoints { get; protected set; }
+            public Point PreviousPoint { get; protected set; }
+            public Direction? PreviousDirection { get; protected set; }
+        }
     }
 }

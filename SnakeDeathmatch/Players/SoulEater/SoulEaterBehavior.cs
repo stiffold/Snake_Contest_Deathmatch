@@ -44,7 +44,7 @@ namespace SnakeDeathmatch.Players.SoulEater
                 _currentGameGround.Update(gameSurrond);
             }
 
-            Move nextMove = GetSafeMove(10);
+            Move nextMove = GetSafeMove(15);
 
             return (int)nextMove;
         }
@@ -70,31 +70,33 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         #region move
 
-        private Move GetSafeMove(int numberOfSafeMoves)
+        private Move GetSafeMove(int numberOfMovesToTry)
         {
-            if (numberOfSafeMoves == 0)
-                return Move.Straight;
-
             var copyOfGround = _currentGameGround.MakeACopy();
             copyOfGround.SimulateStateAfterOtherPlayersMove();
             copyOfGround.SimulateStateAfterOtherPlayersMove();
             copyOfGround.SimulateStateAfterOtherPlayersMove();
             copyOfGround.SimulateStateAfterOtherPlayersMove();
 
+            IDictionary<Move,int> movesDictionary = new Dictionary<Move, int>();
             foreach (Move move in _moveList)
             {
-                bool isMoveSafe = GetIfMoveIsSafe(copyOfGround, move, numberOfSafeMoves);
-                if (isMoveSafe)
-                    return move;
+                var result = GetNumberOfSafeMovesFor(copyOfGround, move, numberOfMovesToTry);
+                movesDictionary.Add(move, result);
+
+                if (result == 0)
+                    break;
+
+                copyOfGround.VersionDownTo(0);
             }
 
-            return GetSafeMove(--numberOfSafeMoves);
+            return movesDictionary.OrderBy(x => x.Value).First().Key;
         }
 
-        private bool GetIfMoveIsSafe(GameGround gameGround, Move move, int numberOfSafeMoves)
+        private int GetNumberOfSafeMovesFor(GameGround gameGround, Move move, int numberOfSafeMoves)
         {
             if (numberOfSafeMoves == 0)
-                return true;
+                return 0;
 
             var ourPlayer = gameGround.OurHeroicPlayer;
 
@@ -103,29 +105,31 @@ namespace SnakeDeathmatch.Players.SoulEater
             Point nextPoint = DirectionHelper.GetNextPoint(ourPlayer.CurrentPosition, absoluteDirection);
 
             if (nextPoint.X >= gameGround.SizeOfTable || nextPoint.X < 0 || nextPoint.Y >= gameGround.SizeOfTable || nextPoint.Y < 0)
-                return false;
+                return numberOfSafeMoves;
 
             if (gameGround[nextPoint.X, nextPoint.Y] != 0)
-                return false;
+                return numberOfSafeMoves;
 
             if (IsCrossColision(nextPoint, absoluteDirection))
-                return false;
+                return numberOfSafeMoves;
 
-            if (CalculatePossibleMovesOfOtherPlayers().Any(x => x.Equals(nextPoint)))
-                return false;
+            gameGround.VersionUp(nextPoint);
+            var ourVersion = gameGround.CurrentVersion;
 
-            numberOfSafeMoves--;
-
-            var newGround = gameGround.MakeACopy();
-
-            newGround.SimulateStateAfterOurMove(nextPoint);
-
+            IDictionary<Move, int> movesDictionary = new Dictionary<Move, int>();
             foreach (var nextMove in _moveList)
             {
-                if (GetIfMoveIsSafe(newGround, nextMove, numberOfSafeMoves))
-                    return true;
+                var result = GetNumberOfSafeMovesFor(gameGround, nextMove, numberOfSafeMoves - 1);
+
+                movesDictionary.Add(nextMove, result);
+
+                if (result == 0)
+                    break;
+
+                gameGround.VersionDownTo(ourVersion);
             }
-            return false;
+            
+            return movesDictionary.OrderBy(x => x.Value).First().Value;
         }
 
         private bool IsCrossColision(Point newPosition, Direction direction)
