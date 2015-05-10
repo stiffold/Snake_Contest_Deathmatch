@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using SnakeDeathmatch.Interface;
 
@@ -21,6 +22,9 @@ namespace SnakeDeathmatch.Players.SoulEater
         private IDictionary<int, VersionRecord> _versionRecordDictionary = new Dictionary<int, VersionRecord>();
         
         public int CurrentVersion = 0;
+
+        public const int PotentionalyCollisionWithPlayerId = 666;
+        public const int DangerId = 777;
 
         #endregion
 
@@ -44,6 +48,19 @@ namespace SnakeDeathmatch.Players.SoulEater
         }
 
         #endregion
+
+        public bool IsValidPoint(int x, int y)
+        {
+            if (x < 0 || y < 0 || x >= SizeOfTable || y >= SizeOfTable)
+                return false;
+
+            return true;
+        }
+
+        public bool IsValidPoint(Point point)
+        {
+            return (IsValidPoint(point.X, point.Y));
+        }
 
         public void Update(int[,] newGround)
         {
@@ -77,22 +94,6 @@ namespace SnakeDeathmatch.Players.SoulEater
             return new GameGround((int[,])Ground.Clone(), SizeOfTable, players, OurHeroicPlayer.MakeACopy());
         }
 
-        public void SimulateStateAfterOtherPlayersMove()
-        {
-            foreach (var player in OtherPlayers.Where(x => x.IsDown == false))
-            {
-                if (player.Direction == null)
-                    continue;
-
-                Point nextPoint = DirectionHelper.GetNextPoint(player.CurrentPosition, player.Direction.Value);
-                if (nextPoint.X >= SizeOfTable || nextPoint.Y >= SizeOfTable || nextPoint.X < 0 || nextPoint.Y < 0)
-                    continue;
-
-                Ground[nextPoint.X, nextPoint.Y] = 666;
-                UpdatePlayerPositionAndDirection(player, nextPoint);               
-            }
-        }
-
         public void VersionUp(Point nextPointForOurPlayer)
         {
             CurrentVersion++;
@@ -103,12 +104,6 @@ namespace SnakeDeathmatch.Players.SoulEater
             Ground[nextPointForOurPlayer.X, nextPointForOurPlayer.Y] = OurHeroicPlayer.Identificator;
             UpdatePlayerPositionAndDirection(OurHeroicPlayer, nextPointForOurPlayer);
         }
-
-        //public void SimulateOurMove(Point nextPointForOurPlayer)
-        //{
-        //    Ground[nextPointForOurPlayer.X, nextPointForOurPlayer.Y] = OurHeroicPlayer.Identificator;
-        //    UpdatePlayerPositionAndDirection(OurHeroicPlayer, nextPointForOurPlayer);
-        //}
 
         public void VersionDownTo(int version)
         {
@@ -127,6 +122,30 @@ namespace SnakeDeathmatch.Players.SoulEater
 
                 CurrentVersion--;
             }
+        }
+
+
+        public void MakeAnalyze()
+        {
+            //for (int x = 0; x < SizeOfTable; x++)
+            //{
+            //    for (int y = 0; y < SizeOfTable; y++)
+            //    {
+            //        if (Ground[x, y] == 0)
+            //        {
+            //            if (IsValidPoint(x + 1, y) && Ground[x + 1, y] != 0)
+            //            {
+
+            //            }
+            //        }
+            //    }
+            //}
+
+            SimulateStateAfterOtherPlayersMove();
+            SimulateStateAfterOtherPlayersMove();
+            SimulateStateAfterOtherPlayersMove();
+            SimulateStateAfterOtherPlayersMove();
+            SimulateStateAfterOtherPlayersMove();
         }
 
         #region private
@@ -209,6 +228,34 @@ namespace SnakeDeathmatch.Players.SoulEater
 
             movedPlayer.Direction = newDirection;
             movedPlayer.CurrentPosition = newPoint;
+        }
+
+        private void SimulateStateAfterOtherPlayersMove()
+        {
+            foreach (var player in OtherPlayers.Where(x => x.IsDown == false))
+            {
+                var currentPoint = player.CurrentPosition;
+
+                var potentionalyDangerousPoints = DirectionHelper.GetBorderPoints(currentPoint).ToList();
+
+                foreach (var point in potentionalyDangerousPoints)
+                {
+                    if (IsValidPoint(point) && Ground[point.X, point.Y] == 0)
+                    {
+                        Ground[point.X, point.Y] = DangerId;
+                    }
+                }
+
+                if (player.Direction == null)
+                    continue;
+
+                Point nextPoint = DirectionHelper.GetNextPoint(currentPoint, player.Direction.Value);
+                if (nextPoint.X >= SizeOfTable || nextPoint.Y >= SizeOfTable || nextPoint.X < 0 || nextPoint.Y < 0)
+                    continue;
+
+                Ground[nextPoint.X, nextPoint.Y] = PotentionalyCollisionWithPlayerId;
+                UpdatePlayerPositionAndDirection(player, nextPoint);
+            }
         }
 
         #endregion
