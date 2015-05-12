@@ -1,74 +1,72 @@
 ﻿﻿using System;
 using System.Collections.Generic;
-using SnakeDeathmatch.Interface;
+﻿using System.Linq;
+﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Threading;
+﻿using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.SoulEater
 {
-
     public class SoulEaterBehavior : IPlayerBehavior
     {
         #region fields and props
-        private int _sizeOfTable;
 
-        private Interface.Direction _myCurrentDirection;
+        private Direction _myInitialDirection;
 
         private int _myIdentificatior;
 
-        private Point _myCurrentPosition;
-        private Point MyCurrentPosition
-        {
+        private GameGround _currentGameGround;
 
-            get { return _myCurrentPosition; }
-
-            set { _myCurrentPosition = value; }
-
-        }
-
-        private int[,] _currentSurrond;
-
-        private readonly IList<Interface.Move> _moveList = new List<Interface.Move> { Interface.Move.Straight, Interface.Move.Left, Interface.Move.Right };
+        private IList<Move> _moveList = new List<Move> { Move.Straight, Move.Left, Move.Right };
 
         private bool _isFirstMove = true;
 
-        private IList<OtherPlayerInfo> _otherPlayers = new List<OtherPlayerInfo>();
-        private IList<OtherPlayerInfo> OtherPlayers
-        {
+        private IList<PlayerInfo> _otherPlayers = new List<PlayerInfo>();
 
-            get { return _otherPlayers; }
-
-        }
+        private Mode _mode = Mode.FindWall;
 
         #endregion
 
         public void Init(int direction, int identificator)
         {
-            _myCurrentDirection = (Interface.Direction)direction;
+            _myInitialDirection = (Direction)direction;
             _myIdentificatior = identificator;
         }
 
         public int NextMove(int[,] gameSurrond)
         {
-            _currentSurrond = gameSurrond;
-
             if (_isFirstMove)
-            { 
-                _sizeOfTable = gameSurrond.GetUpperBound(0) + 1;
-                InitPositionsOfPlayers(gameSurrond);
+            {
+                _currentGameGround = new GameGround(gameSurrond, _myIdentificatior, _myInitialDirection);
+
                 _isFirstMove = false;
             }
-            //
-            ValidateCurrentPosition();
-            Interface.Move nextMove = GetSafeMove(20);
-            RecalculateNextPositionAndDirection(nextMove);
+            else
+            {
+                _currentGameGround.Update(gameSurrond);
+            }
+
+            Move nextMove = GetSafeMove(10);
+
+            ProcessMove(nextMove);
 
             return (int)nextMove;
         }
 
-        private void ValidateCurrentPosition()
+        private void ProcessMove(Move nextMove)
         {
-            if (_currentSurrond[MyCurrentPosition.X, MyCurrentPosition.Y] != _myIdentificatior)
+            if (_mode == Mode.WallFinded)
+                return;
+
+            if (nextMove == Move.Left)
             {
-                throw new Exception();
+                _mode = Mode.WallFinded;
+                _moveList = new List<Move> { Move.Right, Move.Straight, Move.Left };
+            }
+            if (nextMove == Move.Right)
+            {
+                _mode = Mode.WallFinded;
+                _moveList = new List<Move> { Move.Left, Move.Straight, Move.Right };
             }
         }
 
@@ -91,90 +89,86 @@ namespace SnakeDeathmatch.Players.SoulEater
             }
         }
 
-        private void InitPositionsOfPlayers(int[,] gameSurrond)
-        {
-            for (int x = 0; x < _sizeOfTable; x++)
-            {
-                for (int y = 0; y < _sizeOfTable; y++)
-                {
-                    if (gameSurrond[x, y] == _myIdentificatior)
-                    {
-                        MyCurrentPosition = new Point(x, y);
-                        return;
-                    }
-
-                    //if (gameSurrond[x, y] != 0)
-                    //{
-                    //    CreateNewPlayer(x, y, gameSurrond[x, y]);
-                    //}
-                }
-            }
-        }
-
-        private void CreateNewPlayer(int x, int y, int identificator)
-        {
-            _otherPlayers.Add(new OtherPlayerInfo(x, y, identificator));
-        }
-
         #region move
 
-        private void RecalculateNextPositionAndDirection(Interface.Move move)
+        private Move GetSafeMove(int numberOfMovesToTry)
         {
-            _myCurrentDirection = GetAbsoluteDirection(_myCurrentDirection, move);
-            MyCurrentPosition = GetNextPoint(MyCurrentPosition, _myCurrentDirection);
-        }
+            var copyOfGround = _currentGameGround.MakeACopy();
 
-        private Interface.Move GetSafeMove(int numberOfSafeMoves)
-        {
-            if (numberOfSafeMoves == 0)
-                return Interface.Move.Straight;
+            copyOfGround.MakeAnalyze();
 
-            foreach (Interface.Move move in _moveList)
+            IDictionary<Move, decimal> movesDictionary = new Dictionary<Move, decimal>();
+            foreach (Move move in _moveList)
             {
-                bool isMoveSafe = GetIfMoveIsSafe(MyCurrentPosition, _myCurrentDirection, move, numberOfSafeMoves);
-                if (isMoveSafe)
-                    return move;
+                var result = GetPointsForMove(copyOfGround, move, numberOfMovesToTry);
+                movesDictionary.Add(move, result);
+
+                if (result == numberOfMovesToTry)
+                    break;
+
+                copyOfGround.VersionDownTo(0);
             }
 
-            return GetSafeMove(--numberOfSafeMoves);
+            return movesDictionary.OrderByDescending(x => x.Value).First().Key;
         }
 
-        private bool GetIfMoveIsSafe(Point currentPosition, Interface.Direction currentDirection, Interface.Move move, int numberOfSafeMoves)
+        private decimal GetPointsForMove(GameGround gameGround, Move move, int numberOfSafeMoves)
         {
             if (numberOfSafeMoves == 0)
-                return true;
+                return 0;
 
-            Interface.Direction absoluteDirection = GetAbsoluteDirection(currentDirection, move);
+            decimal pointsForThisMove = 0;
 
-            Point nextPoint = GetNextPoint(currentPosition, absoluteDirection);
+            var ourPlayer = gameGround.OurHeroicPlayer;
 
-            if (nextPoint.X >= _sizeOfTable || nextPoint.X < 0 || nextPoint.Y >= _sizeOfTable || nextPoint.Y < 0)
-                return false;
+            Direction absoluteDirection = DirectionHelper.GetAbsoluteDirection(ourPlayer.Direction.Value, move);
 
-            if (_currentSurrond[nextPoint.X, nextPoint.Y] != 0)
-                return false;
+            Point nextPoint = DirectionHelper.GetNextPoint(ourPlayer.CurrentPosition, absoluteDirection);
 
-            if (IsCrossColision(nextPoint, absoluteDirection))
-                return false;
+            if (nextPoint.X >= gameGround.SizeOfTable || nextPoint.X < 0 || nextPoint.Y >= gameGround.SizeOfTable || nextPoint.Y < 0)
+                return pointsForThisMove;
 
-            numberOfSafeMoves--;
+            else if (gameGround[nextPoint.X, nextPoint.Y] == GameGround.PotentionalyCollisionWithPlayerId)
+                pointsForThisMove = (decimal) 0.5;
+            else if (gameGround[nextPoint.X, nextPoint.Y] == GameGround.DangerId)
+                pointsForThisMove = (decimal)0.75;
 
+            else if (gameGround[nextPoint.X, nextPoint.Y] != 0)
+                return pointsForThisMove;
+
+            else if (IsCrossColision(nextPoint, absoluteDirection))
+                return pointsForThisMove;
+            else
+                pointsForThisMove = 1;
+
+
+            gameGround.VersionUp(nextPoint);
+            var ourVersion = gameGround.CurrentVersion;
+
+            IDictionary<Move, decimal> movesDictionary = new Dictionary<Move, decimal>();
             foreach (var nextMove in _moveList)
             {
-                if (GetIfMoveIsSafe(nextPoint, absoluteDirection, nextMove, numberOfSafeMoves))
-                    return true;
+                var result = GetPointsForMove(gameGround, nextMove, numberOfSafeMoves - 1);
+
+                movesDictionary.Add(nextMove, result);
+
+                if (result == numberOfSafeMoves - 1)
+                    break;
+
+                gameGround.VersionDownTo(ourVersion);
             }
-            return false;
+
+            return movesDictionary.OrderByDescending(x => x.Value).First().Value + pointsForThisMove;
         }
 
-        private bool IsCrossColision(Point newPosition, Interface.Direction direction)
+        private bool IsCrossColision(Point newPosition, Direction direction)
         {
             switch (direction)
             {
-                case Interface.Direction.TopRight: return (_currentSurrond[newPosition.X, newPosition.Y + 1] != 0) && (_currentSurrond[newPosition.X - 1, newPosition.Y] != 0);
-                case Interface.Direction.BottomRight: return (_currentSurrond[newPosition.X, newPosition.Y - 1] != 0) && (_currentSurrond[newPosition.X - 1, newPosition.Y] != 0);
-                case Interface.Direction.BottomLeft: return (_currentSurrond[newPosition.X, newPosition.Y - 1] != 0) && (_currentSurrond[newPosition.X + 1, newPosition.Y] != 0);
-                case Interface.Direction.TopLeft: return (_currentSurrond[newPosition.X, newPosition.Y + 1] != 0) && (_currentSurrond[newPosition.X + 1, newPosition.Y] != 0);
+                case Direction.TopRight: return (_currentGameGround[newPosition.X, newPosition.Y + 1] != 0) && (_currentGameGround[newPosition.X - 1, newPosition.Y] != 0);
+                case Direction.BottomRight: return (_currentGameGround[newPosition.X, newPosition.Y - 1] != 0) && (_currentGameGround[newPosition.X - 1, newPosition.Y] != 0);
+                case Direction.BottomLeft: return (_currentGameGround[newPosition.X, newPosition.Y - 1] != 0) && (_currentGameGround[newPosition.X + 1, newPosition.Y] != 0);
+                case Direction.TopLeft: return (_currentGameGround[newPosition.X, newPosition.Y + 1] != 0) && (_currentGameGround[newPosition.X + 1, newPosition.Y] != 0);
             }
 
             return false;
@@ -182,48 +176,31 @@ namespace SnakeDeathmatch.Players.SoulEater
         }
 
         #endregion
-
-        private Point GetNextPoint(Point myPosition, Interface.Direction absoluteDirection)
+     
+        private IList<Point> CalculatePossibleMovesOfOtherPlayers()
         {
-            switch (absoluteDirection)
+            List<Point> points = new List<Point>();
+
+            foreach (var player in _otherPlayers.Where(x => x.IsDown == false))
             {
-                case Interface.Direction.Top:
-                    return new Point(myPosition.X, myPosition.Y - 1);
-                case Interface.Direction.TopRight:
-                    return new Point(myPosition.X + 1, myPosition.Y - 1);
-                case Interface.Direction.Right:
-                    return new Point(myPosition.X + 1, myPosition.Y);
-                case Interface.Direction.BottomRight:
-                    return new Point(myPosition.X + 1, myPosition.Y + 1);
-                case Interface.Direction.Bottom:
-                    return new Point(myPosition.X, myPosition.Y + 1);
-                case Interface.Direction.BottomLeft:
-                    return new Point(myPosition.X - 1, myPosition.Y + 1);
-                case Interface.Direction.Left:
-                    return new Point(myPosition.X - 1, myPosition.Y);
-                case Interface.Direction.TopLeft:
-                    return new Point(myPosition.X - 1, myPosition.Y - 1);
+                foreach (var move in _moveList)
+                {
+                    if (player.Direction == null)
+                        continue;
+
+                    var absoluteDirection = DirectionHelper.GetAbsoluteDirection(player.Direction.Value, move);
+
+                    points.Add(DirectionHelper.GetNextPoint(player.CurrentPosition, absoluteDirection));            
+                }
             }
-            throw new InvalidProgramException("uuu");
+
+            return points;
         }
 
-        private Interface.Direction GetAbsoluteDirection(Interface.Direction direction, Interface.Move move)
+        private enum Mode
         {
-            if (move == Interface.Move.Left)
-            {
-                if (direction == Interface.Direction.Top)
-                    return Interface.Direction.TopLeft;
-                return direction - 1;
-            }
-
-            if (move == Interface.Move.Right)
-            {
-                if (direction == Interface.Direction.TopLeft)
-                    return Interface.Direction.Top;
-                return direction + 1;
-            }
-
-            return direction;
+            FindWall = 0,
+            WallFinded = 1
         }
     }
 }

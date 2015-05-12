@@ -53,5 +53,17 @@ namespace SnakeDeathmatch.Players.Jardik
 
             return oldDirection;
         }
+
+        public static bool IsDiagonal(this Direction direction)
+        {
+                switch (direction)
+                {
+                    case Direction.TopRight: return true;
+                    case Direction.BottomRight: return true;
+                    case Direction.BottomLeft: return true;
+                    case Direction.TopLeft: return true;
+                }
+                return false;          
+        }
     }
 }

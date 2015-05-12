@@ -34,7 +34,7 @@ namespace SnakeDeathmatch.Players.Jardik
             if (!_myPlanedMoves.Any(s=>s.Round ==_round))
             {
                 _myPlanedMoves.AddRange(_planner.GetBestWalksToMe(_round, _myPosition, _myDirection, gameSurrond));
-                //_myPlanedMoves.AddRange(_planner.GetVariant(_round, _myPosition, _myDirection, gameSurrond,WalkSetType.Safer));
+                //_myPlanedMoves.AddRange(_planner.GetVariant(_round, _myPosition, _myDirection, gameSurrond,WalkSetType.Roll100));
             }
             else
             {

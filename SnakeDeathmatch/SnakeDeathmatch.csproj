@@ -39,8 +39,11 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -59,6 +62,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Game\PlayerBehaviourWrapper.cs" />
+    <Compile Include="Game\RecordLine.cs" />
     <Compile Include="Interface\IPlayerBehaviour2.cs" />
     <Compile Include="Interface\PlayerId.cs" />
     <Compile Include="Players\Fools\StraightPlayer.cs" />
@@ -75,13 +79,27 @@
     <Compile Include="Players\Jirka\Jirka.cs" />
     <Compile Include="Players\Jirka\Vector.cs" />
     <Compile Include="Players\Setal\Setal.cs" />
-    <Compile Include="Players\SoulEater\OtherPlayerInfo.cs" />
+    <Compile Include="Players\SoulEater\DirectionHelper.cs" />
+    <Compile Include="Players\SoulEater\GameGround.cs" />
+    <Compile Include="Players\SoulEater\PlayerInfo.cs" />
     <Compile Include="Players\SoulEater\Point.cs" />
     <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />
-    <Compile Include="Players\Vazba\Point.cs" />
+    <Compile Include="Players\Vazba\DecimalPlayground.cs" />
+    <Compile Include="Players\Vazba\DirectionExt.cs" />
+    <Compile Include="Players\Vazba\IntPlayground.cs" />
+    <Compile Include="Players\Vazba\Strategy1.cs" />
+    <Compile Include="Players\Vazba\IStrategy.cs" />
+    <Compile Include="Players\Vazba\Next.cs" />
     <Compile Include="Players\Vazba\Snake.cs" />
     <Compile Include="Players\Vazba\Snakes.cs" />
+    <Compile Include="Players\Vazba\Strategy2.cs" />
     <Compile Include="Tests\CollisionTests.cs" />
+    <Compile Include="Views\EndGameDialog.xaml.cs">
+      <DependentUpon>EndGameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OpenReplayDialog.xaml.cs">
+      <DependentUpon>OpenReplayDialog.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +118,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\EndGameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OpenReplayDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Players\Fools\FoolHelper.cs" />
