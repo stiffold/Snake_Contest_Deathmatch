@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{140C86D3-8F0E-4AE2-A06A-9107FC0A661E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SnakeGame</RootNamespace>
+    <AssemblyName>SnakeGame</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Game\GameEngine.cs" />
+    <Compile Include="Game\GameState.cs" />
+    <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\PlayerBehaviourWrapper.cs" />
+    <Compile Include="Game\PlayerState.cs" />
+    <Compile Include="Game\Position.cs" />
+    <Compile Include="Interface\Direction.cs" />
+    <Compile Include="Interface\IPlayerBehavior.cs" />
+    <Compile Include="Interface\IPlayerBehaviour2.cs" />
+    <Compile Include="Interface\Move.cs" />
+    <Compile Include="Interface\PlayerId.cs" />
+    <Compile Include="Players\Fools\FoolHelper.cs" />
+    <Compile Include="Players\Fools\RandomPlayer.cs" />
+    <Compile Include="Players\Fools\StraightPlayer.cs" />
+    <Compile Include="Players\Jardik\CollissionHelper.cs" />
+    <Compile Include="Players\Jardik\Direction.cs" />
+    <Compile Include="Players\Jardik\Jardik.cs" />
+    <Compile Include="Players\Jardik\Move.cs" />
+    <Compile Include="Players\Jardik\Planner.cs" />
+    <Compile Include="Players\Jardik\Position.cs" />
+    <Compile Include="Players\Jardik\Walk.cs" />
+    <Compile Include="Players\Jardik\WalkSetBase.cs" />
+    <Compile Include="Players\Jardik\WalkSets.cs" />
+    <Compile Include="Players\Jardik\WalkSetType.cs" />
+    <Compile Include="Players\Jirka\Extensions.cs" />
+    <Compile Include="Players\Jirka\Jirka.cs" />
+    <Compile Include="Players\Jirka\Vector.cs" />
+    <Compile Include="Players\Setal\Setal.cs" />
+    <Compile Include="Players\SoulEater\OtherPlayerInfo.cs" />
+    <Compile Include="Players\SoulEater\Point.cs" />
+    <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />
+    <Compile Include="Players\Vazba\Point.cs" />
+    <Compile Include="Players\Vazba\Snake.cs" />
+    <Compile Include="Players\Vazba\Snakes.cs" />
+    <Compile Include="Players\Vazba\VazbaPlayer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\CollisionTests.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
