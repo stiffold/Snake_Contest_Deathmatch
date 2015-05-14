@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Debugger;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
     public class Strategy2 : IStrategy
     {
-        public const int MyWTF = 20;
-        public const int OthersWTF = 7;
+        public const int MyWTF = 18;
+        public const int OthersWTF = 5;
 
-        private IntPlayground _playgroundForTrack = null;
+        [ToDebug]
+        public IntPlayground PlaygroundForTrack { get; private set; }
 
         /// <summary>Herní hřiště (pro každý krok jedno) s pravděpodobnostmi obsazenosti jednotlivých políček v daném kroku.</summary>
-        private List<DecimalPlayground> _playgroundForStep = null;
+        [ToDebug]
+        public List<DecimalPlayground> PlaygroundForStep { get; private set; }
+
         private int _size;
         private Snakes _snakes;
 
         public Move GetNextMove(IntPlayground playground, Snakes liveSnakes)
         {
-            _playgroundForTrack = playground;
+            PlaygroundForTrack = playground;
             _size = playground.Size;
             _snakes = liveSnakes;
 
@@ -27,11 +29,15 @@ namespace SnakeDeathmatch.Players.Vazba
 
             Snake me = liveSnakes.Me;
 
-            Next next = me.GetNext(_playgroundForTrack);
+            Next next = me.GetNext(PlaygroundForTrack);
 
             var resultForLeft = next.Left.HasValue ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
             var resultForStraight = (resultForLeft != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
             var resultForRight = (resultForLeft != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Right.HasValue) ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+
+            //var resultForStraight = next.Straight.HasValue ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            //var resultForLeft = (resultForStraight != TrackExplorationResult.BestPossibleResult && next.Left.HasValue) ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            //var resultForRight = (resultForLeft != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Right.HasValue) ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
 
             if (resultForLeft >= resultForStraight && resultForLeft >= resultForRight) return Move.Left;
             if (resultForStraight >= resultForLeft && resultForStraight >= resultForRight) return Move.Straight;
@@ -41,10 +47,10 @@ namespace SnakeDeathmatch.Players.Vazba
         private void CreateAndInitPlaygroundsForAllSteps()
         {
             // vytvoření polí
-            _playgroundForStep = new List<DecimalPlayground>();
+            PlaygroundForStep = new List<DecimalPlayground>();
             for (int step = 0; step <= OthersWTF; step++)
             {
-                _playgroundForStep.Add(new DecimalPlayground(_size));
+                PlaygroundForStep.Add(new DecimalPlayground(_size));
             }
 
             // inicializace obsazenosti polí podle aktuálního herního hřiště
@@ -52,9 +58,9 @@ namespace SnakeDeathmatch.Players.Vazba
             {
                 for (int y = 0; y < _size; y++)
                 {
-                    decimal value = (_playgroundForTrack[x, y] != 0) ? 1 : 0;
+                    decimal value = (PlaygroundForTrack[x, y] != 0) ? 1 : 0;
 
-                    foreach (DecimalPlayground playground in _playgroundForStep)
+                    foreach (DecimalPlayground playground in PlaygroundForStep)
                     {
                         playground[x, y] = value;
                     }
@@ -73,11 +79,11 @@ namespace SnakeDeathmatch.Players.Vazba
             if (step == OthersWTF)
                 return;
 
-            if (step > 0) _playgroundForTrack[snake.X, snake.Y] = snake.Id;
+            if (step > 0) PlaygroundForTrack[snake.X, snake.Y] = snake.Id;
 
             AddDeathProbabilityForTheStepAndUpwards(deathProbability, snake.X, snake.Y, step);
 
-            Next next = snake.GetNext(_playgroundForTrack);
+            Next next = snake.GetNext(PlaygroundForTrack);
 
             decimal freeWays = (next.Left.HasValue ? 1 : 0) + (next.Straight.HasValue ? 1 : 0) + (next.Right.HasValue ? 1 : 0);
 
@@ -85,14 +91,14 @@ namespace SnakeDeathmatch.Players.Vazba
             if (next.Straight.HasValue) FillPlaygroundsWithDeathProbabilityForSnake(next.Straight.Value, step + 1, deathProbability / freeWays);
             if (next.Right.HasValue) FillPlaygroundsWithDeathProbabilityForSnake(next.Right.Value, step + 1, deathProbability / freeWays);
 
-            if (step > 0) _playgroundForTrack[snake.X, snake.Y] = 0;
+            if (step > 0) PlaygroundForTrack[snake.X, snake.Y] = 0;
         }
 
         private void AddDeathProbabilityForTheStepAndUpwards(decimal deathProbability, int x, int y, int targetStep)
         {
-            for (int currentStep = targetStep; currentStep < _playgroundForStep.Count; currentStep++)
+            for (int currentStep = targetStep; currentStep < PlaygroundForStep.Count; currentStep++)
             {
-                _playgroundForStep[currentStep][x, y] += deathProbability;
+                PlaygroundForStep[currentStep][x, y] += deathProbability;
             }
         }
 
@@ -101,9 +107,9 @@ namespace SnakeDeathmatch.Players.Vazba
             if (step == MyWTF)
                 return new TrackExplorationResult(step, aliveProbability: 1);
 
-            if (step > 0) _playgroundForTrack[me.X, me.Y] = me.Id;
+            if (step > 0) PlaygroundForTrack[me.X, me.Y] = me.Id;
 
-            Next next = me.GetNext(_playgroundForTrack);
+            Next next = me.GetNext(PlaygroundForTrack);
 
             TrackExplorationResult currentBestResult = new TrackExplorationResult(step, 0);
 
@@ -128,9 +134,10 @@ namespace SnakeDeathmatch.Players.Vazba
                     currentBestResult = justExploredResult;
             }
 
-            if (step > 0) _playgroundForTrack[me.X, me.Y] = 0;
+            if (step > 0) PlaygroundForTrack[me.X, me.Y] = 0;
 
-            decimal aliveProbabilityForCurrentStep = (step > OthersWTF) ? 1 : 1 - _playgroundForStep[step][me.X, me.Y];
+            //decimal aliveProbabilityForCurrentStep = (step > OthersWTF) ? 1 : 1 - PlaygroundForStep[step][me.X, me.Y];
+            decimal aliveProbabilityForCurrentStep = (step > OthersWTF) ? 1 : 1 - PlaygroundForStep[OthersWTF][me.X, me.Y];
 
             return new TrackExplorationResult(currentBestResult.Depth, currentBestResult.AliveProbability * aliveProbabilityForCurrentStep);
         }

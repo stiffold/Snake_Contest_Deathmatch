@@ -1,7 +1,4 @@
-﻿using System;
-using SnakeDeathmatch.Interface;
-
-namespace SnakeDeathmatch.Players.Vazba
+﻿namespace SnakeDeathmatch.Players.Vazba
 {
     public class Next
     {
