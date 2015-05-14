@@ -1,0 +1,210 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using SnakeGame.Game;
+using SnakeGame.Interface;
+
+namespace NewGameUI
+{
+    public partial class GameMainWindow : Form
+    {
+
+        private Random _random = new Random();
+
+        //game settings
+        public const int PlaygroundSizeInDots = 200;
+        public const int GameSpeed = 1001;  // pokud více než 1000, tak maximum, co dá procesor (vypne se sleep ve vlaknu)
+        public const int TestsSpeed = 25;
+
+        //render settings
+        public const int PlaygroundSizeInPixels = 700;
+        public const int RenderTimerIntervalInMilliseconds = 30; // rychlost vykreslovani, cim nizsi, tim rychlejsi
+
+        // game state
+        private Stopwatch _stopwatch = new Stopwatch();
+        private GameEngine _gameEngine;
+        private GameState _previousGameState;
+        private Bitmap _arenaPicture;
+
+        #region GameInitialize
+        private IEnumerable<Player> GetPlayers()
+        {
+            var players = new List<Player>();
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Green, new SnakeGame.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Blue, new SnakeGame.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeGame.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SnakeGame.Players.SoulEater.SoulEaterBehavior(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Yellow, new SnakeGame.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
+
+            return players;
+        }
+
+        private Position GetRandomPosition()
+        {
+            return new Position(_random.Next(4, PlaygroundSizeInDots - 4), _random.Next(4, PlaygroundSizeInDots - 4));
+        }
+
+        private Direction GetRandomDirection()
+        {
+            return (Direction)(_random.Next(1, 8));
+        }
+
+        private void RestartGame()
+        {
+
+            if (_gameEngine != null)
+                _gameEngine.StopGame();
+
+            _gameEngine = new GameEngine(PlaygroundSizeInDots, Color.Magenta, GetPlayers());
+            _gameEngine.StartGame(GameSpeed);
+
+            _previousGameState = null;
+            _stopwatch.Start();
+
+            InitializeGraphics();
+            timerUI.Interval = RenderTimerIntervalInMilliseconds;
+            timerUI.Start();  //timer ma udalost timerUI_Tick, tam se vzdy provede prekresleni
+        }
+
+        #endregion
+
+        # region UI Events
+        public GameMainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void timerUI_Tick(object sender, EventArgs e)
+        {
+            DrawWindow();
+        }
+
+        private void btnRestart_Click(object sender, EventArgs e)
+        {
+            RestartGame();
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GameMainWindow_Load(object sender, EventArgs e)
+        {
+            this.Width = PlaygroundSizeInPixels + 16;
+            this.Height = PlaygroundSizeInPixels + 16 + 61;
+
+            this.Top = (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2;
+            this.Left = (Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2;
+
+            RestartGame();
+        }
+
+        private void GameMainWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (_gameEngine != null)
+                _gameEngine.StopGame();
+        }
+
+        # endregion
+
+        #region Drawing
+
+        private void DrawWindow()
+        {
+
+            GameState gameState = _gameEngine.GetGameState();
+            lblCounter.Text = gameState.Round.ToString(CultureInfo.InvariantCulture);
+            UpdateRPS(gameState);
+
+            DrawGameStateToImage(gameState);
+
+            //a tady se to vykreslí do panelu
+            var controlGraphics = pnlArena.CreateGraphics();
+            controlGraphics.DrawImageUnscaled(_arenaPicture, 0, 0);
+
+
+        }
+
+        private void InitializeGraphics()
+        {
+
+            _arenaPicture = new Bitmap(PlaygroundSizeInPixels, PlaygroundSizeInPixels);
+            using (Graphics graphics = Graphics.FromImage(_arenaPicture))
+            {
+                graphics.Clear(Color.Black);
+                graphics.Dispose();
+            }
+        }
+
+        private void DrawGameStateToImage(GameState gameState)
+        {
+            int dotSize = PlaygroundSizeInPixels / PlaygroundSizeInDots;
+            using (var graphics = Graphics.FromImage(_arenaPicture))
+            {
+                for (int x = 0; x <= gameState.GameSurround.GetUpperBound(0); x++)
+                {
+                    for (int y = 0; y <= gameState.GameSurround.GetUpperBound(1); y++)
+                    {
+                        if (gameState.GameSurround[x, y] != 0 && IsPointInArrayChanged(gameState, x, y))
+                        {
+                            var color = (Color)_gameEngine.GetColorForIdentificator(gameState.GameSurround[x, y]);
+                            if (dotSize > 1)
+                            {
+                                var rectangle = new Rectangle(x * dotSize, y * dotSize, dotSize, dotSize);
+                                graphics.FillEllipse(new SolidBrush(color), rectangle);
+                            }
+                            else
+                            {
+                                //toto je tu proto, ze rectangle se  neumi vykreslit pokud je 1px velky
+                                var bitmap = new Bitmap(1, 1);
+                                bitmap.SetPixel(0, 0, color);
+                                graphics.DrawImageUnscaled(bitmap, x * dotSize, y * dotSize);
+                            }
+                        }
+                    }
+                }
+            }
+
+            _previousGameState = gameState;
+        }
+
+
+
+        private void UpdateRPS(GameState gameState)
+        {
+            //TODO TR: tohle chce přepracovat, je to jen nástřel
+            int rounds = gameState.Round - (_previousGameState != null ? _previousGameState.Round : 0);
+            _stopwatch.Stop();
+            if (_stopwatch.ElapsedMilliseconds > 0)
+            {
+                double RPS = rounds / (_stopwatch.ElapsedMilliseconds / 1000d);
+                _stopwatch.Restart();
+                lblRPS.Text = string.Format("{0:#.00} RPS", RPS);
+            }
+        }
+
+
+        private bool IsPointInArrayChanged(GameState gameState, int x, int y)
+        {
+
+            if (_previousGameState == null)
+                return true;
+
+            if (gameState.GameSurround[x, y] != _previousGameState.GameSurround[x, y])
+                return true;
+
+            return false;
+        }
+
+        # endregion
+
+
+
+    }
+}

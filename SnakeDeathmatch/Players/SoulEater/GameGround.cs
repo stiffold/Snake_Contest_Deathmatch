@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using SnakeDeathmatch.Interface;
 
@@ -8,7 +9,7 @@ namespace SnakeDeathmatch.Players.SoulEater
 {
     public class GameGround
     {
-        #region props
+        #region props and fields
 
         public int[,] Ground { get; protected set; }
 
@@ -17,6 +18,13 @@ namespace SnakeDeathmatch.Players.SoulEater
         public IList<PlayerInfo> OtherPlayers { get; protected set; }
 
         public PlayerInfo OurHeroicPlayer { get; protected set; }
+
+        private IDictionary<int, VersionRecord> _versionRecordDictionary = new Dictionary<int, VersionRecord>();
+        
+        public int CurrentVersion = 0;
+
+        public const int PotentionalyCollisionWithPlayerId = 666;
+        public const int DangerId = 777;
 
         #endregion
 
@@ -40,6 +48,19 @@ namespace SnakeDeathmatch.Players.SoulEater
         }
 
         #endregion
+
+        public bool IsValidPoint(int x, int y)
+        {
+            if (x < 0 || y < 0 || x >= SizeOfTable || y >= SizeOfTable)
+                return false;
+
+            return true;
+        }
+
+        public bool IsValidPoint(Point point)
+        {
+            return (IsValidPoint(point.X, point.Y));
+        }
 
         public void Update(int[,] newGround)
         {
@@ -73,26 +94,58 @@ namespace SnakeDeathmatch.Players.SoulEater
             return new GameGround((int[,])Ground.Clone(), SizeOfTable, players, OurHeroicPlayer.MakeACopy());
         }
 
-        public void SimulateStateAfterOurMove(Point nextPoint)
+        public void VersionUp(Point nextPointForOurPlayer)
         {
-            Ground[nextPoint.X, nextPoint.Y] = OurHeroicPlayer.Identificator;
-            UpdatePlayerPositionAndDirection(OurHeroicPlayer, nextPoint);
+            CurrentVersion++;
+            _versionRecordDictionary.Add(new KeyValuePair<int, VersionRecord>(
+                CurrentVersion,
+                new VersionRecord(new List<Point> { nextPointForOurPlayer }, OurHeroicPlayer.CurrentPosition, OurHeroicPlayer.Direction)));
+            
+            Ground[nextPointForOurPlayer.X, nextPointForOurPlayer.Y] = OurHeroicPlayer.Identificator;
+            UpdatePlayerPositionAndDirection(OurHeroicPlayer, nextPointForOurPlayer);
         }
 
-        public void SimulateStateAfterOtherPlayersMove()
+        public void VersionDownTo(int version)
         {
-            foreach (var player in OtherPlayers.Where(x => x.IsDown == false))
+            for (int i = CurrentVersion; i > version; i--)
             {
-                if (player.Direction == null)
-                    continue;
+                var versionRecord = _versionRecordDictionary[i];
+                _versionRecordDictionary.Remove(i);
+                
+                foreach (var point in versionRecord.ChangedPoints)
+                {
+                    Ground[point.X, point.Y] = 0;
+                }
 
-                Point nextPoint = DirectionHelper.GetNextPoint(player.CurrentPosition, player.Direction.Value);
-                if (nextPoint.X >= SizeOfTable || nextPoint.Y >= SizeOfTable || nextPoint.X < 0 || nextPoint.Y < 0)
-                    continue;
+                OurHeroicPlayer.CurrentPosition = versionRecord.PreviousPoint;
+                OurHeroicPlayer.Direction = versionRecord.PreviousDirection;
 
-                Ground[nextPoint.X, nextPoint.Y] = 666;
-                UpdatePlayerPositionAndDirection(player, nextPoint);               
+                CurrentVersion--;
             }
+        }
+
+
+        public void MakeAnalyze()
+        {
+            //for (int x = 0; x < SizeOfTable; x++)
+            //{
+            //    for (int y = 0; y < SizeOfTable; y++)
+            //    {
+            //        if (Ground[x, y] == 0)
+            //        {
+            //            if (IsValidPoint(x + 1, y) && Ground[x + 1, y] != 0)
+            //            {
+
+            //            }
+            //        }
+            //    }
+            //}
+
+            SimulateStateAfterOtherPlayersMove();
+            SimulateStateAfterOtherPlayersMove();
+            SimulateStateAfterOtherPlayersMove();
+            SimulateStateAfterOtherPlayersMove();
+            SimulateStateAfterOtherPlayersMove();
         }
 
         #region private
@@ -177,6 +230,48 @@ namespace SnakeDeathmatch.Players.SoulEater
             movedPlayer.CurrentPosition = newPoint;
         }
 
+        private void SimulateStateAfterOtherPlayersMove()
+        {
+            foreach (var player in OtherPlayers.Where(x => x.IsDown == false))
+            {
+                var currentPoint = player.CurrentPosition;
+
+                var potentionalyDangerousPoints = DirectionHelper.GetBorderPoints(currentPoint).ToList();
+
+                foreach (var point in potentionalyDangerousPoints)
+                {
+                    if (IsValidPoint(point) && Ground[point.X, point.Y] == 0)
+                    {
+                        Ground[point.X, point.Y] = DangerId;
+                    }
+                }
+
+                if (player.Direction == null)
+                    continue;
+
+                Point nextPoint = DirectionHelper.GetNextPoint(currentPoint, player.Direction.Value);
+                if (nextPoint.X >= SizeOfTable || nextPoint.Y >= SizeOfTable || nextPoint.X < 0 || nextPoint.Y < 0)
+                    continue;
+
+                Ground[nextPoint.X, nextPoint.Y] = PotentionalyCollisionWithPlayerId;
+                UpdatePlayerPositionAndDirection(player, nextPoint);
+            }
+        }
+
         #endregion
+
+        private class VersionRecord
+        {
+            public VersionRecord(IList<Point> points, Point previousPoint, Direction? previousDirection)
+            {
+                ChangedPoints = points;
+                PreviousPoint = previousPoint;
+                PreviousDirection = previousDirection;
+            }
+
+            public IList<Point> ChangedPoints { get; protected set; }
+            public Point PreviousPoint { get; protected set; }
+            public Direction? PreviousDirection { get; protected set; }
+        }
     }
 }

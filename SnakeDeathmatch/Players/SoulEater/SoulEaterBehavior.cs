@@ -17,11 +17,13 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         private GameGround _currentGameGround;
 
-        private readonly IList<Move> _moveList = new List<Move> { Move.Straight, Move.Left, Move.Right };
+        private IList<Move> _moveList = new List<Move> { Move.Straight, Move.Left, Move.Right };
 
         private bool _isFirstMove = true;
 
         private IList<PlayerInfo> _otherPlayers = new List<PlayerInfo>();
+
+        private Mode _mode = Mode.FindWall;
 
         #endregion
 
@@ -46,7 +48,26 @@ namespace SnakeDeathmatch.Players.SoulEater
 
             Move nextMove = GetSafeMove(10);
 
+            ProcessMove(nextMove);
+
             return (int)nextMove;
+        }
+
+        private void ProcessMove(Move nextMove)
+        {
+            if (_mode == Mode.WallFinded)
+                return;
+
+            if (nextMove == Move.Left)
+            {
+                _mode = Mode.WallFinded;
+                _moveList = new List<Move> { Move.Right, Move.Straight, Move.Left };
+            }
+            if (nextMove == Move.Right)
+            {
+                _mode = Mode.WallFinded;
+                _moveList = new List<Move> { Move.Left, Move.Straight, Move.Right };
+            }
         }
 
         public string MyName()
@@ -70,31 +91,33 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         #region move
 
-        private Move GetSafeMove(int numberOfSafeMoves)
+        private Move GetSafeMove(int numberOfMovesToTry)
         {
-            if (numberOfSafeMoves == 0)
-                return Move.Straight;
-
             var copyOfGround = _currentGameGround.MakeACopy();
-            copyOfGround.SimulateStateAfterOtherPlayersMove();
-            copyOfGround.SimulateStateAfterOtherPlayersMove();
-            copyOfGround.SimulateStateAfterOtherPlayersMove();
-            copyOfGround.SimulateStateAfterOtherPlayersMove();
 
+            copyOfGround.MakeAnalyze();
+
+            IDictionary<Move, decimal> movesDictionary = new Dictionary<Move, decimal>();
             foreach (Move move in _moveList)
             {
-                bool isMoveSafe = GetIfMoveIsSafe(copyOfGround, move, numberOfSafeMoves);
-                if (isMoveSafe)
-                    return move;
+                var result = GetPointsForMove(copyOfGround, move, numberOfMovesToTry);
+                movesDictionary.Add(move, result);
+
+                if (result == numberOfMovesToTry)
+                    break;
+
+                copyOfGround.VersionDownTo(0);
             }
 
-            return GetSafeMove(--numberOfSafeMoves);
+            return movesDictionary.OrderByDescending(x => x.Value).First().Key;
         }
 
-        private bool GetIfMoveIsSafe(GameGround gameGround, Move move, int numberOfSafeMoves)
+        private decimal GetPointsForMove(GameGround gameGround, Move move, int numberOfSafeMoves)
         {
             if (numberOfSafeMoves == 0)
-                return true;
+                return 0;
+
+            decimal pointsForThisMove = 0;
 
             var ourPlayer = gameGround.OurHeroicPlayer;
 
@@ -103,29 +126,39 @@ namespace SnakeDeathmatch.Players.SoulEater
             Point nextPoint = DirectionHelper.GetNextPoint(ourPlayer.CurrentPosition, absoluteDirection);
 
             if (nextPoint.X >= gameGround.SizeOfTable || nextPoint.X < 0 || nextPoint.Y >= gameGround.SizeOfTable || nextPoint.Y < 0)
-                return false;
+                return pointsForThisMove;
 
-            if (gameGround[nextPoint.X, nextPoint.Y] != 0)
-                return false;
+            else if (gameGround[nextPoint.X, nextPoint.Y] == GameGround.PotentionalyCollisionWithPlayerId)
+                pointsForThisMove = (decimal) 0.5;
+            else if (gameGround[nextPoint.X, nextPoint.Y] == GameGround.DangerId)
+                pointsForThisMove = (decimal)0.75;
 
-            if (IsCrossColision(nextPoint, absoluteDirection))
-                return false;
+            else if (gameGround[nextPoint.X, nextPoint.Y] != 0)
+                return pointsForThisMove;
 
-            if (CalculatePossibleMovesOfOtherPlayers().Any(x => x.Equals(nextPoint)))
-                return false;
+            else if (IsCrossColision(nextPoint, absoluteDirection))
+                return pointsForThisMove;
+            else
+                pointsForThisMove = 1;
 
-            numberOfSafeMoves--;
 
-            var newGround = gameGround.MakeACopy();
+            gameGround.VersionUp(nextPoint);
+            var ourVersion = gameGround.CurrentVersion;
 
-            newGround.SimulateStateAfterOurMove(nextPoint);
-
+            IDictionary<Move, decimal> movesDictionary = new Dictionary<Move, decimal>();
             foreach (var nextMove in _moveList)
             {
-                if (GetIfMoveIsSafe(newGround, nextMove, numberOfSafeMoves))
-                    return true;
+                var result = GetPointsForMove(gameGround, nextMove, numberOfSafeMoves - 1);
+
+                movesDictionary.Add(nextMove, result);
+
+                if (result == numberOfSafeMoves - 1)
+                    break;
+
+                gameGround.VersionDownTo(ourVersion);
             }
-            return false;
+
+            return movesDictionary.OrderByDescending(x => x.Value).First().Value + pointsForThisMove;
         }
 
         private bool IsCrossColision(Point newPosition, Direction direction)
@@ -162,6 +195,12 @@ namespace SnakeDeathmatch.Players.SoulEater
             }
 
             return points;
+        }
+
+        private enum Mode
+        {
+            FindWall = 0,
+            WallFinded = 1
         }
     }
 }

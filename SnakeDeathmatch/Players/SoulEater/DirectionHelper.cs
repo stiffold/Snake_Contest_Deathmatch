@@ -2,11 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.SoulEater
 {
     public class DirectionHelper
     {
+        public static IEnumerable<Point> GetBorderPoints(Point point)
+        {
+            yield return GetNextPoint(point, Direction.Top);
+            yield return GetNextPoint(point, Direction.TopRight);
+            yield return GetNextPoint(point, Direction.Right);
+            yield return GetNextPoint(point, Direction.BottomRight);
+            yield return GetNextPoint(point, Direction.Bottom);
+            yield return GetNextPoint(point, Direction.BottomLeft);
+            yield return GetNextPoint(point, Direction.Left);
+            yield return GetNextPoint(point, Direction.TopLeft);
+
+        }
+
         public static Interface.Direction GetDirection(Point oldPoint, Point newPoint)
         {
             int xDiff = newPoint.X - oldPoint.X;
