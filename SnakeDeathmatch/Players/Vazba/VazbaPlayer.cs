@@ -19,8 +19,8 @@ namespace SnakeDeathmatch.Players.Vazba
             Snake me = new Snake((int)PlayerId.Vazba, x, y, direction);
             _snakes = new Snakes(me);
 
-            var form = new DebuggerForm(this);
-            form.Show();
+            //var form = new DebuggerForm(this);
+            //form.Show();
         }
 
         private Snakes _snakes;
