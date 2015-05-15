@@ -29,7 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameMainWindow));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btStep = new System.Windows.Forms.Button();
+            this.chkStepping = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblRPS = new System.Windows.Forms.Label();
             this.lblCounter = new System.Windows.Forms.Label();
@@ -47,21 +51,57 @@
             // 
             this.panel1.AutoSize = true;
             this.panel1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel1.Controls.Add(this.btStep);
+            this.panel1.Controls.Add(this.chkStepping);
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.btnTest);
             this.panel1.Controls.Add(this.btnRestart);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(888, 39);
+            this.panel1.Size = new System.Drawing.Size(876, 36);
             this.panel1.TabIndex = 2;
+            // 
+            // btStep
+            // 
+            this.btStep.Enabled = false;
+            this.btStep.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btStep.Image = ((System.Drawing.Image)(resources.GetObject("btStep.Image")));
+            this.btStep.Location = new System.Drawing.Point(384, 6);
+            this.btStep.Name = "btStep";
+            this.btStep.Size = new System.Drawing.Size(26, 23);
+            this.btStep.TabIndex = 10;
+            this.btStep.UseVisualStyleBackColor = true;
+            this.btStep.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // chkStepping
+            // 
+            this.chkStepping.AutoSize = true;
+            this.chkStepping.Location = new System.Drawing.Point(416, 10);
+            this.chkStepping.Name = "chkStepping";
+            this.chkStepping.Size = new System.Drawing.Size(76, 17);
+            this.chkStepping.TabIndex = 9;
+            this.chkStepping.Text = "Krokování";
+            this.chkStepping.UseVisualStyleBackColor = true;
+            this.chkStepping.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(165, 6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(133, 23);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Replay saved game";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // panel3
             // 
             this.panel3.Controls.Add(this.lblRPS);
             this.panel3.Controls.Add(this.lblCounter);
             this.panel3.Controls.Add(this.label1);
-            this.panel3.Location = new System.Drawing.Point(165, 3);
+            this.panel3.Location = new System.Drawing.Point(525, 0);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(277, 33);
             this.panel3.TabIndex = 2;
@@ -100,7 +140,7 @@
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(84, 7);
+            this.btnTest.Location = new System.Drawing.Point(84, 6);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(75, 23);
             this.btnTest.TabIndex = 1;
@@ -110,7 +150,7 @@
             // 
             // btnRestart
             // 
-            this.btnRestart.Location = new System.Drawing.Point(3, 7);
+            this.btnRestart.Location = new System.Drawing.Point(3, 6);
             this.btnRestart.Name = "btnRestart";
             this.btnRestart.Size = new System.Drawing.Size(75, 23);
             this.btnRestart.TabIndex = 0;
@@ -126,10 +166,10 @@
             // 
             this.pnlArena.BackColor = System.Drawing.Color.Black;
             this.pnlArena.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlArena.Location = new System.Drawing.Point(0, 39);
+            this.pnlArena.Location = new System.Drawing.Point(0, 36);
             this.pnlArena.Name = "pnlArena";
-            this.pnlArena.Size = new System.Drawing.Size(888, 594);
-            this.pnlArena.TabIndex = 3;
+            this.pnlArena.Size = new System.Drawing.Size(876, 640);
+            this.pnlArena.TabIndex = 7;
             this.pnlArena.TabStop = false;
             // 
             // GameMainWindow
@@ -137,7 +177,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(888, 633);
+            this.ClientSize = new System.Drawing.Size(876, 676);
             this.Controls.Add(this.pnlArena);
             this.Controls.Add(this.panel1);
             this.Name = "GameMainWindow";
@@ -145,6 +185,7 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameMainWindow_FormClosed);
             this.Load += new System.EventHandler(this.GameMainWindow_Load);
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pnlArena)).EndInit();
             this.ResumeLayout(false);
@@ -162,7 +203,10 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer timerUI;
         private System.Windows.Forms.Label lblRPS;
+        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.PictureBox pnlArena;
+        private System.Windows.Forms.Button btStep;
+        private System.Windows.Forms.CheckBox chkStepping;
 
     }
 }

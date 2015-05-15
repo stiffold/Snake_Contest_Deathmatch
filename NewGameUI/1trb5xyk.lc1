@@ -28,7 +28,7 @@ namespace NewGameUI
         //render settings
         public const int PlaygroundSizeInPixels = 600;
         public const int RenderTimerIntervalInMilliseconds = 30; // rychlost vykreslovani, cim nizsi, tim rychlejsi
-        public const int ReplayTimerIntervalInMilliseconds = 1;
+        public const int ReplayTimerIntervalInMilliseconds = 30;
 
         // game state
         private Stopwatch _stopwatch = new Stopwatch();
@@ -71,7 +71,6 @@ namespace NewGameUI
                 _gameEngine.StopGame();
 
             _gameEngine = new GameEngine(PlaygroundSizeInDots, Color.Magenta, GetPlayers());
-            _gameEngine.StepMode = chkStepping.Checked;
             _gameEngine.StartGame(GameSpeed);
 
             _previousGameState = null;
@@ -93,7 +92,7 @@ namespace NewGameUI
             {
                 InitializeGraphics();
                 _savedGame = savedGame;
-                _drawingSavedGameRoundNumber = 1;
+                _drawingSavedGameRoundNumber = 0;
                 _drawingReplaySavedGame = true;
 
                 timerUI.Interval = ReplayTimerIntervalInMilliseconds;
@@ -112,7 +111,6 @@ namespace NewGameUI
 
         private void timerUI_Tick(object sender, EventArgs e)
         {
-
             if (_drawingReplaySavedGame)
             {
                 DrawRoundToWindow();
@@ -121,6 +119,7 @@ namespace NewGameUI
             {
                 DrawFullGameStateToWindow();
             }
+
         }
 
         private void btnRestart_Click(object sender, EventArgs e)
@@ -183,17 +182,9 @@ namespace NewGameUI
 
         private void DrawRoundToWindow()
         {
-
-
             int dotSize = PlaygroundSizeInPixels / _savedGame.PlayGroundSizeInDots;
 
-            lblCounter.Text = _drawingSavedGameRoundNumber.ToString(CultureInfo.InvariantCulture);
-
-            var recordLines = _savedGame.RecordLines.Where(x => x.Round == _drawingSavedGameRoundNumber).ToList();
-            _drawingSavedGameRoundNumber++;
-
-            if (recordLines.Any() == false)
-                timerUI.Stop();
+            var recordLines = _savedGame.RecordLines.Where(x => x.Round == _drawingSavedGameRoundNumber++);
 
             using (var graphics = Graphics.FromImage(_arenaPicture))
             {
@@ -213,11 +204,6 @@ namespace NewGameUI
                     }
                 }
             }
-
-            //a tady se to vykreslí do panelu
-            var controlGraphics = pnlArena.CreateGraphics();
-            controlGraphics.DrawImageUnscaled(_arenaPicture, 0, 0);
-
         }
 
         private void InitializeGraphics()
@@ -293,22 +279,9 @@ namespace NewGameUI
 
         # endregion
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            btStep.Enabled = chkStepping.Checked;
-            if (_gameEngine != null)
-            {
-                _gameEngine.StepMode = chkStepping.Checked;
-            }
-        }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (_gameEngine != null)
-            {
-                _gameEngine.NextStepEnabled = true;
-            }
-        }
+
+
 
     }
 }

@@ -46,6 +46,8 @@
     <Compile Include="Game\PlayerBehaviourWrapper.cs" />
     <Compile Include="Game\PlayerState.cs" />
     <Compile Include="Game\Position.cs" />
+    <Compile Include="Game\RecordLine.cs" />
+    <Compile Include="Game\SavedGame.cs" />
     <Compile Include="Interface\Direction.cs" />
     <Compile Include="Interface\IPlayerBehavior.cs" />
     <Compile Include="Interface\IPlayerBehaviour2.cs" />

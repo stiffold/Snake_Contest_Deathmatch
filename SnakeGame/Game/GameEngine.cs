@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using SnakeDeathmatch.Game;
 using Direction = SnakeGame.Interface.Direction;
 
 namespace SnakeGame.Game
@@ -17,8 +18,11 @@ namespace SnakeGame.Game
         private bool _gameOver;
         private int _round = 0;
 
+        private List<RecordLine> _recordLines;
+
         private bool _isGameRunning = false;
         private Thread _gameThread;
+
 
         public int Size { get; private set; }
 
@@ -26,6 +30,7 @@ namespace SnakeGame.Game
         {
             Size = size;
             _gameSurround = new int[size, size];
+            _recordLines = new List<RecordLine>();
             _players = players.ToList();
             _headToHeadCrashColor = headToHeadCrashColor;
 
@@ -39,7 +44,7 @@ namespace SnakeGame.Game
         public void StartGame(int gameSpeed)
         {
             _isGameRunning = true;
-
+            _recordLines.Clear();
             _gameThread = new Thread(() => this.GameMainProc(gameSpeed));
             _gameThread.Start();
 
@@ -56,10 +61,15 @@ namespace SnakeGame.Game
 
             while (_isGameRunning)
             {
-                lock (_gameSurround.SyncRoot)
+                if (StepMode == false || (StepMode && NextStepEnabled))
                 {
-                    _round++;
-                    Move();
+                    NextStepEnabled = false;
+
+                    lock (_gameSurround.SyncRoot)
+                    {
+                        _round++;
+                        Move();
+                    }
                 }
 
                 if (timeIntervalInMilliseconds > 0)
@@ -79,6 +89,7 @@ namespace SnakeGame.Game
                 {
                     GameSurround = (int[,])_gameSurround.Clone(),
                     Round = _round,
+                    RecordLines = _recordLines.ToList(),
                 };
             }
         }
@@ -162,12 +173,14 @@ namespace SnakeGame.Game
             foreach (Player player in livePlayers)
             {
                 _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
+                _recordLines.Add(new RecordLine(_round, player.Position.X, player.Position.Y, player.Identifier, player.Name));
             }
 
             // zapsání tahu společného pole kolize hlav
             foreach (Position position in headToHeadCrashes)
             {
                 _gameSurround[position.X, position.Y] = HeadToHeadCrashId;
+                _recordLines.Add(new RecordLine(_round, position.X, position.Y, HeadToHeadCrashId, ""));
             }
 
             if (!_players.Any(p => p.State == PlayerState.Playing))
@@ -207,5 +220,9 @@ namespace SnakeGame.Game
         }
 
         public bool GameOver { get { return _gameOver; } }
+
+        public bool StepMode { get; set; }
+
+        public bool NextStepEnabled { get; set; }
     }
 }

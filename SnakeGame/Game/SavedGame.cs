@@ -6,13 +6,10 @@ using SnakeDeathmatch.Game;
 
 namespace SnakeGame.Game
 {
-    public class GameState
+    public class SavedGame
     {
-        public int[,] GameSurround { get; set; }
-
-        public int Round { get; set; }
+        public int PlayGroundSizeInDots { get; set; }
 
         public List<RecordLine> RecordLines { get; set; }
-
     }
 }
