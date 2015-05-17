@@ -28,50 +28,50 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lstFiles = new System.Windows.Forms.ListBox();
-            this.btOpen = new System.Windows.Forms.Button();
-            this.btClose = new System.Windows.Forms.Button();
+            this._listBoxFiles = new System.Windows.Forms.ListBox();
+            this._buttonOpen = new System.Windows.Forms.Button();
+            this._buttonCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // lstFiles
+            // _listBoxFiles
             // 
-            this.lstFiles.FormattingEnabled = true;
-            this.lstFiles.Location = new System.Drawing.Point(5, 10);
-            this.lstFiles.Name = "lstFiles";
-            this.lstFiles.Size = new System.Drawing.Size(320, 199);
-            this.lstFiles.TabIndex = 0;
+            this._listBoxFiles.FormattingEnabled = true;
+            this._listBoxFiles.Location = new System.Drawing.Point(5, 10);
+            this._listBoxFiles.Name = "_listBoxFiles";
+            this._listBoxFiles.Size = new System.Drawing.Size(320, 199);
+            this._listBoxFiles.TabIndex = 0;
             // 
-            // btOpen
+            // _buttonOpen
             // 
-            this.btOpen.Location = new System.Drawing.Point(112, 215);
-            this.btOpen.Name = "btOpen";
-            this.btOpen.Size = new System.Drawing.Size(95, 23);
-            this.btOpen.TabIndex = 1;
-            this.btOpen.Text = "Vybrat";
-            this.btOpen.UseVisualStyleBackColor = true;
-            this.btOpen.Click += new System.EventHandler(this.btOpen_Click);
+            this._buttonOpen.Location = new System.Drawing.Point(112, 215);
+            this._buttonOpen.Name = "_buttonOpen";
+            this._buttonOpen.Size = new System.Drawing.Size(95, 23);
+            this._buttonOpen.TabIndex = 1;
+            this._buttonOpen.Text = "Open";
+            this._buttonOpen.UseVisualStyleBackColor = true;
+            this._buttonOpen.Click += new System.EventHandler(this._buttonOpen_Click);
             // 
-            // btClose
+            // _buttonCancel
             // 
-            this.btClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btClose.Location = new System.Drawing.Point(224, 215);
-            this.btClose.Name = "btClose";
-            this.btClose.Size = new System.Drawing.Size(97, 23);
-            this.btClose.TabIndex = 2;
-            this.btClose.Text = "Zavřít";
-            this.btClose.UseVisualStyleBackColor = true;
-            this.btClose.Click += new System.EventHandler(this.btClose_Click);
+            this._buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this._buttonCancel.Location = new System.Drawing.Point(224, 215);
+            this._buttonCancel.Name = "_buttonCancel";
+            this._buttonCancel.Size = new System.Drawing.Size(97, 23);
+            this._buttonCancel.TabIndex = 2;
+            this._buttonCancel.Text = "Cancel";
+            this._buttonCancel.UseVisualStyleBackColor = true;
+            this._buttonCancel.Click += new System.EventHandler(this._buttonCancel_Click);
             // 
             // OpenReplayDialog
             // 
-            this.AcceptButton = this.btOpen;
+            this.AcceptButton = this._buttonOpen;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btClose;
+            this.CancelButton = this._buttonCancel;
             this.ClientSize = new System.Drawing.Size(333, 244);
-            this.Controls.Add(this.btClose);
-            this.Controls.Add(this.btOpen);
-            this.Controls.Add(this.lstFiles);
+            this.Controls.Add(this._buttonCancel);
+            this.Controls.Add(this._buttonOpen);
+            this.Controls.Add(this._listBoxFiles);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OpenReplayDialog";
@@ -84,8 +84,8 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox lstFiles;
-        private System.Windows.Forms.Button btOpen;
-        private System.Windows.Forms.Button btClose;
+        private System.Windows.Forms.ListBox _listBoxFiles;
+        private System.Windows.Forms.Button _buttonOpen;
+        private System.Windows.Forms.Button _buttonCancel;
     }
 }

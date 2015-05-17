@@ -14,9 +14,8 @@ using SnakeDeathmatch.Game;
 
 namespace NewGameUI
 {
-    public partial class GameMainWindow : Form
+    public partial class MainForm : Form
     {
-
         private Random _random = new Random();
 
         //game settings
@@ -39,8 +38,8 @@ namespace NewGameUI
         private int _drawingSavedGameRoundNumber;
         private SavedGame _savedGame;
 
-
         #region GameInitialize
+
         private IEnumerable<Player> GetPlayers()
         {
             var players = new List<Player>();
@@ -65,12 +64,11 @@ namespace NewGameUI
 
         private void RestartGame()
         {
-
             if (_gameEngine != null)
                 _gameEngine.StopGame();
 
             _gameEngine = new GameEngine(PlaygroundSizeInDots, Color.Magenta, GetPlayers());
-            _gameEngine.StepMode = chkStepping.Checked;
+            _gameEngine.StepMode = _checkboxStepping.Checked;
             _gameEngine.StartGame(GameSpeed);
 
             _previousGameState = null;
@@ -78,8 +76,8 @@ namespace NewGameUI
 
             InitializeGraphics();
             _drawingReplaySavedGame = false;
-            timerUI.Interval = RenderTimerIntervalInMilliseconds;
-            timerUI.Start();  //timer ma udalost timerUI_Tick, tam se vzdy provede prekresleni
+            _timerUI.Interval = RenderTimerIntervalInMilliseconds;
+            _timerUI.Start();  //timer ma udalost timerUI_Tick, tam se vzdy provede prekresleni
         }
 
         private void ReplaySavedGame(string path)
@@ -95,55 +93,19 @@ namespace NewGameUI
                 _drawingSavedGameRoundNumber = 1;
                 _drawingReplaySavedGame = true;
 
-                timerUI.Interval = ReplayTimerIntervalInMilliseconds;
-                timerUI.Start();
+                _timerUI.Interval = ReplayTimerIntervalInMilliseconds;
+                _timerUI.Start();
             }
-
         }
 
         #endregion
 
-        # region UI Events
-        public GameMainWindow()
+        public MainForm()
         {
             InitializeComponent();
         }
 
-        private void timerUI_Tick(object sender, EventArgs e)
-        {
-
-            if (_drawingReplaySavedGame)
-            {
-                DrawRoundToWindow();
-            }
-            else
-            {
-                DrawFullGameStateToWindow();
-            }
-        }
-
-        private void btnRestart_Click(object sender, EventArgs e)
-        {
-            RestartGame();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            var dialog = new OpenReplayDialog();
-            var selectedFile = dialog.OpenDialog();
-
-            if (string.IsNullOrEmpty(selectedFile) == false)
-            {
-                ReplaySavedGame(selectedFile);
-            }
-        }
-
-        private void btnTest_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void GameMainWindow_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             this.Width = PlaygroundSizeInPixels + 16;
             this.Height = PlaygroundSizeInPixels + 16 + 61;
@@ -154,45 +116,64 @@ namespace NewGameUI
             RestartGame();
         }
 
-        private void GameMainWindow_FormClosed(object sender, FormClosedEventArgs e)
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (_gameEngine != null)
                 _gameEngine.StopGame();
         }
 
-        # endregion
+        private void _timerUI_Tick(object sender, EventArgs e)
+        {
+            if (_drawingReplaySavedGame)
+            {
+                DrawRoundToWindow();
+            }
+            else
+            {
+                DrawFullGameStateToWindow();
+            }
+        }
 
-        #region Drawing
+        private void _buttonRestart_Click(object sender, EventArgs e)
+        {
+            RestartGame();
+        }
+
+        private void _buttonReplay_Click(object sender, EventArgs e)
+        {
+            var dialog = new OpenReplayDialog();
+            var selectedFile = dialog.OpenDialog();
+
+            if (string.IsNullOrEmpty(selectedFile) == false)
+            {
+                ReplaySavedGame(selectedFile);
+            }
+        }
 
         private void DrawFullGameStateToWindow()
         {
-
             GameState gameState = _gameEngine.GetGameState();
-            lblCounter.Text = gameState.Round.ToString(CultureInfo.InvariantCulture);
+            _labelRoundCounter.Text = gameState.Round.ToString(CultureInfo.InvariantCulture);
             UpdateRPS(gameState);
 
             DrawGameStateToImage(gameState);
 
             //a tady se to vykreslí do panelu
-            var controlGraphics = pnlArena.CreateGraphics();
+            var controlGraphics = _panelArena.CreateGraphics();
             controlGraphics.DrawImageUnscaled(_arenaPicture, 0, 0);
-
-
         }
 
         private void DrawRoundToWindow()
         {
-
-
             int dotSize = PlaygroundSizeInPixels / _savedGame.PlayGroundSizeInDots;
 
-            lblCounter.Text = _drawingSavedGameRoundNumber.ToString(CultureInfo.InvariantCulture);
+            _labelRoundCounter.Text = _drawingSavedGameRoundNumber.ToString(CultureInfo.InvariantCulture);
 
             var recordLines = _savedGame.RecordLines.Where(x => x.Round == _drawingSavedGameRoundNumber).ToList();
             _drawingSavedGameRoundNumber++;
 
             if (recordLines.Any() == false)
-                timerUI.Stop();
+                _timerUI.Stop();
 
             using (var graphics = Graphics.FromImage(_arenaPicture))
             {
@@ -214,14 +195,12 @@ namespace NewGameUI
             }
 
             //a tady se to vykreslí do panelu
-            var controlGraphics = pnlArena.CreateGraphics();
+            var controlGraphics = _panelArena.CreateGraphics();
             controlGraphics.DrawImageUnscaled(_arenaPicture, 0, 0);
-
         }
 
         private void InitializeGraphics()
         {
-
             _arenaPicture = new Bitmap(PlaygroundSizeInPixels, PlaygroundSizeInPixels);
             using (Graphics graphics = Graphics.FromImage(_arenaPicture))
             {
@@ -262,8 +241,6 @@ namespace NewGameUI
             _previousGameState = gameState;
         }
 
-
-
         private void UpdateRPS(GameState gameState)
         {
             //TODO TR: tohle chce přepracovat, je to jen nástřel
@@ -273,14 +250,12 @@ namespace NewGameUI
             {
                 double RPS = rounds / (_stopwatch.ElapsedMilliseconds / 1000d);
                 _stopwatch.Restart();
-                lblRPS.Text = string.Format("{0:#.00} RPS", RPS);
+                _labelRPS.Text = string.Format("{0:#.00} RPS", RPS);
             }
         }
 
-
         private bool IsPointInArrayChanged(GameState gameState, int x, int y)
         {
-
             if (_previousGameState == null)
                 return true;
 
@@ -290,24 +265,21 @@ namespace NewGameUI
             return false;
         }
 
-        # endregion
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void _checkboxStepping_CheckedChanged(object sender, EventArgs e)
         {
-            btStep.Enabled = chkStepping.Checked;
+            _buttonStep.Enabled = _checkboxStepping.Checked;
             if (_gameEngine != null)
             {
-                _gameEngine.StepMode = chkStepping.Checked;
+                _gameEngine.StepMode = _checkboxStepping.Checked;
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void _buttonStep_Click(object sender, EventArgs e)
         {
             if (_gameEngine != null)
             {
                 _gameEngine.NextStepEnabled = true;
             }
         }
-
     }
 }

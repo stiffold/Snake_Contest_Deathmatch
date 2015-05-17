@@ -24,7 +24,7 @@ namespace NewGameUI.Dialogs
             var ftpService = new FTPFileRepository();
             var files = ftpService.ListFiles();
 
-            files.Where(x => x.Contains(".csv")).OrderByDescending(x => x).Select(x => lstFiles.Items.Add(x)).ToList();
+            files.Where(x => x.Contains(".csv")).OrderByDescending(x => x).Select(x => _listBoxFiles.Items.Add(x)).ToList();
         }
 
         public string OpenDialog()
@@ -34,16 +34,16 @@ namespace NewGameUI.Dialogs
             return _selectedFile;
         }
 
-        private void btOpen_Click(object sender, EventArgs e)
+        private void _buttonOpen_Click(object sender, EventArgs e)
         {
-            if (lstFiles.SelectedItem != null)
+            if (_listBoxFiles.SelectedItem != null)
             {
-                _selectedFile = lstFiles.SelectedItem.ToString();
+                _selectedFile = _listBoxFiles.SelectedItem.ToString();
             }
             this.Hide();
         }
 
-        private void btClose_Click(object sender, EventArgs e)
+        private void _buttonCancel_Click(object sender, EventArgs e)
         {
             _selectedFile = null;
             this.Hide();

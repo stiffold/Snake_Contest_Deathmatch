@@ -39,7 +39,6 @@ namespace NewGameUI.Services.FTP
 
         public SavedGame LoadSavedGame(string fileName)
         {
-
             var fileString = DownloadFileFromFTP(fileName);
 
             if (string.IsNullOrEmpty(fileString))
@@ -68,7 +67,6 @@ namespace NewGameUI.Services.FTP
 
         private string DownloadFileFromFTP(string fileName)
         {
-
             using (WebClient request = new WebClient())
             {
                 string url = "ftp://" + _ftpServerIP + fileName;
@@ -87,13 +85,11 @@ namespace NewGameUI.Services.FTP
                     return "";
                 }
             }
-
         }
 
 
         public void UploadToFTP(string filename)
         {
-
             FileInfo objFile = new FileInfo(filename);
             FtpWebRequest objFTPRequest;
 
