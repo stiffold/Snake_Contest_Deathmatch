@@ -1,0 +1,14 @@
+﻿<Window x:Class="OldGameUI.Views.EndGameDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Výsledky" Height="223" Width="458">
+    <Grid>
+        <Button Content="Ano" Height="23" HorizontalAlignment="Left" Margin="268,120,0,0" Name="btnYes" VerticalAlignment="Top" Width="75" Click="btnYes_Click" />
+        <Button Content="Ne" Height="23" HorizontalAlignment="Left" Margin="349,120,0,0" Name="btnNo" VerticalAlignment="Top" Width="75" Click="btnNo_Click" />
+        <Button Content="Uložit" Height="23" HorizontalAlignment="Left" Margin="349,149,0,0" Name="btnSave" VerticalAlignment="Top" Width="75" />
+        <Label Content="Chcete uložit záznam hry?" Height="28" HorizontalAlignment="Left" Margin="12,149,0,0" Name="lblSave" VerticalAlignment="Top" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="166,151,0,0" Name="txtFileName" VerticalAlignment="Top" Width="177" />
+        <Label Content="Spustit další deathmatch?" Height="28" HorizontalAlignment="Left" Margin="12,119,0,0" Name="lblRestart" VerticalAlignment="Top" />
+        <Label Content="Výsledek hry" Height="104" HorizontalAlignment="Left" Margin="10,10,0,0" Name="lblResult" VerticalAlignment="Top" Width="414" />
+    </Grid>
+</Window>

@@ -21,7 +21,7 @@ namespace SnakeDeathmatch.Game
             if (_playerBehaviour2 == null && _playerBehaviour1 == null)
             {
                 throw new Exception(string.Format("Object {0} must implement at least one of these interfaces: {1}.",
-                    playerBehaviour.GetType().Name, string.Join(", ", knownInterfaces.Select(x => x.Name))));
+                    playerBehaviour.GetType().Name, string.Join(", ", knownInterfaces.Select(x => x.Name).ToArray())));
             }
         }
 

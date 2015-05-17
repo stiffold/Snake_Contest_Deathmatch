@@ -3,31 +3,100 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Windows.Media;
+using SnakeDeathmatch.Game;
 using SnakeDeathmatch.Interface;
-using Direction = SnakeDeathmatch.Interface.Direction;
 
 namespace SnakeDeathmatch.Game
 {
     public class GameEngine
     {
         public const int HeadToHeadCrashId = -1;
+        public object _headToHeadCrashColor;
 
         private List<Player> _players = new List<Player>();
         private int[,] _gameSurround;
         private bool _gameOver;
+        private int _round = 0;
+
+        private List<RecordLine> _recordLines;
+
+        private bool _isGameRunning = false;
+        private Thread _gameThread;
+
 
         public int Size { get; private set; }
 
         public GameEngine(int size, IEnumerable<Player> players)
+            : this(size, System.Windows.Media.Colors.Magenta, players)
+        {
+        }
+
+
+        public GameEngine(int size, object headToHeadCrashColor, IEnumerable<Player> players)
         {
             Size = size;
             _gameSurround = new int[size, size];
+            _recordLines = new List<RecordLine>();
             _players = players.ToList();
+            _headToHeadCrashColor = headToHeadCrashColor;
 
             foreach (Player player in players)
             {
                 _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
+            }
+        }
+
+
+        public void StartGame(int gameSpeed)
+        {
+            _isGameRunning = true;
+            _recordLines.Clear();
+            _gameThread = new Thread(() => this.GameMainProc(gameSpeed));
+            _gameThread.Start();
+
+        }
+
+        public void StopGame()
+        {
+            _isGameRunning = false;
+        }
+
+        private void GameMainProc(int gameSpeed)
+        {
+            int timeIntervalInMilliseconds = 1000 / gameSpeed;
+
+            while (_isGameRunning)
+            {
+                if (StepMode == false || (StepMode && NextStepEnabled))
+                {
+                    NextStepEnabled = false;
+
+                    lock (_gameSurround.SyncRoot)
+                    {
+                        _round++;
+                        Move();
+                    }
+                }
+
+                if (timeIntervalInMilliseconds > 0)
+                    Thread.Sleep(timeIntervalInMilliseconds);
+
+                if (_gameOver)
+                    return;
+            }
+        }
+
+        public GameState GetGameState()
+        {
+
+            lock (_gameSurround.SyncRoot)
+            {
+                return new GameState()
+                {
+                    GameSurround = (int[,])_gameSurround.Clone(),
+                    Round = _round,
+                    RecordLines = _recordLines.ToList(),
+                };
             }
         }
 
@@ -86,7 +155,7 @@ namespace SnakeDeathmatch.Game
                     headToHeadCrashes.Add(player.Position);
                 }
             }
-            
+
             // detekce diagonálního překřížení hlav dvou hadů
             foreach (Player player in livePlayers)  // záměrně neupdatuju livePlayers
             {
@@ -110,12 +179,14 @@ namespace SnakeDeathmatch.Game
             foreach (Player player in livePlayers)
             {
                 _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
+                _recordLines.Add(new RecordLine(_round, player.Position.X, player.Position.Y, player.Identifier, player.Name));
             }
 
             // zapsání tahu společného pole kolize hlav
             foreach (Position position in headToHeadCrashes)
             {
                 _gameSurround[position.X, position.Y] = HeadToHeadCrashId;
+                _recordLines.Add(new RecordLine(_round, position.X, position.Y, HeadToHeadCrashId, ""));
             }
 
             if (!_players.Any(p => p.State == PlayerState.Playing))
@@ -131,17 +202,17 @@ namespace SnakeDeathmatch.Game
             return (x >= 0 && x < Size && y >= 0 && y < Size) && (_gameSurround[x, y] == 0);
         }
 
-        public Color GetColorForIdentificator(int id)
+        public object GetColorForIdentificator(int id)
         {
             if (id == HeadToHeadCrashId)
-                return Colors.Magenta;
+                return _headToHeadCrashColor;
 
             var player = _players.Where(p => p.Identifier == id).FirstOrDefault();
             if (player != null)
             {
                 return player.Color;
             }
-            return Colors.Magenta;
+            return _headToHeadCrashColor;
         }
 
         public string ScoreMessage()
@@ -155,5 +226,9 @@ namespace SnakeDeathmatch.Game
         }
 
         public bool GameOver { get { return _gameOver; } }
+
+        public bool StepMode { get; set; }
+
+        public bool NextStepEnabled { get; set; }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Media;
 using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Game
@@ -15,10 +14,23 @@ namespace SnakeDeathmatch.Game
         public int Identifier { get; private set; }
         public Position Position { get; private set; }
         public Direction Direction { get; private set; }
-        public Color Color { get; private set; }
+        public object Color { get; private set; }
         public int Score { get; private set; }
 
-        public Player(Position position, Direction direction, Color color, object playerBehaviour, int identificator, int playgroundSize)
+        //public Player(Position position, Direction direction, Color color, object playerBehaviour, int identificator, int playgroundSize)
+        //{
+        //    _playerBehaviour = new PlayerBehaviourWrapper(playerBehaviour);
+        //    Name = _playerBehaviour.Name;
+        //    Position = position;
+        //    Direction = direction;
+        //    Color = color;
+        //    Identifier = identificator;
+        //    State = PlayerState.Playing;
+
+        //    _playerBehaviour.Init(Identifier, playgroundSize, position.X, position.Y, Direction);
+        //}
+
+        public Player(Position position, Direction direction, object color, object playerBehaviour, int identificator, int playgroundSize)
         {
             _playerBehaviour = new PlayerBehaviourWrapper(playerBehaviour);
             Name = _playerBehaviour.Name;
@@ -33,7 +45,7 @@ namespace SnakeDeathmatch.Game
 
         public PlayerState State { get; set; }
 
-        public Move NextMove (int [,] playground)
+        public Move NextMove(int[,] playground)
         {
             Move move = _playerBehaviour.GetNextMove(playground);
             Direction newDirection = GetNewDirection(Direction, move);

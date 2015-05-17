@@ -246,14 +246,5 @@ namespace SnakeDeathmatch.Tests
                 CreateStraightPlayer(Colors.Violet, 1, 4, Direction.Right)
             });
         }
-
-        public GameEngine Test00()
-        {
-            return new GameEngine(PlaygroundSize, new[]
-            {
-                CreateStraightPlayer(Colors.Red, 0, 4, Direction.Right),
-                CreatePlayer<VazbaPlayer>(Colors.Blue, 6, 3, Direction.TopLeft),
-            });
-        }
     }
 }

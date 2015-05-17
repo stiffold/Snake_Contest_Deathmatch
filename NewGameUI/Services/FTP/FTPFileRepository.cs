@@ -7,7 +7,6 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using SnakeDeathmatch.Game;
-using SnakeGame.Game;
 
 namespace NewGameUI.Services.FTP
 {

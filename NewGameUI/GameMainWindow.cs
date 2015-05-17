@@ -9,9 +9,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NewGameUI.Dialogs;
 using NewGameUI.Services.FTP;
+using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Game;
-using SnakeGame.Game;
-using SnakeGame.Interface;
 
 namespace NewGameUI
 {
@@ -45,11 +44,11 @@ namespace NewGameUI
         private IEnumerable<Player> GetPlayers()
         {
             var players = new List<Player>();
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Green, new SnakeGame.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Blue, new SnakeGame.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeGame.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SnakeGame.Players.SoulEater.SoulEaterBehavior(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Yellow, new SnakeGame.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Red, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
 
             return players;
         }
