@@ -46,7 +46,7 @@ namespace SnakeDeathmatch.Players.SoulEater
                 _currentGameGround.Update(gameSurrond);
             }
 
-            Move nextMove = GetSafeMove(18);
+            Move nextMove = GetSafeMove(14);
 
             ProcessMove(nextMove);
 

@@ -26,13 +26,23 @@
     {
         public PointWithValue(int x, int y, int value)
         {
-            X = x;
-            Y = y;
+            Point = new Point(x,y);
             Value = value;
         }
 
-        public int X;
-        public int Y;
+        public PointWithValue(Point point, int value)
+        {
+            Point = point;
+            Value = value;
+        }
+
+        public Point Point;
+        public int X {
+            get { return Point.X; }
+        }
+        public int Y {
+            get { return Point.Y; }
+        }
         public int Value;
     }
 }

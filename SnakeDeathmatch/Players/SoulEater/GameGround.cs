@@ -100,10 +100,13 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         public void VersionUp(Point nextPointForOurPlayer)
         {
+            var nextPointWithValueForOurPlayer = new PointWithValue(nextPointForOurPlayer,
+                GetPointValue(nextPointForOurPlayer));
+
             CurrentVersion++;
             _versionRecordDictionary.Add(new KeyValuePair<int, VersionRecord>(
                 CurrentVersion,
-                new VersionRecord(new List<Point> { nextPointForOurPlayer }, OurHeroicPlayer.CurrentPosition, OurHeroicPlayer.Direction)));
+                new VersionRecord(new List<PointWithValue> { nextPointWithValueForOurPlayer }, OurHeroicPlayer.CurrentPosition, OurHeroicPlayer.Direction)));
             
             Ground[nextPointForOurPlayer.X, nextPointForOurPlayer.Y] = OurHeroicPlayer.Identificator;
             UpdatePlayerPositionAndDirection(OurHeroicPlayer, nextPointForOurPlayer);
@@ -118,7 +121,7 @@ namespace SnakeDeathmatch.Players.SoulEater
                 
                 foreach (var point in versionRecord.ChangedPoints)
                 {
-                    Ground[point.X, point.Y] = 0;
+                    Ground[point.X, point.Y] = point.Value;
                 }
 
                 OurHeroicPlayer.CurrentPosition = versionRecord.PreviousPoint;
@@ -279,14 +282,14 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         private class VersionRecord
         {
-            public VersionRecord(IList<Point> points, Point previousPoint, Direction? previousDirection)
+            public VersionRecord(IList<PointWithValue> points, Point previousPoint, Direction? previousDirection)
             {
                 ChangedPoints = points;
                 PreviousPoint = previousPoint;
                 PreviousDirection = previousDirection;
             }
 
-            public IList<Point> ChangedPoints { get; protected set; }
+            public IList<PointWithValue> ChangedPoints { get; protected set; }
             public Point PreviousPoint { get; protected set; }
             public Direction? PreviousDirection { get; protected set; }
         }
