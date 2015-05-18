@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Xml.Serialization;
 using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.SoulEater
@@ -25,6 +26,9 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         public const int PotentionalyCollisionWithPlayerId = 666;
         public const int DangerId = 777;
+        public const int LightDangerId = 888;
+
+        private const int JardaId = 1;
 
         #endregion
 
@@ -125,27 +129,34 @@ namespace SnakeDeathmatch.Players.SoulEater
         }
 
 
-        public void MakeAnalyze()
+        public void Analyze()
         {
-            //for (int x = 0; x < SizeOfTable; x++)
-            //{
-            //    for (int y = 0; y < SizeOfTable; y++)
-            //    {
-            //        if (Ground[x, y] == 0)
-            //        {
-            //            if (IsValidPoint(x + 1, y) && Ground[x + 1, y] != 0)
-            //            {
+            for (int x = 0; x < SizeOfTable; x++)
+            {
+                for (int y = 0; y < SizeOfTable; y++)
+                {
+                    if (Ground[x, y] == 0)
+                    {
+                        var borderPoints = DirectionHelper.GetBorderPoints(new Point(x,y)).ToList();
+                        if (borderPoints.Any(point => IsValidPoint(point) == false || this[point.X, point.Y] == JardaId))
+                        {
+                            Ground[x, y] = LightDangerId;
+                        }
+                    }
+                }
+            }
 
-            //            }
-            //        }
-            //    }
-            //}
+            SimulateStateAfterOtherPlayersMoves(5);
+        }
 
-            SimulateStateAfterOtherPlayersMove();
-            SimulateStateAfterOtherPlayersMove();
-            SimulateStateAfterOtherPlayersMove();
-            SimulateStateAfterOtherPlayersMove();
-            SimulateStateAfterOtherPlayersMove();
+        public bool IsBlocked(int x, int y)
+        {
+            var value = this[x, y];
+
+            if (value < 100 && value > 0) 
+                return true;
+
+            return false;
         }
 
         #region private
@@ -230,31 +241,37 @@ namespace SnakeDeathmatch.Players.SoulEater
             movedPlayer.CurrentPosition = newPoint;
         }
 
-        private void SimulateStateAfterOtherPlayersMove()
+        private void SimulateStateAfterOtherPlayersMoves(int numberOfMoves)
         {
             foreach (var player in OtherPlayers.Where(x => x.IsDown == false))
             {
-                var currentPoint = player.CurrentPosition;
-
-                var potentionalyDangerousPoints = DirectionHelper.GetBorderPoints(currentPoint).ToList();
-
-                foreach (var point in potentionalyDangerousPoints)
+                for (int i = 0; i < numberOfMoves; i++)
                 {
-                    if (IsValidPoint(point) && Ground[point.X, point.Y] == 0)
+                    var currentPoint = player.CurrentPosition;
+
+                    var potentionalyDangerousPoints = DirectionHelper.GetBorderPoints(currentPoint).ToList();
+
+                    foreach (var point in potentionalyDangerousPoints)
                     {
-                        Ground[point.X, point.Y] = DangerId;
+                        if (IsValidPoint(point) && Ground[point.X, point.Y] == 0)
+                        {
+                            Ground[point.X, point.Y] = DangerId;
+                        }
                     }
+
+                    if (player.Direction == null)
+                        continue;
+
+                    Point nextPoint = DirectionHelper.GetNextPoint(currentPoint, player.Direction.Value);
+                    if (nextPoint.X >= SizeOfTable || nextPoint.Y >= SizeOfTable || nextPoint.X < 0 || nextPoint.Y < 0 )
+                        break;
+
+                    if (this[nextPoint.X, nextPoint.Y] < 100)
+                       break;
+
+                    Ground[nextPoint.X, nextPoint.Y] = PotentionalyCollisionWithPlayerId;
+                    UpdatePlayerPositionAndDirection(player, nextPoint);
                 }
-
-                if (player.Direction == null)
-                    continue;
-
-                Point nextPoint = DirectionHelper.GetNextPoint(currentPoint, player.Direction.Value);
-                if (nextPoint.X >= SizeOfTable || nextPoint.Y >= SizeOfTable || nextPoint.X < 0 || nextPoint.Y < 0)
-                    continue;
-
-                Ground[nextPoint.X, nextPoint.Y] = PotentionalyCollisionWithPlayerId;
-                UpdatePlayerPositionAndDirection(player, nextPoint);
             }
         }
 
