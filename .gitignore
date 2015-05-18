@@ -18,3 +18,4 @@ _ReSharper.SnakeDeathmatch
 SnakeDeathmatch.5.0.ReSharper.user
 *.pdb
 SnakeDeathmatch/SnakeContestDeathmatch
+/SnakeDeathmatch.sln.DotSettings.user

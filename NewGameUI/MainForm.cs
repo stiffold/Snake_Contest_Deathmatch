@@ -36,7 +36,7 @@ namespace NewGameUI
 
         private bool _drawingReplaySavedGame = false;
         private int _drawingSavedGameRoundNumber;
-        private SavedGame _savedGame;
+        private Game _game;
 
         #region GameInitialize
 
@@ -89,7 +89,7 @@ namespace NewGameUI
             if (savedGame != null)
             {
                 InitializeGraphics();
-                _savedGame = savedGame;
+                _game = savedGame;
                 _drawingSavedGameRoundNumber = 1;
                 _drawingReplaySavedGame = true;
 
@@ -108,7 +108,7 @@ namespace NewGameUI
         private void MainForm_Load(object sender, EventArgs e)
         {
             this.Width = PlaygroundSizeInPixels + 16;
-            this.Height = PlaygroundSizeInPixels + 16 + 61;
+            this.Height = PlaygroundSizeInPixels + 38 + _panelTop.Height;
 
             this.Top = (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2;
             this.Left = (Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2;
@@ -124,6 +124,8 @@ namespace NewGameUI
 
         private void _timerUI_Tick(object sender, EventArgs e)
         {
+            _timerUI.Stop();
+
             if (_drawingReplaySavedGame)
             {
                 DrawRoundToWindow();
@@ -131,7 +133,37 @@ namespace NewGameUI
             else
             {
                 DrawFullGameStateToWindow();
+
+                if (_gameEngine.GameOver)
+                {
+                    HandleGameOver();
+                    return; //aby se na konci nenastartoval timer!!!
+                }
+
             }
+
+            _timerUI.Start();
+        }
+
+        private void HandleGameOver()
+        {
+            GameState gameState = _gameEngine.GetGameState();
+
+            var game = new Game()
+            {
+                GamePicture = _arenaPicture,
+                PlayGroundSizeInDots = PlaygroundSizeInDots,
+                RecordLines = gameState.RecordLines,
+                GameStats = _gameEngine.ScoreMessage(),
+            };
+
+            var endGameDialog = new EndGameDialog();
+            if (endGameDialog.OpenDialog(game) == true)
+            {
+                RestartGame();
+            }
+
+            this.TopMost = true;
         }
 
         private void _buttonRestart_Click(object sender, EventArgs e)
@@ -165,11 +197,11 @@ namespace NewGameUI
 
         private void DrawRoundToWindow()
         {
-            int dotSize = PlaygroundSizeInPixels / _savedGame.PlayGroundSizeInDots;
+            int dotSize = PlaygroundSizeInPixels / _game.PlayGroundSizeInDots;
 
             _labelRoundCounter.Text = _drawingSavedGameRoundNumber.ToString(CultureInfo.InvariantCulture);
 
-            var recordLines = _savedGame.RecordLines.Where(x => x.Round == _drawingSavedGameRoundNumber).ToList();
+            var recordLines = _game.RecordLines.Where(x => x.Round == _drawingSavedGameRoundNumber).ToList();
             _drawingSavedGameRoundNumber++;
 
             if (recordLines.Any() == false)
@@ -280,6 +312,11 @@ namespace NewGameUI
             {
                 _gameEngine.NextStepEnabled = true;
             }
+        }
+
+        private void _buttonDebugger_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

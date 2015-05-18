@@ -179,14 +179,14 @@ namespace SnakeDeathmatch.Game
             foreach (Player player in livePlayers)
             {
                 _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
-                _recordLines.Add(new RecordLine(_round, player.Position.X, player.Position.Y, player.Identifier, player.Name));
+                _recordLines.Add(new RecordLine(_round, player.Position.X, player.Position.Y, player.Color, player.Name));
             }
 
             // zapsání tahu společného pole kolize hlav
             foreach (Position position in headToHeadCrashes)
             {
                 _gameSurround[position.X, position.Y] = HeadToHeadCrashId;
-                _recordLines.Add(new RecordLine(_round, position.X, position.Y, HeadToHeadCrashId, ""));
+                _recordLines.Add(new RecordLine(_round, position.X, position.Y, _headToHeadCrashColor, ""));
             }
 
             if (!_players.Any(p => p.State == PlayerState.Playing))

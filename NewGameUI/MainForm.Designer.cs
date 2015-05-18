@@ -62,7 +62,7 @@
             this._panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this._panelTop.Location = new System.Drawing.Point(0, 0);
             this._panelTop.Name = "_panelTop";
-            this._panelTop.Size = new System.Drawing.Size(876, 36);
+            this._panelTop.Size = new System.Drawing.Size(876, 72);
             this._panelTop.TabIndex = 2;
             // 
             // _buttonDebugger
@@ -73,6 +73,7 @@
             this._buttonDebugger.TabIndex = 11;
             this._buttonDebugger.Text = "Debugger";
             this._buttonDebugger.UseVisualStyleBackColor = true;
+            this._buttonDebugger.Click += new System.EventHandler(this._buttonDebugger_Click);
             // 
             // _buttonStep
             // 
@@ -112,7 +113,7 @@
             this._panelRound.Controls.Add(this._labelRPS);
             this._panelRound.Controls.Add(this._labelRoundCounter);
             this._panelRound.Controls.Add(this._labelRound);
-            this._panelRound.Location = new System.Drawing.Point(525, 0);
+            this._panelRound.Location = new System.Drawing.Point(3, 36);
             this._panelRound.Name = "_panelRound";
             this._panelRound.Size = new System.Drawing.Size(277, 33);
             this._panelRound.TabIndex = 2;
@@ -176,9 +177,9 @@
             // 
             this._panelArena.BackColor = System.Drawing.Color.Black;
             this._panelArena.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._panelArena.Location = new System.Drawing.Point(0, 36);
+            this._panelArena.Location = new System.Drawing.Point(0, 72);
             this._panelArena.Name = "_panelArena";
-            this._panelArena.Size = new System.Drawing.Size(876, 640);
+            this._panelArena.Size = new System.Drawing.Size(876, 604);
             this._panelArena.TabIndex = 7;
             this._panelArena.TabStop = false;
             // 
