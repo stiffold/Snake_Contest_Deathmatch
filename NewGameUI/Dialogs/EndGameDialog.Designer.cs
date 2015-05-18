@@ -124,6 +124,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonNo);
             this.Controls.Add(this.buttonYes);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "EndGameDialog";

@@ -163,7 +163,6 @@ namespace NewGameUI
                 RestartGame();
             }
 
-            this.TopMost = true;
         }
 
         private void _buttonRestart_Click(object sender, EventArgs e)
