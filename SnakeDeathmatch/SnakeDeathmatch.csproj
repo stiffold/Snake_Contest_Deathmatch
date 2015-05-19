@@ -64,7 +64,7 @@
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\PlayerBehaviourWrapper.cs" />
     <Compile Include="Game\RecordLine.cs" />
-    <Compile Include="Game\SavedGame.cs" />
+    <Compile Include="Game\Game.cs" />
     <Compile Include="Interface\IPlayerBehaviour2.cs" />
     <Compile Include="Interface\PlayerId.cs" />
     <Compile Include="Players\Fools\StraightPlayer.cs" />

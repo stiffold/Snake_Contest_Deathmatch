@@ -192,6 +192,7 @@
             this.ClientSize = new System.Drawing.Size(637, 676);
             this.Controls.Add(this._panelArena);
             this.Controls.Add(this._panelTop);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MainForm";
             this.Text = "Snake Deathmatch (New UI)";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);

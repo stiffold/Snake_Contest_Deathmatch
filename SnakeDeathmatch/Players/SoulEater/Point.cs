@@ -21,4 +21,28 @@
             return string.Format("[{0},{1}]", X, Y);
         }
     }
+
+    public struct PointWithValue
+    {
+        public PointWithValue(int x, int y, int value)
+        {
+            Point = new Point(x,y);
+            Value = value;
+        }
+
+        public PointWithValue(Point point, int value)
+        {
+            Point = point;
+            Value = value;
+        }
+
+        public Point Point;
+        public int X {
+            get { return Point.X; }
+        }
+        public int Y {
+            get { return Point.Y; }
+        }
+        public int Value;
+    }
 }
