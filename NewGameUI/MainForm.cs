@@ -11,6 +11,7 @@ using NewGameUI.Dialogs;
 using NewGameUI.Services.FTP;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Game;
+using SnakeDeathmatch.Debugger;
 
 namespace NewGameUI
 {
@@ -280,6 +281,12 @@ namespace NewGameUI
             {
                 _gameEngine.NextStepEnabled = true;
             }
+        }
+
+        private void _buttonDebugger_Click(object sender, EventArgs e)
+        {
+            var form = new DebuggerForm(_gameEngine);
+            form.Show();
         }
     }
 }

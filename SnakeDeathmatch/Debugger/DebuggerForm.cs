@@ -7,31 +7,39 @@ using System.Collections;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Players.Vazba;
 using SnakeDeathmatch.Players.Vazba.Debug;
+using SnakeDeathmatch.Game;
+using System.Threading;
 
 namespace SnakeDeathmatch.Debugger
 {
     public partial class DebuggerForm : Form
     {
-        private object _rootObj;
+        private GameEngine _rootObj;
         private DebugNode _rootDebugNode;
 
         private List<string> _affectedPaths = new List<string>();
         private Dictionary<string, DebugNode> _debugNodes = new Dictionary<string, DebugNode>();
-        private string _nextDebugId = BreakpointNames.MoveEnd;
+        private string _nextBreakpointName = GameEngineBreakpointNames.NoBreakpoint;
+        private bool _shouldContinue = true;
 
-        public DebuggerForm(object rootObjToDebug)
+        public DebuggerForm(GameEngine gameEngine)
         {
             InitializeComponent();
             _treeView.TreeViewNodeSorter = new TreeNodeSorter();
 
-            _rootObj = rootObjToDebug;
-            DoUpdate();
+            _rootObj = gameEngine;
         }
 
-        public void DoUpdate()
+        private void DebuggerForm_Load(object sender, EventArgs e)
+        {
+            UpdateBreakpoints();
+            _rootObj.Breakpoint += DebuggerForm_Breakpoint;
+        }
+
+        public void UpdateUI()
         {
             var oldRootDebugNode = _rootDebugNode;
-            var newRootDebugNode = new DebugNode(null, _rootObj.ToString(), _rootObj, _rootObj.GetType());
+            var newRootDebugNode = new DebugNode(null, _rootObj.GetType().Name, _rootObj, _rootObj.GetType());
             _rootDebugNode = newRootDebugNode;
 
             UpdateHandlers(oldRootDebugNode, newRootDebugNode);
@@ -45,13 +53,13 @@ namespace SnakeDeathmatch.Debugger
             {
                 foreach (IDebuggable obj in oldRootDebugNode.GetAllNodesRecursively().Select(x => x.Obj).OfType<IDebuggable>())
                 {
-                    obj.Breakpoint -= DebuggerForm_Debug;
+                    obj.Breakpoint -= DebuggerForm_Breakpoint;
                 }
             }
 
             foreach (IDebuggable obj in newRootDebugNode.GetAllNodesRecursively().Select(x => x.Obj).OfType<IDebuggable>())
             {
-                obj.Breakpoint += DebuggerForm_Debug;
+                obj.Breakpoint += DebuggerForm_Breakpoint;
             }
         }
 
@@ -63,7 +71,7 @@ namespace SnakeDeathmatch.Debugger
                 IEnumerable<string> oldPaths = (oldRootDebugNode != null) ? oldRootDebugNode.GetAllNodesRecursively().Select(x => x.Path) : Enumerable.Empty<string>();
                 IEnumerable<string> newPaths = newRootDebugNode.GetAllNodesRecursively().Select(x => x.Path);
 
-                IEnumerable<string> pathsToDelete = oldPaths.Except(newPaths);
+                IEnumerable<string> pathsToDelete = oldPaths.Except(newPaths).OrderByDescending(x => x);
                 foreach (string path in pathsToDelete)
                 {
                     TreeNode treeNode = _treeView.Nodes.GetNodeByTagObjectRecursively(path);
@@ -103,9 +111,9 @@ namespace SnakeDeathmatch.Debugger
         private string GetTreeNodeText(DebugNode debugNode)
         {
             return (debugNode.Obj == null)
-                ? string.Format("{0} = null", debugNode.Name)
+                ? string.Format("{0}: null", debugNode.Name)
                 : (debugNode.Obj.ToString() != debugNode.Obj.GetType().ToString())
-                    ? string.Format("{0} = {1}", debugNode.Name, debugNode.Obj)
+                    ? string.Format("{0}: {1}", debugNode.Name, debugNode.Obj)
                     : debugNode.Name;
         }
 
@@ -117,9 +125,9 @@ namespace SnakeDeathmatch.Debugger
             IEnumerable<string> pathsToDelete = oldPaths.Except(newPaths);
             foreach (string path in pathsToDelete)
             {
-                Control control = _panelBody.Controls.Cast<Control>().FirstOrDefault(x => x.Tag.Equals(path));
+                Control control = _panelControls.Controls.Cast<Control>().FirstOrDefault(x => x.Tag.Equals(path));
                 if (control != null)
-                    _panelBody.Controls.Remove(control);
+                    _panelControls.Controls.Remove(control);
             }
 
             IEnumerable<string> pathsToAdd = newPaths.Except(oldPaths);
@@ -134,28 +142,34 @@ namespace SnakeDeathmatch.Debugger
 
                     Point nextLocation = new Point(0, 0);
 
-                    Control lastControl = _panelBody.Controls.Cast<Control>().LastOrDefault();
+                    Control lastControl = _panelControls.Controls.Cast<Control>().LastOrDefault();
                     if (lastControl != null)
                     {
-                        nextLocation = new Point(lastControl.Location.X + lastControl.Size.Width + 4, lastControl.Location.Y);
+                        nextLocation = new Point(lastControl.Location.X + lastControl.Size.Width, lastControl.Location.Y);
                         if (nextLocation.X >= 700)
-                            nextLocation = new Point(0, lastControl.Location.Y + lastControl.Size.Height + 4);
+                            nextLocation = new Point(0, lastControl.Location.Y + lastControl.Size.Height);
                     }
 
                     var control = visualizer as Control;
-                    control.Tag = path;
-                    control.Location = nextLocation;
-                    _panelBody.Controls.Add(control);
+                    control.Location = new Point(2, 2);
+
+                    var wrapperControl = new Panel();
+                    wrapperControl.Tag = path;
+                    wrapperControl.Location = nextLocation;
+                    wrapperControl.Size = new Size(control.Size.Width + 4, control.Size.Height + 4);
+                    wrapperControl.Controls.Add(control);
+
+                    _panelControls.Controls.Add(wrapperControl);
                 }
             }
 
             IEnumerable<string> pathsToUpdate = oldPaths.Intersect(newPaths);
             foreach (string path in pathsToUpdate)
             {
-                Control control = _panelBody.Controls.Cast<Control>().FirstOrDefault(x => x.Tag != null && x.Tag.Equals(path));
-                if (control != null)
+                Control wrapperControl = _panelControls.Controls.Cast<Control>().FirstOrDefault(x => x.Tag != null && x.Tag.Equals(path));
+                if (wrapperControl != null)
                 {
-                    IVisualizer visualizer = (control as IVisualizer);
+                    IVisualizer visualizer = (wrapperControl.Controls[0] as IVisualizer);
                     if (visualizer != null)
                     {
                         DebugNode debugNode = newRootDebugNode.GetAllNodesRecursively().First(x => x.Path == path);
@@ -179,20 +193,97 @@ namespace SnakeDeathmatch.Debugger
             return objectVisualizer;
         }
 
-        private void DebuggerForm_Debug(object sender, BreakpointEventArgs e)
+        private void UpdateBreakpoints()
         {
-            if (e.BreakpointName == _nextDebugId)
+            string currentBreakpoint = _comboBoxBreakpoint.Text;
+            _comboBoxBreakpoint.BeginUpdate();
+            try
             {
-                DoUpdate();
-                //MessageBox.Show(string.Format("Pause ({0})", e.DebugId), "Debugger");
+                _comboBoxBreakpoint.Items.Clear();
+
+                IEnumerable<Type> breakpointNamesTypes = _rootObj.GetType().Assembly.GetTypes().Where(x => typeof(IBreakpointNames).IsAssignableFrom(x) && x.IsClass);
+                foreach (Type breakpointNamesType in breakpointNamesTypes)
+                {
+                    IBreakpointNames instance = (IBreakpointNames)Activator.CreateInstance(breakpointNamesType);
+                    _comboBoxBreakpoint.Items.AddRange(instance.GetNames().ToArray());
+                }
+                _comboBoxBreakpoint.SelectedItem = GameEngineBreakpointNames.NoBreakpoint;
+            }
+            finally
+            {
+                _comboBoxBreakpoint.EndUpdate();
             }
         }
 
+        private delegate void UpdateUIDelegate();
+
         private void DebuggerForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            _rootObj.Breakpoint -= DebuggerForm_Breakpoint;
+
             foreach (IDebuggable obj in _rootDebugNode.GetAllNodesRecursively().Select(x => x.Obj).OfType<IDebuggable>())
             {
-                obj.Breakpoint -= DebuggerForm_Debug;
+                obj.Breakpoint -= DebuggerForm_Breakpoint;
+            }
+        }
+
+        private void DebuggerForm_Breakpoint(object sender, BreakpointEventArgs e)
+        {
+            string nextBreakpointName;
+            lock (this)
+            {
+                nextBreakpointName = _nextBreakpointName;
+            }
+
+            if (e.BreakpointName == nextBreakpointName && nextBreakpointName == GameEngineBreakpointNames.NoBreakpoint)
+            {
+                Invoke(new UpdateUIDelegate(UpdateUI), null);
+                Thread.Sleep(300);
+            }
+            else if (e.BreakpointName == nextBreakpointName)
+            {
+                Invoke(new UpdateUIDelegate(UpdateUI), null);
+
+                lock (this)
+                {
+                    _shouldContinue = false;
+                }
+                bool shouldContinue = false;
+
+                while (!shouldContinue)
+                {
+                    lock (this)
+                    {
+                        shouldContinue = _shouldContinue;
+                    }
+                    Thread.Sleep(1);
+                }
+            }
+        }
+
+        private void _comboBoxBreakpoint_SelectedValueChanged(object sender, EventArgs e)
+        {
+            lock(this)
+            {
+                _nextBreakpointName = _comboBoxBreakpoint.Text;
+            }
+        }
+
+        private void _buttonGoToTheEnd_Click(object sender, EventArgs e)
+        {
+            lock (this)
+            {
+                _shouldContinue = true;
+            }
+        }
+
+        private void _treeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            string path = (string)e.Node.Tag;
+
+            foreach(Control control in _panelControls.Controls.Cast<Control>())
+            {
+                control.BackColor = (control.Tag.Equals(path)) ? Color.Red : _panelControls.BackColor;
             }
         }
     }
@@ -219,81 +310,6 @@ namespace SnakeDeathmatch.Debugger
         public int Compare(object treeNode1, object treeNode2)
         {
             return string.Compare((treeNode1 as TreeNode).Text, (treeNode2 as TreeNode).Text);
-        }
-    }
-
-    public class DebugNode
-    {
-        public DebugNode Parent { get; private set; }
-        public string Name { get; private set; }
-        public object Obj { get; set; }
-        public Type ObjType { get; set; }
-        public List<DebugNode> Children { get; private set; }
-        public bool CanCreateVisualizer
-        {
-            get
-            {
-                if (Obj is IntPlayground)
-                    return true;
-
-                return false;
-            }
-        }
-        public string Path
-        {
-            get { return string.Format("{0}/{1}", (Parent != null) ? Parent.Path : string.Empty, Name); }
-        }
-
-        public DebugNode(DebugNode parent, string name, object obj, Type objType)
-        {
-            Parent = parent;
-            Name = name;
-            Obj = obj;
-            ObjType = objType;
-            Children = new List<DebugNode>();
-            CreateChildren();
-        }
-
-        public IEnumerable<DebugNode> GetAllNodesRecursively()
-        {
-            yield return this;
-            foreach (var childNode in Children)
-            {
-                foreach (var childNodeFromRecursion in childNode.GetAllNodesRecursively())
-                {
-                    yield return childNodeFromRecursion;
-                }
-            }
-        }
-
-        private void CreateChildren()
-        {
-            if (Obj == null)
-                return;
-
-            if (typeof(IEnumerable).IsAssignableFrom(Obj.GetType()))
-            {
-                IEnumerator enumerator = (Obj as IEnumerable).GetEnumerator();
-                int i = 0;
-                while (enumerator.MoveNext())
-                {
-                    object obj = enumerator.Current;
-                    var name = string.Format("[{0}]", i);
-                    var debugNode = new DebugNode(this, name, obj, obj.GetType());
-                    Children.Add(debugNode);
-                    i++;
-                }
-            }
-            else
-            {
-                var properties = Obj.GetType().GetProperties().Where(p => p.GetCustomAttributes(typeof(ToDebugAttribute), true).Any());
-                foreach (var property in properties)
-                {
-                    object obj = property.GetValue(Obj, null);
-                    var debugNode = new DebugNode(this, property.Name, obj, property.PropertyType);
-                    Children.Add(debugNode);
-                }
-            }
         }
     }
 }

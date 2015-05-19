@@ -62,24 +62,25 @@
             this._panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this._panelTop.Location = new System.Drawing.Point(0, 0);
             this._panelTop.Name = "_panelTop";
-            this._panelTop.Size = new System.Drawing.Size(876, 36);
+            this._panelTop.Size = new System.Drawing.Size(637, 36);
             this._panelTop.TabIndex = 2;
             // 
             // _buttonDebugger
             // 
-            this._buttonDebugger.Location = new System.Drawing.Point(304, 6);
+            this._buttonDebugger.Location = new System.Drawing.Point(231, 6);
             this._buttonDebugger.Name = "_buttonDebugger";
-            this._buttonDebugger.Size = new System.Drawing.Size(74, 23);
+            this._buttonDebugger.Size = new System.Drawing.Size(70, 23);
             this._buttonDebugger.TabIndex = 11;
             this._buttonDebugger.Text = "Debugger";
             this._buttonDebugger.UseVisualStyleBackColor = true;
+            this._buttonDebugger.Click += new System.EventHandler(this._buttonDebugger_Click);
             // 
             // _buttonStep
             // 
             this._buttonStep.Enabled = false;
             this._buttonStep.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this._buttonStep.Image = ((System.Drawing.Image)(resources.GetObject("_buttonStep.Image")));
-            this._buttonStep.Location = new System.Drawing.Point(384, 6);
+            this._buttonStep.Location = new System.Drawing.Point(307, 6);
             this._buttonStep.Name = "_buttonStep";
             this._buttonStep.Size = new System.Drawing.Size(26, 23);
             this._buttonStep.TabIndex = 10;
@@ -89,7 +90,7 @@
             // _checkboxStepping
             // 
             this._checkboxStepping.AutoSize = true;
-            this._checkboxStepping.Location = new System.Drawing.Point(416, 10);
+            this._checkboxStepping.Location = new System.Drawing.Point(339, 10);
             this._checkboxStepping.Name = "_checkboxStepping";
             this._checkboxStepping.Size = new System.Drawing.Size(76, 17);
             this._checkboxStepping.TabIndex = 9;
@@ -99,11 +100,11 @@
             // 
             // _buttonReplay
             // 
-            this._buttonReplay.Location = new System.Drawing.Point(165, 6);
+            this._buttonReplay.Location = new System.Drawing.Point(79, 6);
             this._buttonReplay.Name = "_buttonReplay";
-            this._buttonReplay.Size = new System.Drawing.Size(133, 23);
+            this._buttonReplay.Size = new System.Drawing.Size(70, 23);
             this._buttonReplay.TabIndex = 3;
-            this._buttonReplay.Text = "Replay saved game";
+            this._buttonReplay.Text = "Replay";
             this._buttonReplay.UseVisualStyleBackColor = true;
             this._buttonReplay.Click += new System.EventHandler(this._buttonReplay_Click);
             // 
@@ -112,18 +113,18 @@
             this._panelRound.Controls.Add(this._labelRPS);
             this._panelRound.Controls.Add(this._labelRoundCounter);
             this._panelRound.Controls.Add(this._labelRound);
-            this._panelRound.Location = new System.Drawing.Point(525, 0);
+            this._panelRound.Location = new System.Drawing.Point(421, 0);
             this._panelRound.Name = "_panelRound";
-            this._panelRound.Size = new System.Drawing.Size(277, 33);
+            this._panelRound.Size = new System.Drawing.Size(204, 33);
             this._panelRound.TabIndex = 2;
             // 
             // _labelRPS
             // 
             this._labelRPS.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this._labelRPS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this._labelRPS.Location = new System.Drawing.Point(158, 6);
+            this._labelRPS.Location = new System.Drawing.Point(128, 7);
             this._labelRPS.Name = "_labelRPS";
-            this._labelRPS.Size = new System.Drawing.Size(116, 20);
+            this._labelRPS.Size = new System.Drawing.Size(67, 20);
             this._labelRPS.TabIndex = 5;
             this._labelRPS.Text = "0 RPS";
             this._labelRPS.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -132,11 +133,11 @@
             // 
             this._labelRoundCounter.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this._labelRoundCounter.ForeColor = System.Drawing.Color.LimeGreen;
-            this._labelRoundCounter.Location = new System.Drawing.Point(85, 6);
+            this._labelRoundCounter.Location = new System.Drawing.Point(67, 7);
             this._labelRoundCounter.Name = "_labelRoundCounter";
-            this._labelRoundCounter.Size = new System.Drawing.Size(67, 18);
+            this._labelRoundCounter.Size = new System.Drawing.Size(55, 18);
             this._labelRoundCounter.TabIndex = 4;
-            this._labelRoundCounter.Text = "000000000";
+            this._labelRoundCounter.Text = "00000";
             this._labelRoundCounter.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // _labelRound
@@ -145,24 +146,25 @@
             this._labelRound.ForeColor = System.Drawing.Color.LimeGreen;
             this._labelRound.Location = new System.Drawing.Point(3, 6);
             this._labelRound.Name = "_labelRound";
-            this._labelRound.Size = new System.Drawing.Size(76, 18);
+            this._labelRound.Size = new System.Drawing.Size(58, 18);
             this._labelRound.TabIndex = 3;
             this._labelRound.Text = "Round";
             // 
             // _buttonTest
             // 
-            this._buttonTest.Location = new System.Drawing.Point(84, 6);
+            this._buttonTest.Enabled = false;
+            this._buttonTest.Location = new System.Drawing.Point(155, 6);
             this._buttonTest.Name = "_buttonTest";
-            this._buttonTest.Size = new System.Drawing.Size(75, 23);
+            this._buttonTest.Size = new System.Drawing.Size(70, 23);
             this._buttonTest.TabIndex = 1;
-            this._buttonTest.Text = "Test";
+            this._buttonTest.Text = "Tests";
             this._buttonTest.UseVisualStyleBackColor = true;
             // 
             // _buttonRestart
             // 
             this._buttonRestart.Location = new System.Drawing.Point(3, 6);
             this._buttonRestart.Name = "_buttonRestart";
-            this._buttonRestart.Size = new System.Drawing.Size(75, 23);
+            this._buttonRestart.Size = new System.Drawing.Size(70, 23);
             this._buttonRestart.TabIndex = 0;
             this._buttonRestart.Text = "Restart";
             this._buttonRestart.UseVisualStyleBackColor = true;
@@ -178,7 +180,7 @@
             this._panelArena.Dock = System.Windows.Forms.DockStyle.Fill;
             this._panelArena.Location = new System.Drawing.Point(0, 36);
             this._panelArena.Name = "_panelArena";
-            this._panelArena.Size = new System.Drawing.Size(876, 640);
+            this._panelArena.Size = new System.Drawing.Size(637, 640);
             this._panelArena.TabIndex = 7;
             this._panelArena.TabStop = false;
             // 
@@ -187,7 +189,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(876, 676);
+            this.ClientSize = new System.Drawing.Size(637, 676);
             this.Controls.Add(this._panelArena);
             this.Controls.Add(this._panelTop);
             this.Name = "MainForm";

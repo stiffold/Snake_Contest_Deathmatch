@@ -25,7 +25,7 @@ namespace SnakeDeathmatch.Players.Vazba
             {
                 _array[x, y] = value;
                 if (Breakpoint != null)
-                    Breakpoint(this, new BreakpointEventArgs(BreakpointNames.IntPlaygroundChanged));
+                    Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.IntPlaygroundChanged));
             }
         }
 

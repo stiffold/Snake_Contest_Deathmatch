@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading;
 using SnakeDeathmatch.Game;
 using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Debugger;
 
 namespace SnakeDeathmatch.Game
 {
-    public class GameEngine
+    public class GameEngine : IDebuggable
     {
         public const int HeadToHeadCrashId = -1;
         public object _headToHeadCrashColor;
@@ -25,6 +26,9 @@ namespace SnakeDeathmatch.Game
 
 
         public int Size { get; private set; }
+
+        [ToDebug]
+        public IEnumerable<Player> Players { get { return _players; } }
 
         public GameEngine(int size, IEnumerable<Player> players)
             : this(size, System.Windows.Media.Colors.Magenta, players)
@@ -74,8 +78,8 @@ namespace SnakeDeathmatch.Game
                     lock (_gameSurround.SyncRoot)
                     {
                         _round++;
-                        Move();
                     }
+                    Move();
                 }
 
                 if (timeIntervalInMilliseconds > 0)
@@ -102,6 +106,12 @@ namespace SnakeDeathmatch.Game
 
         public int[,] Move()
         {
+            if (Breakpoint != null)
+                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.NoBreakpoint));
+
+            if (Breakpoint != null)
+                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.MoveBegin));
+
             List<Player> livePlayers;
 
             // necháme všechny přeživší odehrát svůj tah
@@ -174,25 +184,31 @@ namespace SnakeDeathmatch.Game
                 }
             }
 
-            // zapsání tahu přeživších hadů do hracího pole
-            livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
-            foreach (Player player in livePlayers)
+            lock (_gameSurround.SyncRoot)
             {
-                _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
-                _recordLines.Add(new RecordLine(_round, player.Position.X, player.Position.Y, player.Identifier, player.Name));
-            }
+                // zapsání tahu přeživších hadů do hracího pole
+                livePlayers = _players.Where(p => p.State == PlayerState.Playing).ToList();
+                foreach (Player player in livePlayers)
+                {
+                    _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
+                    _recordLines.Add(new RecordLine(_round, player.Position.X, player.Position.Y, player.Identifier, player.Name));
+                }
 
-            // zapsání tahu společného pole kolize hlav
-            foreach (Position position in headToHeadCrashes)
-            {
-                _gameSurround[position.X, position.Y] = HeadToHeadCrashId;
-                _recordLines.Add(new RecordLine(_round, position.X, position.Y, HeadToHeadCrashId, ""));
+                // zapsání tahu společného pole kolize hlav
+                foreach (Position position in headToHeadCrashes)
+                {
+                    _gameSurround[position.X, position.Y] = HeadToHeadCrashId;
+                    _recordLines.Add(new RecordLine(_round, position.X, position.Y, HeadToHeadCrashId, ""));
+                }
             }
 
             if (!_players.Any(p => p.State == PlayerState.Playing))
             {
                 _gameOver = true;
             }
+
+            if (Breakpoint != null)
+                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.MoveEnd));
 
             return _gameSurround;
         }
@@ -230,5 +246,12 @@ namespace SnakeDeathmatch.Game
         public bool StepMode { get; set; }
 
         public bool NextStepEnabled { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("round {0}", _round);
+        }
+
+        public event BreakpointEventHandler Breakpoint;
     }
 }

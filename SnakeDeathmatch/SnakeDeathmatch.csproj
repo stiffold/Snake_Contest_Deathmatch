@@ -57,7 +57,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Debugger\DebugNode.cs" />
+    <Compile Include="Debugger\IBreakpointNames.cs" />
     <Compile Include="Debugger\VisualizerAttribute.cs" />
+    <Compile Include="Game\GameEngineBreakpointNames.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\PlayerBehaviourWrapper.cs" />
     <Compile Include="Game\RecordLine.cs" />
@@ -89,7 +92,7 @@
     <Compile Include="Debugger\DebuggerForm.Designer.cs">
       <DependentUpon>DebuggerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Players\Vazba\Debug\BreakpointNames.cs" />
+    <Compile Include="Players\Vazba\Debug\VazbaBreakpointNames.cs" />
     <Compile Include="Players\Vazba\DecimalPlayground.cs" />
     <Compile Include="Players\Vazba\Debug\DecimalPlaygroundVisualizer.cs">
       <SubType>UserControl</SubType>

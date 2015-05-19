@@ -37,24 +37,16 @@ namespace SnakeDeathmatch.Players.Vazba
         {
             var intPlayground = new IntPlayground(playground);
             if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(BreakpointNames.MoveBegin));
+                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.MoveBegin));
 
             _snakes.Update(intPlayground);
 
             var snakes = _snakes.IsInitialized ? _snakes : new Snakes(_snakes.Me);
             if (Breakpoint != null)
-                Breakpoint(snakes, new BreakpointEventArgs(BreakpointNames.SnakesUpdated));
+                Breakpoint(snakes, new BreakpointEventArgs(VazbaBreakpointNames.SnakesUpdated));
 
             Move move = Strategy.GetNextMove(intPlayground, snakes);
-            if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(BreakpointNames.MoveEnd));
-
             return move;
-        }
-
-        public override string ToString()
-        {
-            return Name;
         }
     }
 }

@@ -8,17 +8,17 @@ namespace SnakeDeathmatch.Game
 {
     public class PlayerBehaviourWrapper
     {
-        private IPlayerBehavior _playerBehaviour1;
-        private IPlayerBehaviour2 _playerBehaviour2;
+        public IPlayerBehavior PlayerBehaviour1 { get; private set; }
+        public IPlayerBehaviour2 PlayerBehaviour2 { get; private set; }
 
         public PlayerBehaviourWrapper(object playerBehaviour)
         {
             var knownInterfaces = new[] { typeof(IPlayerBehaviour2), typeof(IPlayerBehavior) };
 
-            _playerBehaviour2 = (playerBehaviour as IPlayerBehaviour2);
-            _playerBehaviour1 = (playerBehaviour as IPlayerBehavior);
+            PlayerBehaviour2 = (playerBehaviour as IPlayerBehaviour2);
+            PlayerBehaviour1 = (playerBehaviour as IPlayerBehavior);
 
-            if (_playerBehaviour2 == null && _playerBehaviour1 == null)
+            if (PlayerBehaviour2 == null && PlayerBehaviour1 == null)
             {
                 throw new Exception(string.Format("Object {0} must implement at least one of these interfaces: {1}.",
                     playerBehaviour.GetType().Name, string.Join(", ", knownInterfaces.Select(x => x.Name).ToArray())));
@@ -27,18 +27,18 @@ namespace SnakeDeathmatch.Game
 
         public void Init(int identifier, int playgroundSize, int x, int y, Direction direction)
         {
-            if (_playerBehaviour2 != null)
-                _playerBehaviour2.Init(identifier, playgroundSize, x, y, direction);
-            else if (_playerBehaviour1 != null)
-                _playerBehaviour1.Init((int)direction, identifier);
+            if (PlayerBehaviour2 != null)
+                PlayerBehaviour2.Init(identifier, playgroundSize, x, y, direction);
+            else if (PlayerBehaviour1 != null)
+                PlayerBehaviour1.Init((int)direction, identifier);
         }
 
         public Move GetNextMove(int[,] playground)
         {
-            if (_playerBehaviour2 != null)
-                return _playerBehaviour2.GetNextMove(playground);
-            else if (_playerBehaviour1 != null)
-                return (Move)_playerBehaviour1.NextMove(playground);
+            if (PlayerBehaviour2 != null)
+                return PlayerBehaviour2.GetNextMove(playground);
+            else if (PlayerBehaviour1 != null)
+                return (Move)PlayerBehaviour1.NextMove(playground);
             throw new Exception();
         }
 
@@ -46,10 +46,10 @@ namespace SnakeDeathmatch.Game
         {
             get
             {
-                if (_playerBehaviour2 != null)
-                    return _playerBehaviour2.Name;
-                else if (_playerBehaviour1 != null)
-                    return _playerBehaviour1.MyName();
+                if (PlayerBehaviour2 != null)
+                    return PlayerBehaviour2.Name;
+                else if (PlayerBehaviour1 != null)
+                    return PlayerBehaviour1.MyName();
                 throw new Exception();
             }
         }

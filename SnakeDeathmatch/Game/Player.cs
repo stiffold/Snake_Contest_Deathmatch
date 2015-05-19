@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Debugger;
 
 namespace SnakeDeathmatch.Game
 {
@@ -89,5 +90,15 @@ namespace SnakeDeathmatch.Game
 
             return oldDirection;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public string PositionAndDirection { get { return string.Format("[{0},{1}], {2}", Position.X, Position.Y, Direction); } }
+
+        [ToDebug]
+        public IPlayerBehaviour2 Details { get { return _playerBehaviour.PlayerBehaviour2; } }
     }
 }
