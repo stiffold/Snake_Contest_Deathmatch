@@ -1,6 +1,6 @@
-﻿namespace SnakeDeathmatch.Players.Vazba.Debug
+﻿namespace SnakeDeathmatch.Debugger
 {
-    partial class IntPlaygroundVisualizer
+    partial class IntArrayVisualizerBase
     {
         /// <summary> 
         /// Required designer variable.
@@ -45,12 +45,12 @@
             this._pictureBox.TabIndex = 0;
             this._pictureBox.TabStop = false;
             // 
-            // IntPlaygroundControl
+            // IntArrayVisualizerBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this._pictureBox);
-            this.Name = "IntPlaygroundControl";
+            this.Name = "IntArrayVisualizerBase";
             this.Size = new System.Drawing.Size(300, 300);
             ((System.ComponentModel.ISupportInitialize)(this._pictureBox)).EndInit();
             this.ResumeLayout(false);

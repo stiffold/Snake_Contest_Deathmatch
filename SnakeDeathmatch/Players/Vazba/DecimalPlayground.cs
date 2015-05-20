@@ -3,23 +3,22 @@ using SnakeDeathmatch.Players.Vazba.Debug;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
-    [Visualizer(typeof(DecimalPlaygroundVisualizer))]
-    public class DecimalPlayground
+    public class DecimalPlayground : IDecimalArray
     {
-        private decimal[,] _array;
+        public decimal[,] InnerArray { get; private set; }
 
         public int Size { get; private set; }
 
         public DecimalPlayground(int size)
         {
-            _array = new decimal[size, size];
+            InnerArray = new decimal[size, size];
             Size = size;
         }
 
         public decimal this[int x, int y]
         {
-            get { return _array[x, y]; }
-            set { _array[x, y] = value; }
+            get { return InnerArray[x, y]; }
+            set { InnerArray[x, y] = value; }
         }
     }
 }

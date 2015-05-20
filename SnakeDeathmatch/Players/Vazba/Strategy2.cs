@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Debugger;
+using SnakeDeathmatch.Players.Vazba.Debug;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
@@ -9,11 +10,11 @@ namespace SnakeDeathmatch.Players.Vazba
         public const int MyWTF = 18;
         public const int OthersWTF = 5;
 
-        [ToDebug]
+        [ToDebug(typeof(PlayersIntArrayVisualizer))]
         public IntPlayground PlaygroundForTrack { get; private set; }
 
         /// <summary>Herní hřiště (pro každý krok jedno) s pravděpodobnostmi obsazenosti jednotlivých políček v daném kroku.</summary>
-        [ToDebug]
+        [ToDebug(typeof(ZeroToOneDecimalArrayVisualizer))]
         public List<DecimalPlayground> PlaygroundForStep { get; private set; }
 
         private int _size;

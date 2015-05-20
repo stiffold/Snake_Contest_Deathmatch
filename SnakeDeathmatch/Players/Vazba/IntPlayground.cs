@@ -3,10 +3,9 @@ using SnakeDeathmatch.Players.Vazba.Debug;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
-    [Visualizer(typeof(IntPlaygroundVisualizer))]
-    public class IntPlayground : IDebuggable
+    public class IntPlayground : IDebuggable, IIntArray
     {
-        private int[,] _array;
+        public int[,] InnerArray { get; private set; }
 
         public int Size { get; private set; }
 
@@ -14,16 +13,16 @@ namespace SnakeDeathmatch.Players.Vazba
 
         public IntPlayground(int[,] array)
         {
-            _array = (int[,])array.Clone();
+            InnerArray = (int[,])array.Clone();
             Size = array.GetUpperBound(0) + 1;
         }
 
         public int this[int x, int y]
-        { 
-            get { return _array[x, y]; }
+        {
+            get { return InnerArray[x, y]; }
             set
             {
-                _array[x, y] = value;
+                InnerArray[x, y] = value;
                 if (Breakpoint != null)
                     Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.IntPlaygroundChanged));
             }
@@ -31,7 +30,7 @@ namespace SnakeDeathmatch.Players.Vazba
 
         public IntPlayground Clone()
         {
-            return new IntPlayground(_array);
+            return new IntPlayground(InnerArray);
         }
     }
 }

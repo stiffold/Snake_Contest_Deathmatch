@@ -36,8 +36,6 @@ namespace SnakeDeathmatch.Players.Vazba
         public Move GetNextMove(int[,] playground)
         {
             var intPlayground = new IntPlayground(playground);
-            if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.MoveBegin));
 
             _snakes.Update(intPlayground);
 

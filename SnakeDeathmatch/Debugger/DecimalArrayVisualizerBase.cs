@@ -1,34 +1,35 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using SnakeDeathmatch.Debugger;
 
-namespace SnakeDeathmatch.Players.Vazba.Debug
+namespace SnakeDeathmatch.Debugger
 {
-    public partial class DecimalPlaygroundVisualizer : UserControl, IVisualizer
+    public abstract partial class DecimalArrayVisualizerBase : UserControl, IVisualizer
     {
-        public DecimalPlaygroundVisualizer()
+        public DecimalArrayVisualizerBase()
         {
             InitializeComponent();
         }
 
         public void Update(object obj)
         {
-            var decimalPlayground = (DecimalPlayground)obj;
-            _pictureBox.Image = (obj == null) ? null : CreateBitmapFromPlayground(decimalPlayground);
+            var decimalArray = (IDecimalArray)obj;
+            _pictureBox.Image = (obj == null) ? null : CreateBitmapFromArray(decimalArray);
         }
 
-        private Bitmap CreateBitmapFromPlayground(DecimalPlayground playground)
+        private Bitmap CreateBitmapFromArray(IDecimalArray decimalArray)
         {
-            var bitmap = new Bitmap(playground.Size * 4, playground.Size * 4);
+            int size = decimalArray.InnerArray.GetUpperBound(0) + 1;
+
+            var bitmap = new Bitmap(size * 4, size * 4);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
-                g.DrawRectangle(Pens.Black, 0, 0, playground.Size * 4, playground.Size * 4);
+                g.DrawRectangle(Pens.Black, 0, 0, size * 4, size * 4);
             }
-            for (int x = 0; x < playground.Size; x++)
+            for (int x = 0; x < size; x++)
             {
-                for (int y = 0; y < playground.Size; y++)
+                for (int y = 0; y < size; y++)
                 {
-                    Color color = DecimalToColor(playground[x, y]);
+                    Color color = GetColorForValue(decimalArray.InnerArray[x, y]);
 
                     bitmap.SetPixel(4 * x + 0, 4 * y + 0, color);
                     bitmap.SetPixel(4 * x + 1, 4 * y + 0, color);
@@ -51,13 +52,6 @@ namespace SnakeDeathmatch.Players.Vazba.Debug
             return bitmap;
         }
 
-        private Color DecimalToColor(decimal value)
-        {
-            if (value > 1) value = 1;
-            if (value < 0) value = 0;
-
-            int intValue = (int)(value * 255);
-            return Color.FromArgb(intValue, intValue, intValue);
-        }
+        protected abstract Color GetColorForValue(decimal value);
     }
 }

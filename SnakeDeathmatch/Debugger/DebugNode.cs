@@ -14,27 +14,20 @@ namespace SnakeDeathmatch.Debugger
         public object Obj { get; set; }
         public Type ObjType { get; set; }
         public List<DebugNode> Children { get; private set; }
-        public bool CanCreateVisualizer
-        {
-            get
-            {
-                if (Obj is IntPlayground)
-                    return true;
-
-                return false;
-            }
-        }
+        public Type VisualizerType { get; private set; }
+        public bool IsVisualizerVisible { get; private set; }
         public string Path
         {
             get { return string.Format("{0}/{1}", (Parent != null) ? Parent.Path : string.Empty, Name); }
         }
 
-        public DebugNode(DebugNode parent, string name, object obj, Type objType)
+        public DebugNode(DebugNode parent, string name, object obj, Type objType, Type visualizerType)
         {
             Parent = parent;
             Name = name;
             Obj = obj;
             ObjType = objType;
+            VisualizerType = visualizerType;
             Children = new List<DebugNode>();
             CreateChildren();
         }
@@ -64,7 +57,7 @@ namespace SnakeDeathmatch.Debugger
                 {
                     object obj = enumerator.Current;
                     var name = string.Format("[{0}]", i);
-                    var debugNode = new DebugNode(this, name, obj, obj.GetType());
+                    var debugNode = new DebugNode(this, name, obj, obj.GetType(), VisualizerType);
                     Children.Add(debugNode);
                     i++;
                 }
@@ -75,7 +68,10 @@ namespace SnakeDeathmatch.Debugger
                 foreach (var property in properties)
                 {
                     object obj = property.GetValue(Obj, null);
-                    var debugNode = new DebugNode(this, property.Name, obj, property.PropertyType);
+                    ToDebugAttribute attribute = property.GetCustomAttributes(true).OfType<ToDebugAttribute>().FirstOrDefault();
+                    Type visualizerType = (attribute != null) ? attribute.VisualizerType : null;
+
+                    var debugNode = new DebugNode(this, property.Name, obj, property.PropertyType, visualizerType);
                     Children.Add(debugNode);
                 }
             }

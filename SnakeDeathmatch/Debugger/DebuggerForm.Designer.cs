@@ -56,7 +56,7 @@
             this._comboBoxBreakpoint.FormattingEnabled = true;
             this._comboBoxBreakpoint.Location = new System.Drawing.Point(2, 2);
             this._comboBoxBreakpoint.Name = "_comboBoxBreakpoint";
-            this._comboBoxBreakpoint.Size = new System.Drawing.Size(152, 21);
+            this._comboBoxBreakpoint.Size = new System.Drawing.Size(218, 21);
             this._comboBoxBreakpoint.Sorted = true;
             this._comboBoxBreakpoint.TabIndex = 3;
             this._comboBoxBreakpoint.SelectedValueChanged += new System.EventHandler(this._comboBoxBreakpoint_SelectedValueChanged);
@@ -67,7 +67,7 @@
             this._buttonGoToTheEnd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this._buttonGoToTheEnd.ImageKey = "continue.png";
             this._buttonGoToTheEnd.ImageList = this._imageList;
-            this._buttonGoToTheEnd.Location = new System.Drawing.Point(160, 3);
+            this._buttonGoToTheEnd.Location = new System.Drawing.Point(223, 3);
             this._buttonGoToTheEnd.Margin = new System.Windows.Forms.Padding(0);
             this._buttonGoToTheEnd.Name = "_buttonGoToTheEnd";
             this._buttonGoToTheEnd.Size = new System.Drawing.Size(18, 18);

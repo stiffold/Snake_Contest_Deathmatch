@@ -1,6 +1,6 @@
-﻿namespace SnakeDeathmatch.Players.Vazba.Debug
+﻿namespace SnakeDeathmatch.Debugger
 {
-    partial class DecimalPlaygroundVisualizer
+    partial class DecimalArrayVisualizerBase
     {
         /// <summary> 
         /// Required designer variable.
@@ -45,12 +45,12 @@
             this._pictureBox.TabIndex = 1;
             this._pictureBox.TabStop = false;
             // 
-            // DecimalPlaygroundControl
+            // DecimalArrayVisualizerBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this._pictureBox);
-            this.Name = "DecimalPlaygroundControl";
+            this.Name = "DecimalArrayVisualizerBase";
             this.Size = new System.Drawing.Size(300, 300);
             ((System.ComponentModel.ISupportInitialize)(this._pictureBox)).EndInit();
             this.ResumeLayout(false);

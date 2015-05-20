@@ -59,7 +59,8 @@
   <ItemGroup>
     <Compile Include="Debugger\DebugNode.cs" />
     <Compile Include="Debugger\IBreakpointNames.cs" />
-    <Compile Include="Debugger\VisualizerAttribute.cs" />
+    <Compile Include="Debugger\IDecimalArray.cs" />
+    <Compile Include="Debugger\IIntArray.cs" />
     <Compile Include="Game\GameEngineBreakpointNames.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\PlayerBehaviourWrapper.cs" />
@@ -92,23 +93,29 @@
     <Compile Include="Debugger\DebuggerForm.Designer.cs">
       <DependentUpon>DebuggerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Players\Vazba\Debug\VazbaBreakpointNames.cs" />
-    <Compile Include="Players\Vazba\DecimalPlayground.cs" />
-    <Compile Include="Players\Vazba\Debug\DecimalPlaygroundVisualizer.cs">
+    <Compile Include="Players\Vazba\Debug\PlayersIntArrayVisualizer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Players\Vazba\Debug\DecimalPlaygroundVisualizer.Designer.cs">
-      <DependentUpon>DecimalPlaygroundVisualizer.cs</DependentUpon>
+    <Compile Include="Players\Vazba\Debug\VazbaBreakpointNames.cs" />
+    <Compile Include="Players\Vazba\Debug\ZeroToOneDecimalArrayVisualizer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Players\Vazba\DecimalPlayground.cs" />
+    <Compile Include="Debugger\DecimalArrayVisualizerBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Debugger\DecimalArrayVisualizerBase.Designer.cs">
+      <DependentUpon>DecimalArrayVisualizerBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Players\Vazba\DirectionExt.cs" />
     <Compile Include="Debugger\IDebuggable.cs" />
     <Compile Include="Debugger\IVisualizer.cs" />
     <Compile Include="Players\Vazba\IntPlayground.cs" />
-    <Compile Include="Players\Vazba\Debug\IntPlaygroundVisualizer.cs">
+    <Compile Include="Debugger\IntArrayVisualizerBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Players\Vazba\Debug\IntPlaygroundVisualizer.Designer.cs">
-      <DependentUpon>IntPlaygroundVisualizer.cs</DependentUpon>
+    <Compile Include="Debugger\IntArrayVisualizerBase.Designer.cs">
+      <DependentUpon>IntArrayVisualizerBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Players\Vazba\Strategy1.cs" />
     <Compile Include="Players\Vazba\IStrategy.cs" />
@@ -141,11 +148,11 @@
     <EmbeddedResource Include="Debugger\DebuggerForm.resx">
       <DependentUpon>DebuggerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Players\Vazba\Debug\DecimalPlaygroundVisualizer.resx">
-      <DependentUpon>DecimalPlaygroundVisualizer.cs</DependentUpon>
+    <EmbeddedResource Include="Debugger\DecimalArrayVisualizerBase.resx">
+      <DependentUpon>DecimalArrayVisualizerBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Players\Vazba\Debug\IntPlaygroundVisualizer.resx">
-      <DependentUpon>IntPlaygroundVisualizer.cs</DependentUpon>
+    <EmbeddedResource Include="Debugger\IntArrayVisualizerBase.resx">
+      <DependentUpon>IntArrayVisualizerBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

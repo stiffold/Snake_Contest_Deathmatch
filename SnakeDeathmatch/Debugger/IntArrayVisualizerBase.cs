@@ -1,36 +1,36 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using SnakeDeathmatch.Interface;
-using SnakeDeathmatch.Debugger;
 
-namespace SnakeDeathmatch.Players.Vazba.Debug
+namespace SnakeDeathmatch.Debugger
 {
-    // TODO: Přejmenovat na IntPlaygroundVisualizer?
-    public partial class IntPlaygroundVisualizer : UserControl, IVisualizer
+    public abstract partial class IntArrayVisualizerBase : UserControl, IVisualizer
     {
-        public IntPlaygroundVisualizer()
+        public IntArrayVisualizerBase()
         {
             InitializeComponent();
         }
 
         public void Update(object obj)
         {
-            var intPlayground = (IntPlayground)obj;
-            _pictureBox.Image = (obj == null) ? null : CreateBitmapFromPlayground(intPlayground);
+            var intArray = (IIntArray)obj;
+            _pictureBox.Image = (obj == null) ? null : CreateBitmapFromArray(intArray);
         }
 
-        private Bitmap CreateBitmapFromPlayground(IntPlayground playground)
+        private Bitmap CreateBitmapFromArray(IIntArray intArray)
         {
-            var bitmap = new Bitmap(playground.Size * 4, playground.Size * 4);
+            int size = intArray.InnerArray.GetUpperBound(0) + 1;
+
+            var bitmap = new Bitmap(size * 4, size * 4);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
-                g.DrawRectangle(Pens.Black, 0, 0, playground.Size * 4, playground.Size * 4);
+                g.DrawRectangle(Pens.Black, 0, 0, size * 4, size * 4);
             }
-            for (int x = 0; x < playground.Size; x++)
+            for (int x = 0; x < size; x++)
             {
-                for (int y = 0; y < playground.Size; y++)
+                for (int y = 0; y < size; y++)
                 {
-                    Color color = IntToColor(playground[x, y]);
+                    Color color = GetColorForValue(intArray.InnerArray[x, y]);
 
                     bitmap.SetPixel(4 * x + 0, 4 * y + 0, color);
                     bitmap.SetPixel(4 * x + 1, 4 * y + 0, color);
@@ -53,19 +53,6 @@ namespace SnakeDeathmatch.Players.Vazba.Debug
             return bitmap;
         }
 
-        private Color IntToColor(int value)
-        {
-            switch (value)
-            {
-                case 0: return Color.Black;
-                case (int)PlayerId.Jardik: return Color.Red;
-                case (int)PlayerId.Vazba: return Color.Blue;
-                case (int)PlayerId.Setal: return Color.Aqua;
-                case (int)PlayerId.SoulEater: return Color.White;
-                case (int)PlayerId.Jirka: return Color.Yellow;
-                case SnakeDeathmatch.Game.GameEngine.HeadToHeadCrashId: return Color.Magenta;
-            }
-            return Color.Magenta;
-        }
+        protected abstract Color GetColorForValue(int value);
     }
 }

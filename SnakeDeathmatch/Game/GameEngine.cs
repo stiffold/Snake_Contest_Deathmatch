@@ -107,10 +107,10 @@ namespace SnakeDeathmatch.Game
         public int[,] Move()
         {
             if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.NoBreakpoint));
+                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.MoveBegin));
 
             if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.MoveBegin));
+                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.MoveBegin_Running));
 
             List<Player> livePlayers;
 

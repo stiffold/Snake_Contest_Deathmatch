@@ -14,32 +14,33 @@ namespace SnakeDeathmatch.Debugger
 {
     public partial class DebuggerForm : Form
     {
-        private GameEngine _rootObj;
+        private object _rootObj;
         private DebugNode _rootDebugNode;
 
         private List<string> _affectedPaths = new List<string>();
         private Dictionary<string, DebugNode> _debugNodes = new Dictionary<string, DebugNode>();
-        private string _nextBreakpointName = GameEngineBreakpointNames.NoBreakpoint;
+        private string _nextBreakpointName = GameEngineBreakpointNames.MoveBegin;
         private bool _shouldContinue = true;
 
-        public DebuggerForm(GameEngine gameEngine)
+        public DebuggerForm(object rootObjToDebug)
         {
             InitializeComponent();
             _treeView.TreeViewNodeSorter = new TreeNodeSorter();
 
-            _rootObj = gameEngine;
+            _rootObj = rootObjToDebug;
         }
 
         private void DebuggerForm_Load(object sender, EventArgs e)
         {
             UpdateBreakpoints();
-            _rootObj.Breakpoint += DebuggerForm_Breakpoint;
+            if (_rootObj is IDebuggable)
+                (_rootObj as IDebuggable).Breakpoint += DebuggerForm_Breakpoint;
         }
 
         public void UpdateUI()
         {
             var oldRootDebugNode = _rootDebugNode;
-            var newRootDebugNode = new DebugNode(null, _rootObj.GetType().Name, _rootObj, _rootObj.GetType());
+            var newRootDebugNode = new DebugNode(null, _rootObj.GetType().Name, _rootObj, _rootObj.GetType(), null);
             _rootDebugNode = newRootDebugNode;
 
             UpdateHandlers(oldRootDebugNode, newRootDebugNode);
@@ -135,7 +136,10 @@ namespace SnakeDeathmatch.Debugger
             {
                 DebugNode debugNode = newRootDebugNode.GetAllNodesRecursively().First(x => x.Path == path);
 
-                IVisualizer visualizer = CreateVisualizerForType(debugNode.ObjType);
+                IVisualizer visualizer = null;
+                if (debugNode.VisualizerType != null && !typeof(IEnumerable).IsAssignableFrom(debugNode.ObjType))
+                    visualizer = (IVisualizer)Activator.CreateInstance(debugNode.VisualizerType);
+
                 if (visualizer != null)
                 {
                     visualizer.Update(debugNode.Obj);
@@ -179,20 +183,6 @@ namespace SnakeDeathmatch.Debugger
             }
         }
 
-        private IVisualizer CreateVisualizerForType(Type objType)
-        {
-            IVisualizer objectVisualizer = null;
-            if (objType == typeof(IntPlayground))
-            {
-                objectVisualizer = new IntPlaygroundVisualizer();  // TODO: Vytvoř typ uvedený v atributu [ObjectVisualizerAttribute].
-            }
-            else if (objType == typeof(DecimalPlayground))
-            {
-                objectVisualizer = new DecimalPlaygroundVisualizer();  // TODO: Vytvoř typ uvedený v atributu [ObjectVisualizerAttribute].
-            }
-            return objectVisualizer;
-        }
-
         private void UpdateBreakpoints()
         {
             string currentBreakpoint = _comboBoxBreakpoint.Text;
@@ -207,7 +197,7 @@ namespace SnakeDeathmatch.Debugger
                     IBreakpointNames instance = (IBreakpointNames)Activator.CreateInstance(breakpointNamesType);
                     _comboBoxBreakpoint.Items.AddRange(instance.GetNames().ToArray());
                 }
-                _comboBoxBreakpoint.SelectedItem = GameEngineBreakpointNames.NoBreakpoint;
+                _comboBoxBreakpoint.SelectedItem = GameEngineBreakpointNames.MoveBegin;
             }
             finally
             {
@@ -219,7 +209,8 @@ namespace SnakeDeathmatch.Debugger
 
         private void DebuggerForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _rootObj.Breakpoint -= DebuggerForm_Breakpoint;
+            if (_rootObj is IDebuggable)
+                (_rootObj as IDebuggable).Breakpoint -= DebuggerForm_Breakpoint;
 
             foreach (IDebuggable obj in _rootDebugNode.GetAllNodesRecursively().Select(x => x.Obj).OfType<IDebuggable>())
             {
@@ -235,7 +226,7 @@ namespace SnakeDeathmatch.Debugger
                 nextBreakpointName = _nextBreakpointName;
             }
 
-            if (e.BreakpointName == nextBreakpointName && nextBreakpointName == GameEngineBreakpointNames.NoBreakpoint)
+            if (e.BreakpointName == nextBreakpointName && nextBreakpointName == GameEngineBreakpointNames.MoveBegin_Running)
             {
                 Invoke(new UpdateUIDelegate(UpdateUI), null);
                 Thread.Sleep(300);
