@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SnakeDeathmatch.Players.Jardik
 {
-    enum Direction
+    public enum Direction
     {
         Top = 1,
         TopRight = 2,
@@ -64,6 +64,34 @@ namespace SnakeDeathmatch.Players.Jardik
                     case Direction.TopLeft: return true;
                 }
                 return false;          
+        }
+
+        public static List<Move> MovesToGetDirection(this Direction direction, Direction targetDirection)
+        {
+            List<Move> rightMoves = new List<Move>();
+            List<Move> leftMoves = new List<Move>();
+            Direction simulateDirection = direction;
+            while(simulateDirection != targetDirection)
+            {
+                simulateDirection = simulateDirection.GetNewDirection(Move.Right);
+                rightMoves.Add(Move.Right);
+            }
+
+            simulateDirection = direction;
+            while (simulateDirection != targetDirection)
+            {
+                simulateDirection = simulateDirection.GetNewDirection(Move.Left);
+                leftMoves.Add(Move.Left);
+            }
+
+            if (leftMoves.Count < rightMoves.Count)
+            {
+                return leftMoves;
+            }
+            else
+            {
+                return rightMoves;
+            }
         }
     }
 }

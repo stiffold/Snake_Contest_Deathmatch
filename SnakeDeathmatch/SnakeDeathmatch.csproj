@@ -71,8 +71,14 @@
     <Compile Include="Interface\PlayerId.cs" />
     <Compile Include="Players\Fools\StraightPlayer.cs" />
     <Compile Include="Players\Jardik\CollissionHelper.cs" />
+    <Compile Include="Players\Jardik\Debug\DebugablePlayground.cs" />
+    <Compile Include="Players\Jardik\Debug\JardikBreakpointNames.cs" />
+    <Compile Include="Players\Jardik\Debug\WalkSetVizualizer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Players\Jardik\Direction.cs" />
     <Compile Include="Players\Jardik\Move.cs" />
+    <Compile Include="Players\Jardik\Others.cs" />
     <Compile Include="Players\Jardik\Planner.cs" />
     <Compile Include="Players\Jardik\Position.cs" />
     <Compile Include="Players\Jardik\WalkSetType.cs" />

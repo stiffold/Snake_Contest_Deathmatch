@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnakeDeathmatch", "SnakeDeathmatch\SnakeDeathmatch.csproj", "{0B4B4033-2DA4-491C-BDB7-D23DA511EE08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewGameUI", "NewGameUI\NewGameUI.csproj", "{9F87FDD8-89E6-4F0E-A63E-5BAAACB2A260}"
@@ -42,7 +44,6 @@ Global
 		{FFEC223C-220A-4848-8905-6156A21DCE02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FFEC223C-220A-4848-8905-6156A21DCE02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFEC223C-220A-4848-8905-6156A21DCE02}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{FFEC223C-220A-4848-8905-6156A21DCE02}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{FFEC223C-220A-4848-8905-6156A21DCE02}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{FFEC223C-220A-4848-8905-6156A21DCE02}.Debug|x86.Build.0 = Debug|Any CPU
 		{FFEC223C-220A-4848-8905-6156A21DCE02}.Release|Any CPU.ActiveCfg = Release|Any CPU

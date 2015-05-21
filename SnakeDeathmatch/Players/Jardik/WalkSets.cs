@@ -15,7 +15,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollission(Move.Straight, position, direction, gameSurrond);
-            Cut(3);
+            Cut(2);
         }
     }
     class Left45 : WalkSetBase
@@ -28,7 +28,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 1);
-            Cut(3);
+            Cut(2);
         }
     }
     class Left90 : WalkSetBase
@@ -41,7 +41,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 2);
-            Cut(3);
+            Cut(2);
         }
     }
     class Left125 : WalkSetBase
@@ -54,7 +54,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 3);
-            Cut(3);
+            Cut(2);
         }
     }
     class Left180 : WalkSetBase
@@ -67,7 +67,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 4);
-            Cut(3);
+            Cut(2);
         }
     }
     class Right45 : WalkSetBase
@@ -80,7 +80,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 1);
-            Cut(3);
+            Cut(2);
         }
     }
     class Right90 : WalkSetBase
@@ -93,7 +93,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 2);
-            Cut(3);
+            Cut(2);
         }
     }
     class Right125 : WalkSetBase
@@ -106,7 +106,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 3);
-            Cut(3);
+            Cut(2);
         }
     }
     class Right180 : WalkSetBase
@@ -119,7 +119,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 4);
-            Cut(3);
+            Cut(2);
         }
     }
 
@@ -147,13 +147,13 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = Move.Right;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
                 if (_moves > 3)
                 {
@@ -163,7 +163,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 {
                     move =  m.Where(l => l.Item1 == _moves).First().Item2;
                 }
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -171,7 +171,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 _moves++;
                 _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));               
             }
-            Cut(3);
+            Cut(2);
         }
     }
 
@@ -199,13 +199,13 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = Move.Left;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
                 if (_moves > 3)
                 {
@@ -215,7 +215,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 {
                     move = m.Where(l => l.Item1 == _moves).First().Item2;
                 }
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -223,7 +223,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 _moves++;
                 _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
             }
-            Cut(3);
+            Cut(2);
         }
     }
 
@@ -237,7 +237,7 @@ namespace SnakeDeathmatch.Players.Jardik
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             throw new NotImplementedException();
-            Cut(3);
+            Cut(2);
         }
     }
     class Roll100 : WalkSetBase
@@ -255,13 +255,13 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = direction.IsDiagonal() ? Move.Straight : Move.Right;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
                 if (iteration < limit)
                 {
@@ -277,7 +277,7 @@ namespace SnakeDeathmatch.Players.Jardik
                     limit++;
                 }
 
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -303,15 +303,15 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = Move.Left;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -417,15 +417,15 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = Move.Right;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -439,6 +439,134 @@ namespace SnakeDeathmatch.Players.Jardik
             Cut(3);
         }
 
+    }
+
+    class Raper : WalkSetBase
+    {
+        public Raper(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public override WalkSetType Type()
+        {
+            return WalkSetType.Raper;
+        }
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            _score = 1;
+            int _count = 2;
+            int straight = 3;
+            Move move = Move.Right;
+            Direction simulateDirection = direction;
+            Position simulatePosition = position.Copy();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
+            {
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                _count++;
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+                if (_count <= 5) move = Move.Right;
+                if (_count > 5 && _count < 11) move = Move.Left;
+                if (_count >= 11 && _count < 11 + straight) move = Move.Straight;
+                if (_count == 11 + straight)
+                {
+                    _count = 1;
+                    straight++;
+                }
+
+            }
+            Cut(3);
+        }
+    }
+
+    class Bingo : WalkSetBase
+    {
+        public Bingo(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public override WalkSetType Type()
+        {
+            return WalkSetType.Bingo;
+        }
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            _score = 1;
+            int _count = 1;
+            int cycle = 1;
+            int straight = 2;
+            Move move = Move.Right;
+            Direction simulateDirection = direction;
+            Position simulatePosition = position.Copy();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
+            {
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                _count++;
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+                if (_count <= 2) move = Move.Right;
+                if (_count > 2 && _count < 2 + straight) move = Move.Straight;
+                if (_count == 2 + straight)
+                {
+                    cycle++;
+                    _count = 1;
+                    if (cycle> 4)
+                    {
+                        straight++;
+                        cycle = 1;
+                    }                    
+                }
+
+            }
+            Cut(3);
+        }
+    }
+
+    class Randomer : WalkSetBase
+    {
+        public Randomer(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public override WalkSetType Type()
+        {
+            return WalkSetType.Randomer;
+        }
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            Random r = new Random();
+            _score = 1;
+            Move move = (Move)r.Next(1, 4);
+            Direction simulateDirection = direction;
+            Position simulatePosition = position.Copy();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
+            {
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+                move = (Move)r.Next(1, 4);
+            }
+            Cut(3);
+        }
+        
     }
 
     class Snaker : WalkSetBase
@@ -455,15 +583,15 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = Move.Right;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -474,6 +602,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (_count > 6) move = Move.Left;
                 if (_count == 11) _count = 1;
             }
+            Cut(3);
         }
     }
 
@@ -491,15 +620,15 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = Move.Straight;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -516,6 +645,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (_count > 19 && _count <= 21) move = Move.Right;
                 if (_count > 21) _count = 1;
             }
+            Cut(3);
         }
     }
 
@@ -533,15 +663,15 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = Move.Straight;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -576,15 +706,15 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = Move.Straight;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -654,13 +784,13 @@ namespace SnakeDeathmatch.Players.Jardik
             Move move = direction.IsDiagonal() ? Move.Straight : Move.Right;
             Direction simulateDirection = direction;
             Position simulatePosition = position.Copy();
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
 
             simulateDirection = simulateDirection.GetNewDirection(move);
             simulatePosition.Update(simulateDirection);
             _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
 
-            while (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
             {
                 if (doStraightmoves)
                 {
@@ -670,7 +800,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 {
                     move = left ? leftMoves.Where(l => l.Item1 == _moves).First().Item2 : rightMoves.Where(l => l.Item1 == _moves).First().Item2;
                 }
-                simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
                 simulateDirection = simulateDirection.GetNewDirection(move);
                 simulatePosition.Update(simulateDirection);
                 _score++;
@@ -693,5 +823,173 @@ namespace SnakeDeathmatch.Players.Jardik
             }
             Cut(3);
         }
+
+
+    }
+
+    class VazbaKiller : WalkSetBase
+    {
+        List<Tuple<int, Move>> moves = new List<Tuple<int, Move>>();
+        public VazbaKiller(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public override WalkSetType Type()
+        {
+            return WalkSetType.Killer;
+        }
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            int step = 1;
+            Position vazbaPosition = new Position(0, 0);
+            for (int x = 0; x < _ch.Max; x++)
+            {
+                for (int y = 0; y < _ch.Max; y++)
+                {
+                    if (gameSurrond[x, y] == 2)
+                    {
+                        vazbaPosition = new Position(x, y);
+                    }
+                }
+            }
+            double distance = vazbaPosition.Distance(position);
+
+            if (distance > 75)
+            {
+                return;
+            }
+
+            Direction targetDirection = position.PositionDiagonalDirection(vazbaPosition);
+            var afterPosition = position.Copy();
+            foreach (var m in direction.MovesToGetDirection(targetDirection))
+            {
+                moves.Add(new Tuple<int,Move>(step,m));
+                step++;
+            }
+            double minDistance = 300;
+            while (vazbaPosition.Distance(afterPosition) < minDistance)
+            {
+                minDistance = vazbaPosition.Distance(afterPosition);
+                moves.Add(new Tuple<int, Move>(step, Move.Straight));
+                afterPosition.Update(targetDirection);                
+                step++;
+            }
+
+            for (int s = 0; s < distance/2.5; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Straight));
+                step++;
+            }
+
+            //right
+            for (int s = 0; s < 2; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Right));
+                step++;
+            }
+
+            //straight
+            for (int s = 0; s < distance / 3 /2; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Straight));
+                step++;
+            }
+
+            //left
+            for (int s = 0; s < 2; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Left));
+                step++;
+            }
+
+            //straight
+            for (int s = 0; s < distance / 3; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Straight));
+                step++;
+            }
+
+            //left
+            for (int s = 0; s < 2; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Left));
+                step++;
+            }
+
+            //straight
+            for (int s = 0; s < distance / 3; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Straight));
+                step++;
+            }
+
+            //left
+            for (int s = 0; s < 2; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Left));
+                step++;
+            }
+
+            //straight
+            for (int s = 0; s < distance / 3; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Straight));
+                step++;
+            }
+
+            //left
+            for (int s = 0; s < 2; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Left));
+                step++;
+            }
+
+            //straight
+            for (int s = 0; s < (distance / 3 / 2) -4; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Straight));
+                step++;
+            }
+
+            //right
+            for (int s = 0; s < 2; s++)
+            {
+                moves.Add(new Tuple<int, Move>(step, Move.Right));
+                step++;
+            }
+            
+            _score = 1;
+            int _count = 1;
+            Move move = moves.Where(x => x.Item1 == _count).First().Item2;
+            Direction simulateDirection = direction;
+            Position simulatePosition = position.Copy();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(move);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
+            {
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(move);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                _count++;
+                if (_count <= moves.Count)
+                {
+                    move = moves.Where(x => x.Item1 == _count).First().Item2;
+                    _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));                    
+                }
+                else
+                {
+                    _walks.Add(new Walk(_round, Move.Straight, simulateDirection, simulatePosition.Copy()));               
+                }
+                
+            }
+            Cut(3);
+
+
+        }
+
+
     }
 }

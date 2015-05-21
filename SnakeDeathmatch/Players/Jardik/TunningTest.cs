@@ -5,10 +5,7 @@ using System.Text;
 
 namespace SnakeDeathmatch.Players.Jardik
 {
-    public enum Move
+    class TunningTest
     {
-        Left = 1,
-        Straight = 2,
-        Right = 3
     }
 }

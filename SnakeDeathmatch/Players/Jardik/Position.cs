@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SnakeDeathmatch.Players.Jardik
 {
-    class Position
+    public class Position
     {
         private int _x;
         private int _y;
@@ -24,6 +24,15 @@ namespace SnakeDeathmatch.Players.Jardik
             get { return _y; }
         }
 
+        public double Distance(Position p)
+        {
+            int x1 = _x;
+            int x2 = p.X;
+            int y1 = _y;
+            int y2 = p.Y;
+            return Math.Sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+        }
+
         public bool IsInCollission(int max)
         {
             if (X < 0) return true;
@@ -36,6 +45,32 @@ namespace SnakeDeathmatch.Players.Jardik
         public Position Copy()
         {
             return new Position(_x, _y);
+        }
+
+        public Direction PositionDiagonalDirection(Position p)
+        {
+            if (p.X < _x)
+            {
+                if (p.Y < _y)
+                {
+                    return Direction.TopLeft;
+                }
+                else
+                {
+                    return Direction.BottomLeft;
+                }
+            }
+            else
+            {
+                if (p.Y < _y)
+                {
+                    return Direction.TopRight;
+                }
+                else
+                {
+                    return Direction.BottomRight;
+                }
+            }
         }
 
         public void Update(Direction direction)

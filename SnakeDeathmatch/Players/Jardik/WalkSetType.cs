@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SnakeDeathmatch.Players.Jardik
 {
-    enum WalkSetType
+    public enum WalkSetType
     {
         Straight,
         Left45,
@@ -27,6 +27,10 @@ namespace SnakeDeathmatch.Players.Jardik
         Snaker,
         Quaker,
         FunkyTerror,
-        Safer
+        Safer,
+        Killer,
+        Raper,
+        Bingo,
+        Randomer
     }
 }

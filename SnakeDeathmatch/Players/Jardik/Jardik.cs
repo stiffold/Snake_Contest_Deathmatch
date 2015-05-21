@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Debugger;
 
 
 namespace SnakeDeathmatch.Players.Jardik
@@ -12,6 +13,7 @@ namespace SnakeDeathmatch.Players.Jardik
         Direction _myDirection;
         Position _myPosition;
         Planner _planner;
+        Others _others;
 
         private int _myID;
         private int _round;
@@ -26,19 +28,29 @@ namespace SnakeDeathmatch.Players.Jardik
             _myID = identificator;
             _round = 0;
             _planner = new Planner(_max, _myID);
+            _others = new Others();
         }
 
         public SnakeDeathmatch.Interface.Move GetNextMove(int[,] gameSurrond)
         {
             _round++;
+            _others.Update(gameSurrond);
             if (!_myPlanedMoves.Any(s=>s.Round ==_round))
             {
-                _myPlanedMoves.AddRange(_planner.GetBestWalksToMe(_round, _myPosition, _myDirection, gameSurrond));
-                //_myPlanedMoves.AddRange(_planner.GetVariant(_round, _myPosition, _myDirection, gameSurrond,WalkSetType.Roll100));
+                int maxround = 0;
+                if (_myPlanedMoves.Any())
+	            {
+		           maxround = _myPlanedMoves.Max(x=>x.Round);
+	            }
+                
+
+                //System.Windows.Forms.MessageBox.Show("DontFindMove round: " + _round + " MaxWalkRound: " + maxround);
+                _myPlanedMoves.AddRange(_planner.GetBestWalksToMe(_round, _myPosition, _myDirection, gameSurrond, _others.OthersList));
+                //_myPlanedMoves.AddRange(_planner.GetVariant(_round, _myPosition, _myDirection, gameSurrond,WalkSetType.Randomer));
             }
             else
             {
-                _planner.RepairSteps(_round+1,_myPlanedMoves, gameSurrond);
+                _planner.RepairSteps(_round + 1, _myPlanedMoves, gameSurrond, _myPosition, _others.OthersList);
             }
 
                       
@@ -56,6 +68,11 @@ namespace SnakeDeathmatch.Players.Jardik
         }
 
         public string Name { get { return "Jardík"; } }
+
+        [ToDebug]
+        public Planner Planner { get { return _planner; } }
+
+        
     }
 
        
