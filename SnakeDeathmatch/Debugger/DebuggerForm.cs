@@ -45,6 +45,7 @@ namespace SnakeDeathmatch.Debugger
 
             UpdateHandlers(oldRootDebugNode, newRootDebugNode);
             UpdateTreeView(oldRootDebugNode, newRootDebugNode);
+            UpdateVisualizerVisibility(newRootDebugNode);
             UpdateVisualizers(oldRootDebugNode, newRootDebugNode);
         }
 
@@ -61,6 +62,15 @@ namespace SnakeDeathmatch.Debugger
             foreach (IDebuggable obj in newRootDebugNode.GetAllNodesRecursively().Select(x => x.Obj).OfType<IDebuggable>())
             {
                 obj.Breakpoint += DebuggerForm_Breakpoint;
+            }
+        }
+
+        private void UpdateVisualizerVisibility(DebugNode rootDebugNode)
+        {
+            foreach (DebugNode debugNode in rootDebugNode.GetAllNodesRecursively())
+            {
+                TreeNode treeNode = _treeView.Nodes.GetNodeByTagObjectRecursively(debugNode.Path);
+                debugNode.IsVisualizerVisible = (treeNode != null && treeNode.Checked);
             }
         }
 
@@ -85,14 +95,21 @@ namespace SnakeDeathmatch.Debugger
                 {
                     DebugNode debugNode = newRootDebugNode.GetAllNodesRecursively().First(x => x.Path == path);
 
+                    TreeNode newTreeNode;
                     if (debugNode.Parent != null)
                     {
                         var treeNode = _treeView.Nodes.GetNodeByTagObjectRecursively(debugNode.Parent.Path);
-                        treeNode.Nodes.Add(new TreeNode(GetTreeNodeText(debugNode)) { Tag = debugNode.Path });
+                        newTreeNode = CreateNewTreeNode(debugNode);
+                        treeNode.Nodes.Add(newTreeNode);
                         treeNode.Expand();
                     }
                     else
-                        _treeView.Nodes.Add(new TreeNode(GetTreeNodeText(debugNode)) { Tag = debugNode.Path });
+                    {
+                        newTreeNode = CreateNewTreeNode(debugNode);
+                        _treeView.Nodes.Add(newTreeNode);
+                    }
+                    if (!debugNode.CanHaveVisualizer)
+                        newTreeNode.HideCheckBox();
                 }
 
                 IEnumerable<string> pathsToUpdate = oldPaths.Intersect(newPaths);
@@ -107,6 +124,17 @@ namespace SnakeDeathmatch.Debugger
             {
                 _treeView.EndUpdate();
             }
+        }
+
+        private TreeNode CreateNewTreeNode(DebugNode debugNode)
+        {
+            var treeNode = new TreeNode(GetTreeNodeText(debugNode))
+            {
+                Tag = debugNode.Path,
+                ImageIndex = debugNode.CanHaveVisualizer ? 1 : -1,
+            };
+
+            return treeNode;
         }
 
         private string GetTreeNodeText(DebugNode debugNode)
@@ -126,61 +154,79 @@ namespace SnakeDeathmatch.Debugger
             IEnumerable<string> pathsToDelete = oldPaths.Except(newPaths);
             foreach (string path in pathsToDelete)
             {
-                Control control = _panelControls.Controls.Cast<Control>().FirstOrDefault(x => x.Tag.Equals(path));
-                if (control != null)
-                    _panelControls.Controls.Remove(control);
+                RemoveVisualizer(path);
             }
 
             IEnumerable<string> pathsToAdd = newPaths.Except(oldPaths);
             foreach (string path in pathsToAdd)
             {
-                DebugNode debugNode = newRootDebugNode.GetAllNodesRecursively().First(x => x.Path == path);
+                DebugNode debugNode = newRootDebugNode.GetNodeByPath(path);
 
-                IVisualizer visualizer = null;
-                if (debugNode.VisualizerType != null && !typeof(IEnumerable).IsAssignableFrom(debugNode.ObjType))
-                    visualizer = (IVisualizer)Activator.CreateInstance(debugNode.VisualizerType);
-
-                if (visualizer != null)
+                if (debugNode.CanHaveVisualizer && debugNode.IsVisualizerVisible)
                 {
+                    var visualizer = (IVisualizer)Activator.CreateInstance(debugNode.VisualizerType);
                     visualizer.Update(debugNode.Obj);
-
-                    Point nextLocation = new Point(0, 0);
-
-                    Control lastControl = _panelControls.Controls.Cast<Control>().LastOrDefault();
-                    if (lastControl != null)
-                    {
-                        nextLocation = new Point(lastControl.Location.X + lastControl.Size.Width, lastControl.Location.Y);
-                        if (nextLocation.X >= 700)
-                            nextLocation = new Point(0, lastControl.Location.Y + lastControl.Size.Height);
-                    }
-
-                    var control = visualizer as Control;
-                    control.Location = new Point(2, 2);
-
-                    var wrapperControl = new Panel();
-                    wrapperControl.Tag = path;
-                    wrapperControl.Location = nextLocation;
-                    wrapperControl.Size = new Size(control.Size.Width + 4, control.Size.Height + 4);
-                    wrapperControl.Controls.Add(control);
-
-                    _panelControls.Controls.Add(wrapperControl);
+                    AddVisualizer(visualizer, debugNode.Path);
                 }
             }
 
             IEnumerable<string> pathsToUpdate = oldPaths.Intersect(newPaths);
             foreach (string path in pathsToUpdate)
             {
+                DebugNode debugNode = newRootDebugNode.GetNodeByPath(path);
+
                 Control wrapperControl = _panelControls.Controls.Cast<Control>().FirstOrDefault(x => x.Tag != null && x.Tag.Equals(path));
-                if (wrapperControl != null)
+                if (wrapperControl == null && debugNode.CanHaveVisualizer && debugNode.IsVisualizerVisible)
                 {
-                    IVisualizer visualizer = (wrapperControl.Controls[0] as IVisualizer);
-                    if (visualizer != null)
+                    IVisualizer visualizer = (IVisualizer)Activator.CreateInstance(debugNode.VisualizerType);
+                    visualizer.Update(debugNode.Obj);
+                    AddVisualizer(visualizer, debugNode.Path);
+                }
+                else if (wrapperControl != null)
+                {
+                    if (debugNode.CanHaveVisualizer && debugNode.IsVisualizerVisible)
                     {
-                        DebugNode debugNode = newRootDebugNode.GetAllNodesRecursively().First(x => x.Path == path);
-                        visualizer.Update(debugNode.Obj);
+                        IVisualizer visualizer = (wrapperControl.Controls[0] as IVisualizer);
+                        if (visualizer != null)
+                            visualizer.Update(debugNode.Obj);
                     }
+                    else
+                        RemoveVisualizer(path);
                 }
             }
+        }
+
+        private void AddVisualizer(IVisualizer visualizer, string path)
+        {
+            Point nextLocation = new Point(0, 0);
+
+            Control lastControl = _panelControls.Controls.Cast<Control>().LastOrDefault();
+            if (lastControl != null)
+            {
+                nextLocation = new Point(lastControl.Location.X + lastControl.Size.Width, lastControl.Location.Y);
+                if (nextLocation.X >= 700)
+                    nextLocation = new Point(0, lastControl.Location.Y + lastControl.Size.Height);
+            }
+
+            var control = visualizer as Control;
+            control.Location = new Point(2, 2);
+
+            var wrapperControl = new Panel();
+            wrapperControl.Tag = path;
+            wrapperControl.Location = nextLocation;
+            wrapperControl.Size = new Size(control.Size.Width + 4, control.Size.Height + 4);
+            wrapperControl.Controls.Add(control);
+
+            _panelControls.Controls.Add(wrapperControl);
+        }
+
+        private void RemoveVisualizer(string path)
+        {
+            Control control = _panelControls.Controls.Cast<Control>().FirstOrDefault(x => x.Tag.Equals(path));
+            if (control != null)
+                _panelControls.Controls.Remove(control);
+
+            // TODO: Rearrange visualizers
         }
 
         private void UpdateBreakpoints()
@@ -277,22 +323,10 @@ namespace SnakeDeathmatch.Debugger
                 control.BackColor = (control.Tag.Equals(path)) ? Color.Red : _panelControls.BackColor;
             }
         }
-    }
 
-    public static class TreeNodeCollectionExt
-    {
-        public static TreeNode GetNodeByTagObjectRecursively(this TreeNodeCollection treeNodeCollection, object tagObject)
+        private void _treeView_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            foreach (TreeNode treeNode in treeNodeCollection)
-            {
-                if (treeNode.Tag.Equals(tagObject))
-                    return treeNode;
-
-                var foundTreeNode = GetNodeByTagObjectRecursively(treeNode.Nodes, tagObject);
-                if (foundTreeNode != null)
-                    return foundTreeNode;
-            }
-            return null;
+            UpdateUI();
         }
     }
 

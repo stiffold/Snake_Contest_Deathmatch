@@ -15,7 +15,7 @@ namespace SnakeDeathmatch.Debugger
         public Type ObjType { get; set; }
         public List<DebugNode> Children { get; private set; }
         public Type VisualizerType { get; private set; }
-        public bool IsVisualizerVisible { get; private set; }
+        public bool IsVisualizerVisible { get; set; }
         public string Path
         {
             get { return string.Format("{0}/{1}", (Parent != null) ? Parent.Path : string.Empty, Name); }
@@ -41,6 +41,19 @@ namespace SnakeDeathmatch.Debugger
                 {
                     yield return childNodeFromRecursion;
                 }
+            }
+        }
+
+        public DebugNode GetNodeByPath(string path)
+        {
+            return GetAllNodesRecursively().Where(x => x.Path == path).FirstOrDefault();
+        }
+
+        public bool CanHaveVisualizer
+        {
+            get
+            {
+                return (VisualizerType != null && !typeof(IEnumerable).IsAssignableFrom(ObjType));
             }
         }
 

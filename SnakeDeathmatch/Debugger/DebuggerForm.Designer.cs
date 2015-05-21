@@ -80,15 +80,18 @@
             this._imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("_imageList.ImageStream")));
             this._imageList.TransparentColor = System.Drawing.Color.White;
             this._imageList.Images.SetKeyName(0, "continue.png");
+            this._imageList.Images.SetKeyName(1, "visualizer.png");
             // 
             // _treeView
             // 
             this._treeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this._treeView.CheckBoxes = true;
             this._treeView.Dock = System.Windows.Forms.DockStyle.Left;
             this._treeView.Location = new System.Drawing.Point(0, 25);
             this._treeView.Name = "_treeView";
             this._treeView.Size = new System.Drawing.Size(250, 356);
             this._treeView.TabIndex = 1;
+            this._treeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this._treeView_AfterCheck);
             this._treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this._treeView_AfterSelect);
             // 
             // _splitter
