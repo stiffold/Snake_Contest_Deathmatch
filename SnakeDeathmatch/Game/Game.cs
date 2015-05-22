@@ -15,5 +15,7 @@ namespace SnakeDeathmatch.Game
         public string GameStats { get; set; }
 
         public List<RecordLine> RecordLines { get; set; }
+
+        public IEnumerable<Player> Players { get; set; }
     }
 }

@@ -69,6 +69,7 @@
     <Compile Include="Game\Game.cs" />
     <Compile Include="Interface\IPlayerBehaviour2.cs" />
     <Compile Include="Interface\PlayerId.cs" />
+    <Compile Include="Players\ClockworkMole\ClockWorkMolePlayer.cs" />
     <Compile Include="Players\Fools\StraightPlayer.cs" />
     <Compile Include="Players\Jardik\CollissionHelper.cs" />
     <Compile Include="Players\Jardik\Debug\DebugablePlayground.cs" />

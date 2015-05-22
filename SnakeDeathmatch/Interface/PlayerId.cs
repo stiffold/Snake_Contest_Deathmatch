@@ -12,5 +12,6 @@ namespace SnakeDeathmatch.Interface
         Setal = 3,
         SoulEater = 4,
         Jirka = 5,
+        ClockworkMole = 6
     }
 }

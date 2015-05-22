@@ -49,6 +49,7 @@ namespace NewGameUI
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Lime, new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer(), (int)PlayerId.ClockworkMole, PlaygroundSizeInDots));
 
             return players;
         }
@@ -139,9 +140,9 @@ namespace NewGameUI
                 {
                     HandleGameOver();
                     return; //aby se na konci nenastartoval timer!!!
-            }
+                }
 
-        }
+            }
 
             _timerUI.Start();
         }
@@ -156,6 +157,7 @@ namespace NewGameUI
                 PlayGroundSizeInDots = PlaygroundSizeInDots,
                 RecordLines = gameState.RecordLines,
                 GameStats = _gameEngine.ScoreMessage(),
+                Players = _gameEngine.Players,
             };
 
             var endGameDialog = new EndGameDialog();

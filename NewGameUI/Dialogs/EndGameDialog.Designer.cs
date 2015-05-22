@@ -36,6 +36,11 @@
             this.txtFileName = new System.Windows.Forms.TextBox();
             this.lblGameStats = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.listPlayers = new System.Windows.Forms.ListView();
+            this.Skóre = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Jméno = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Smrt = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,10 +67,10 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.listPlayers);
             this.panel1.Controls.Add(this.lblFileName);
             this.panel1.Controls.Add(this.buttonSave);
             this.panel1.Controls.Add(this.txtFileName);
-            this.panel1.Controls.Add(this.lblGameStats);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(463, 188);
@@ -99,9 +104,9 @@
             // 
             // lblGameStats
             // 
-            this.lblGameStats.Location = new System.Drawing.Point(3, 0);
+            this.lblGameStats.Location = new System.Drawing.Point(12, 316);
             this.lblGameStats.Name = "lblGameStats";
-            this.lblGameStats.Size = new System.Drawing.Size(453, 145);
+            this.lblGameStats.Size = new System.Drawing.Size(453, 43);
             this.lblGameStats.TabIndex = 9;
             this.lblGameStats.Text = "Výsledek hry";
             // 
@@ -114,22 +119,60 @@
             this.label1.TabIndex = 10;
             this.label1.Text = "Spustit další hru?";
             // 
+            // listPlayers
+            // 
+            this.listPlayers.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.listPlayers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listPlayers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.Skóre,
+            this.Jméno,
+            this.Smrt});
+            this.listPlayers.Location = new System.Drawing.Point(-5, -1);
+            this.listPlayers.Name = "listPlayers";
+            this.listPlayers.Size = new System.Drawing.Size(467, 155);
+            this.listPlayers.TabIndex = 13;
+            this.listPlayers.UseCompatibleStateImageBehavior = false;
+            this.listPlayers.View = System.Windows.Forms.View.Details;
+            // 
+            // Skóre
+            // 
+            this.Skóre.Text = "Skóre";
+            this.Skóre.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.Skóre.Width = 50;
+            // 
+            // Jméno
+            // 
+            this.Jméno.Text = "Jméno";
+            this.Jméno.Width = 160;
+            // 
+            // Smrt
+            // 
+            this.Smrt.Text = "Smrt";
+            this.Smrt.Width = 220;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "";
+            this.columnHeader1.Width = 20;
+            // 
             // EndGameDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(487, 275);
+            this.ClientSize = new System.Drawing.Size(487, 272);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonNo);
             this.Controls.Add(this.buttonYes);
+            this.Controls.Add(this.lblGameStats);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "EndGameDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "EndGameDialog";
+            this.Text = "Konec hry - výsledky";
             this.Load += new System.EventHandler(this.EndGameDialog_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -148,5 +191,10 @@
         private System.Windows.Forms.Label lblGameStats;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblFileName;
+        private System.Windows.Forms.ListView listPlayers;
+        private System.Windows.Forms.ColumnHeader Skóre;
+        private System.Windows.Forms.ColumnHeader Jméno;
+        private System.Windows.Forms.ColumnHeader Smrt;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
     }
 }
