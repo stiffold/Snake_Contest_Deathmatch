@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Debugger;
 
 namespace SnakeDeathmatch.Players.Setal
 {
+
     public class Setal : IPlayerBehaviour2
     {
         private byte[,] _possibilities;
@@ -21,6 +23,8 @@ namespace SnakeDeathmatch.Players.Setal
         private Move _preferMove;
         // private bool _locationChoosed;
 
+        private List<EnemyHead> _enemies;
+
         public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)
         {
             _size = playgroundSize;
@@ -32,15 +36,22 @@ namespace SnakeDeathmatch.Players.Setal
 
             _preferMove = (int)_direction < 5 ? Move.Right : Move.Left;
 
+            _enemies = new List<EnemyHead>();
+
             //_moveCounter = 0;
         }
 
         public Move GetNextMove(int[,] playground)
         {
             _roundCounter++;
-            // _statistik = new Statistik();
+
+            _possibilities = new byte[_size, _size];
 
             EvaluateGame(playground);
+            WatchYourEnemies(playground);
+
+            if (_roundCounter > 1)
+                EvaluateEnemies(3);
 
             SafeMap safePath = new SafeMap(15, _actualPosition, _direction, _preferMove, _possibilities, _size);
             safePath.Start();
@@ -65,7 +76,7 @@ namespace SnakeDeathmatch.Players.Setal
                 return dangerPath.Result.Move;
             }
 
-            return Move.Straight;
+            return Move.Left;
         }
 
         public string Name
@@ -73,39 +84,227 @@ namespace SnakeDeathmatch.Players.Setal
             get { return "Setal(Šimík)"; }
         }
 
-        private void EvaluateGame(int[,] gameSurrond)
+        private void EvaluateGame(int[,] playground)
         {
             for (int i = 0; i < _size; i++)
                 for (int j = 0; j < _size; j++)
                 {
-                    if ((gameSurrond[i, j] != 0))
+                    if ((playground[i, j] != 0))
                     {
-                        MarkPoint(i, j, (gameSurrond[i, j] != _identificator));
-
-                        //if (i < (_size / 2))
-                        //{
-                        //    if (j < (_size / 2))
-                        //    {
-                        //        _statistik.TopLeft++;
-                        //    }
-                        //    else
-                        //    {
-                        //        _statistik.BottomLeft++;
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (j < (_size / 2))
-                        //    {
-                        //        _statistik.TopRight++;
-                        //    }
-                        //    else
-                        //    {
-                        //        _statistik.BottomRight++;
-                        //    }
-                        //}
+                        MarkPointAsOccupied(i, j, (playground[i, j] != _identificator));
                     }
                 }
+        }
+
+        private void WatchYourEnemies(int[,] playground)
+        {
+            //Prvni kolo
+            if (_roundCounter == 1)
+            {
+                LookUpEnemies(playground);
+            }
+            //Druhe kolo musim urcit smer
+            else if (_roundCounter == 2)
+            {
+                foreach (var head in _enemies)
+                {
+                    var position = head.Actual;
+
+                    //Hledam sousedni dilek, protoze v druhem kole je jen jeden
+                    #region FindSecondBlock
+
+                    //Direction.TopLeft
+                    if ((IsValidPoint(position.X - 1, position.Y - 1)) && (playground[position.X - 1, position.Y - 1] == head.Identifikator))
+                        head.NextRound(new GamePoint(position.X - 1, position.Y - 1));
+
+                   //Direction.Top
+                    else if ((IsValidPoint(position.X, position.Y - 1)) && (playground[position.X, position.Y - 1] == head.Identifikator))
+                        head.NextRound(new GamePoint(position.X, position.Y - 1));
+
+                    //Direction.TopRight
+                    else if ((IsValidPoint(position.X + 1, position.Y - 1)) && (playground[position.X + 1, position.Y - 1] == head.Identifikator))
+                        head.NextRound(new GamePoint(position.X + 1, position.Y - 1));
+
+                    //Direction.Right
+                    else if ((IsValidPoint(position.X - 1, position.Y)) && (playground[position.X + 1, position.Y] == head.Identifikator))
+                        head.NextRound(new GamePoint(position.X + 1, position.Y));
+
+                    //Direction.BottomRight
+                    else if ((IsValidPoint(position.X + 1, position.Y + 1)) && (playground[position.X + 1, position.Y + 1] == head.Identifikator))
+                        head.NextRound(new GamePoint(position.X + 1, position.Y + 1));
+
+                       //Direction.Bottom
+                    else if ((IsValidPoint(position.X, position.Y + 1)) && (playground[position.X, position.Y + 1] == head.Identifikator))
+                        head.NextRound(new GamePoint(position.X, position.Y + 1));
+
+                    //Direction.BottomLeft
+                    else if ((IsValidPoint(position.X - 1, position.Y + 1)) && (playground[position.X - 1, position.Y + 1] == head.Identifikator))
+                        head.NextRound(new GamePoint(position.X - 1, position.Y + 1));
+
+                    //Direction.Left
+                    else if ((IsValidPoint(position.X - 1, position.Y)) && (playground[position.X - 1, position.Y] == head.Identifikator))
+                        head.NextRound(new GamePoint(position.X - 1, position.Y));
+
+                    //Jinak nehral
+                    else
+                        head.InGame = false;
+
+                    #endregion
+                }
+            }
+            else
+            {
+                //Zajimaji me jen ti co nevypadli
+                foreach (var head in _enemies.Where(x => x.InGame).ToList())
+                {
+                    var point = FindEnemyHeadByNearPoint(head, playground);
+                    //Jestlize nic nenajdu tak uz dohral :P
+                    if (point != null)
+                        head.NextRound(point);
+                }
+            }
+        }
+
+        private void EvaluateEnemies(int maxDepth)
+        {
+            foreach (var enemy in _enemies.Where(x => x.InGame).ToList())
+            {
+                EvaulatePossibleDanger(0, maxDepth, enemy.Actual, enemy.ActualDirection);
+            }
+        }
+
+        private void EvaulatePossibleDanger(int depth, int maxDepth, GamePoint point, Direction direction)
+        {
+            if (depth == maxDepth)
+                return;
+
+            var possibleSteps = PossibleEnemySteps(direction, point);
+
+            foreach (Step step in possibleSteps)
+            {
+                MarkPointAsDanger(step.FinalPosition.X, step.FinalPosition.Y);
+                EvaulatePossibleDanger(depth + 1, maxDepth, step.FinalPosition, step.FinalDirection);
+            }
+        }
+
+        private GamePoint FindEnemyHeadByNearPoint(EnemyHead head, int[,] playground)
+        {
+            switch (head.ActualDirection)
+            {
+                case Direction.TopLeft:
+                    if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y)) && (playground[head.Actual.X - 1, head.Actual.Y] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y);
+
+                    else if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y - 1)) && (playground[head.Actual.X - 1, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y - 1);
+
+                    else if ((IsValidPoint(head.Actual.X, head.Actual.Y - 1)) && (playground[head.Actual.X, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X, head.Actual.Y - 1);
+                    else
+                        return null;
+
+                case Direction.Top:
+                    if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y - 1)) && (playground[head.Actual.X - 1, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y - 1);
+
+                    else if ((IsValidPoint(head.Actual.X, head.Actual.Y - 1)) && (playground[head.Actual.X, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X, head.Actual.Y - 1);
+
+                    else if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y - 1)) && (playground[head.Actual.X + 1, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y - 1);
+                    else
+                        return null;
+
+
+                case Direction.TopRight:
+                    if ((IsValidPoint(head.Actual.X, head.Actual.Y - 1)) && (playground[head.Actual.X, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X, head.Actual.Y - 1);
+
+                    else if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y - 1)) && (playground[head.Actual.X + 1, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y - 1);
+
+                    else if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y)) && (playground[head.Actual.X + 1, head.Actual.Y] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y);
+                    else
+                        return null;
+
+
+                case Direction.Right:
+                    if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y - 1)) && (playground[head.Actual.X + 1, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y - 1);
+
+                    else if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y)) && (playground[head.Actual.X + 1, head.Actual.Y] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y);
+
+                    else if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y + 1)) && (playground[head.Actual.X + 1, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y + 1);
+                    else
+                        return null;
+
+
+                case Direction.BottomRight:
+                    if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y)) && (playground[head.Actual.X + 1, head.Actual.Y] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y);
+
+                    else if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y + 1)) && (playground[head.Actual.X + 1, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y + 1);
+
+                    else if ((IsValidPoint(head.Actual.X, head.Actual.Y + 1)) && (playground[head.Actual.X, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X, head.Actual.Y + 1);
+                    else
+                        return null;
+
+
+                case Direction.Bottom:
+                    if ((IsValidPoint(head.Actual.X + 1, head.Actual.Y + 1)) && (playground[head.Actual.X + 1, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X + 1, head.Actual.Y + 1);
+
+                    else if ((IsValidPoint(head.Actual.X, head.Actual.Y + 1)) && (playground[head.Actual.X, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X, head.Actual.Y + 1);
+
+                    else if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y + 1)) && (playground[head.Actual.X - 1, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y + 1);
+                    else
+                        return null;
+
+
+                case Direction.BottomLeft:
+                    if ((IsValidPoint(head.Actual.X, head.Actual.Y + 1)) && (playground[head.Actual.X, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X, head.Actual.Y + 1);
+
+                    else if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y + 1)) && (playground[head.Actual.X - 1, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y + 1);
+
+                    else if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y)) && (playground[head.Actual.X - 1, head.Actual.Y] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y);
+                    else
+                        return null;
+
+
+                case Direction.Left:
+                    if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y + 1)) && (playground[head.Actual.X - 1, head.Actual.Y + 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y + 1);
+
+                    else if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y)) && (playground[head.Actual.X - 1, head.Actual.Y] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y);
+
+                    else if ((IsValidPoint(head.Actual.X - 1, head.Actual.Y - 1)) && (playground[head.Actual.X - 1, head.Actual.Y - 1] == head.Identifikator))
+                        return new GamePoint(head.Actual.X - 1, head.Actual.Y - 1);
+                    else
+                        return null;
+
+                default:
+                    return null;
+            }
+
+            //Just for safety
+            return null;
+        }
+
+        private bool IsValidPoint(int x, int y)
+        {
+            return ((x >= 0) && (x < _size) && (y >= 0) && (y < _size));
+
         }
 
         private bool IsTakenByEnemy(int[,] playground, int x, int y)
@@ -119,9 +318,9 @@ namespace SnakeDeathmatch.Players.Setal
         }
 
         /// <summary>
-        /// Oznacení nedostupnosti pole
+        /// Bezpecne oznaceni obsazenosti pole
         /// </summary>
-        private void MarkPoint(int x, int y, bool isEnemy)
+        private void MarkPointAsOccupied(int x, int y, bool isEnemy)
         {
             _possibilities[x, y] = 2;
 
@@ -175,6 +374,17 @@ namespace SnakeDeathmatch.Players.Setal
 
         }
 
+        /// <summary>
+        /// Bezpecne oznaceni nebezpeci
+        /// </summary>
+        private void MarkPointAsDanger(int x, int y)
+        {
+            if ((IsValidPoint(x, y)) && (_possibilities[x, y] == 0))
+            {
+                _possibilities[x, y] = 1;
+            }
+        }
+
         private bool IsEnemyNearBy(GamePoint head, int[,] playground)
         {
             for (int i = (head.X - 5); i < (head.X + 5); i++)
@@ -187,6 +397,250 @@ namespace SnakeDeathmatch.Players.Setal
             return false;
 
         }
+
+        private void LookUpEnemies(int[,] playground)
+        {
+            for (int i = 0; i < _size; i++)
+                for (int j = 0; j < _size; j++)
+                {
+                    if ((playground[i, j] != 0) && (playground[i, j] != _identificator))
+                    {
+                        var EnemyFound = new EnemyHead(playground[i, j], new GamePoint(i, j));
+                        _enemies.Add(EnemyFound);
+
+                    }
+                }
+        }
+
+        private List<Step> PossibleEnemySteps(Direction direction, GamePoint gamePoint)
+        {
+            var steps = new List<Step>();
+
+            switch (direction)
+            {
+                case Direction.Top:
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X, gamePoint.Y - 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    break;
+
+                case Direction.TopRight:
+                    if (IsValidPoint(gamePoint.X, gamePoint.Y - 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    break;
+
+                case Direction.Right:
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y))
+                    {
+
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    break;
+
+                case Direction.BottomRight:
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y + 1))
+                    {
+
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X, gamePoint.Y + 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    break;
+
+                case Direction.Bottom:
+                    if (IsValidPoint(gamePoint.X + 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X + 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X, gamePoint.Y + 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    break;
+
+                case Direction.BottomLeft:
+                    if (IsValidPoint(gamePoint.X, gamePoint.Y + 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    break;
+
+                case Direction.Left:
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y + 1))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y + 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    break;
+
+                case Direction.TopLeft:
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y))
+                    {
+                        var move = Move.Left;
+                        var dir = Service.UpdateDirection(direction, Move.Left);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X - 1, gamePoint.Y - 1))
+                    {
+                        var move = Move.Straight;
+                        var dir = Service.UpdateDirection(direction, Move.Straight);
+                        var point = new GamePoint(gamePoint.X - 1, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    if (IsValidPoint(gamePoint.X, gamePoint.Y - 1))
+                    {
+                        var move = Move.Right;
+                        var dir = Service.UpdateDirection(direction, Move.Right);
+                        var point = new GamePoint(gamePoint.X, gamePoint.Y - 1);
+
+                        steps.Add(new Step(move, dir, point, true));
+                    }
+                    break;
+            }
+
+            return steps;
+        }
+
 
     }
 
@@ -1005,6 +1459,54 @@ namespace SnakeDeathmatch.Players.Setal
 
             }
         }
+
+        public static Direction ComputeDirection(GamePoint start, GamePoint end)
+        {
+            if (start.X > end.X)
+            {
+                if (start.Y > end.Y)
+                {
+                    return Direction.TopLeft;
+                }
+                else if (start.Y < end.Y)
+                {
+                    return Direction.BottomLeft;
+                }
+                else if (start.Y == end.Y)
+                {
+                    return Direction.Left;
+                }
+            }
+            else if (start.X < end.X)
+            {
+                if (start.Y > end.Y)
+                {
+                    return Direction.TopRight;
+                }
+                else if (start.Y < end.Y)
+                {
+                    return Direction.BottomRight;
+                }
+                else if (start.Y == end.Y)
+                {
+                    return Direction.Right;
+                }
+            }
+            else if (start.X == end.X)
+            {
+                if (start.Y > end.Y)
+                {
+                    return Direction.Top;
+                }
+                else if (start.Y < end.Y)
+                {
+                    return Direction.Bottom;
+                }
+            }
+
+            //Some terrible shit happens...
+            return Direction.Top;
+        }
     }
 
     internal class Statistik
@@ -1032,4 +1534,40 @@ namespace SnakeDeathmatch.Players.Setal
         }
     }
 
+    internal class EnemyHead
+    {
+        public GamePoint Previous { get; set; }
+        public GamePoint Actual { get; set; }
+
+        public bool InGame { get; set; }
+        public int Identifikator { get; private set; }
+
+        private Direction? _direction;
+
+        public EnemyHead(int identifikator, GamePoint start)
+        {
+            Identifikator = identifikator;
+            Actual = start;
+            _direction = null;
+            InGame = true;
+        }
+
+        /// <summary>
+        /// Posune predek hracee na point
+        /// </summary>
+        /// <param name="point">Novy predek hrace</param>
+        public void NextRound(GamePoint point)
+        {
+            Previous = Actual;
+            Actual = point;
+
+            _direction = Service.ComputeDirection(Previous, Actual);
+
+        }
+
+        public Direction ActualDirection
+        {
+            get { return _direction.Value; }
+        }
+    }
 }
