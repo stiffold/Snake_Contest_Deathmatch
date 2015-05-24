@@ -31,6 +31,8 @@ namespace SnakeDeathmatch.Players.Jardik
         Killer,
         Raper,
         Bingo,
-        Randomer
+        Randomer,
+        StrikeLeft,
+        StrikeRight
     }
 }

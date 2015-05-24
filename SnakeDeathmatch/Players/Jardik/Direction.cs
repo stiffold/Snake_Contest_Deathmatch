@@ -93,5 +93,16 @@ namespace SnakeDeathmatch.Players.Jardik
                 return rightMoves;
             }
         }
+
+        public static List<Direction> GetPossibleDirections(this Direction direction)
+        { 
+            List<Direction> dirs = new List<Direction>();
+
+            dirs.Add(GetNewDirection(direction,Move.Left));
+            dirs.Add(GetNewDirection(direction, Move.Straight));
+            dirs.Add(GetNewDirection(direction, Move.Right));
+
+            return dirs;
+        }
     }
 }

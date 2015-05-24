@@ -12,7 +12,7 @@ namespace SnakeDeathmatch.Players.Jardik
 
         public List<Other> OthersList { get; set; }
 
-        public void  Update(int [,] gameSurround)
+        public void  Update(int [,] gameSurround, int round)
         {
             if (OthersList == null)
             {
@@ -24,7 +24,7 @@ namespace SnakeDeathmatch.Players.Jardik
                         {
                             if (gameSurround[x, y] != 0 && gameSurround[x, y] != 1)
                             {
-                                OthersList.Add(new Other { Position = new Position(x, y), Id = gameSurround[x, y] });
+                                OthersList.Add(new Other { Position = new Position(x, y), Id = gameSurround[x, y], Live = true, Positions = new List<Tuple<int, Position>>()});
                             }
                         }
                     }
@@ -32,8 +32,9 @@ namespace SnakeDeathmatch.Players.Jardik
                   return;
             }
 
-            foreach (var o in OthersList)
+            foreach (var o in OthersList.Where(x=>x.Live))
             {
+                var updated = false;
                 foreach (var dir in Enum.GetValues(typeof(Direction)))
                 {
                     var p = o.Position.Copy();
@@ -44,9 +45,15 @@ namespace SnakeDeathmatch.Players.Jardik
                         {
                             o.Position = p;
                             o.Direction = (Direction)dir;
+                            o.Positions.Add(new Tuple<int, Position>(round,p.Copy()));
+                            updated = true;
                             break;
                         }
                     }
+                }
+                if (!updated)
+                {
+                    o.Live = false;
                 }
             }
             _oldgameSurround = (int [,])gameSurround.Clone();
@@ -58,5 +65,7 @@ namespace SnakeDeathmatch.Players.Jardik
         public int Id { get; set; }
         public Position Position { get; set; }
         public Direction Direction { get; set; }
+        public bool Live { get; set; }
+        public List<Tuple<int, Position>> Positions { get; set; }
     }
 }
