@@ -25,7 +25,7 @@ namespace NewGameUI
         public const int TestsSpeed = 25;
 
         //render settings
-        public const int PlaygroundSizeInPixels = 600;
+        public const int PlaygroundSizeInPixels = 700;
         public const int RenderTimerIntervalInMilliseconds = 30; // rychlost vykreslovani, cim nizsi, tim rychlejsi
         public const int ReplayTimerIntervalInMilliseconds = 1;
 
@@ -50,6 +50,9 @@ namespace NewGameUI
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Lime, new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer(), (int)PlayerId.ClockworkMole, PlaygroundSizeInDots));
+
+            //jen pro pokusy
+            //players.Add(new Player(new Position(1, 5), Direction.TopRight, Color.Lime, new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer(), (int)PlayerId.ClockworkMole, PlaygroundSizeInDots));
 
             return players;
         }
@@ -138,6 +141,7 @@ namespace NewGameUI
 
                 if (_gameEngine.GameOver)
                 {
+                    DrawFullGameStateToWindow(); // aby se vykreslily poslední změny
                     HandleGameOver();
                     return; //aby se na konci nenastartoval timer!!!
                 }
