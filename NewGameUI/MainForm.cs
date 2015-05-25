@@ -39,17 +39,145 @@ namespace NewGameUI
         private int _drawingSavedGameRoundNumber;
         private Game _game;
 
+        #region Load initial state from file
+
+        private GameEngine CreateGameEngineWithInitialStateFromFile(string fileName)
+        {
+            var imageWithInitialState = new Bitmap(fileName);
+            int size = imageWithInitialState.Width;
+            int[,] arrayWithInitialState = new int[size, size];
+            var heads = new Dictionary<PlayerId, Position>();
+            var necks = new Dictionary<PlayerId, Position>();
+            var tailColors = new Dictionary<PlayerId, Color>();
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    var colorInfo = new ColorInfo(imageWithInitialState.GetPixel(x, y));
+                    arrayWithInitialState[x, y] = colorInfo.Value;
+
+                    if (colorInfo.IsHead && !heads.ContainsKey(colorInfo.PlayerId))
+                    {
+                        heads.Add(colorInfo.PlayerId, new Position(x, y));
+                        tailColors.Add(colorInfo.PlayerId, colorInfo.TailColor);
+                    }
+
+                    if (colorInfo.IsNeck && !necks.ContainsKey(colorInfo.PlayerId))
+                        necks.Add(colorInfo.PlayerId, new Position(x, y));
+                }
+            }
+
+            if (heads.Count != necks.Count)
+                throw new Exception("Snake head count differs from snake neck count.");
+
+            var players = new List<Player>();
+            foreach (PlayerId playerId in heads.Keys)
+            {
+                Direction direction = GetDirection(necks[playerId], heads[playerId]);
+                IPlayerBehaviour2 playerBehaviour = GetPlayerBehaviour(playerId);
+                players.Add(new Player(heads[playerId], direction, tailColors[playerId], GetPlayerBehaviour(playerId), (int)playerId, size));
+            }
+
+            return new GameEngine(arrayWithInitialState, Color.Magenta, players);
+        }
+
+        private Direction GetDirection(Position neck, Position head)
+        {
+            if (neck.X == head.X && neck.Y - 1 == head.Y) return Direction.Top;
+            if (neck.X == head.X && neck.Y + 1 == head.Y) return Direction.Bottom;
+            if (neck.X + 1 == head.X && neck.Y == head.Y) return Direction.Right;
+            if (neck.X - 1 == head.X && neck.Y == head.Y) return Direction.Left;
+            if (neck.X + 1 == head.X && neck.Y - 1 == head.Y) return Direction.TopRight;
+            if (neck.X - 1 == head.X && neck.Y - 1 == head.Y) return Direction.TopLeft;
+            if (neck.X + 1 == head.X && neck.Y + 1 == head.Y) return Direction.BottomRight;
+            if (neck.X - 1 == head.X && neck.Y + 1 == head.Y) return Direction.BottomLeft;
+
+            throw new Exception(string.Format("Neck position [{0},{1}] and head position [{2},{3}] are not next to each other.", neck.X, neck.Y, head.X, head.Y));
+        }
+
+        private IPlayerBehaviour2 GetPlayerBehaviour(PlayerId playerId)
+        {
+            if (playerId == PlayerId.Jardik) return new SnakeDeathmatch.Players.Jardik.Jardik();
+            if (playerId == PlayerId.Vazba) return new SnakeDeathmatch.Players.Vazba.VazbaPlayer();
+            if (playerId == PlayerId.Setal) return new SnakeDeathmatch.Players.Setal.Setal();
+            if (playerId == PlayerId.SoulEater) return new PlayerBehaviour1Adapter(new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior());
+            if (playerId == PlayerId.ClockworkMole) return new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer();
+
+            throw new NotImplementedException(string.Format("Unknown playerId {0}.", playerId));
+        }
+
+        private class ColorInfo
+        {
+            public Color TailColor { get; private set; }
+            public PlayerId PlayerId { get { return (PlayerId)Value; } }
+            public int Value { get; private set; }
+            public bool IsPlayer { get { return IsHead || IsNeck || IsTail; } }
+            public bool IsHead { get; private set; }
+            public bool IsNeck { get; private set; }
+            public bool IsTail { get; private set; }
+
+            public ColorInfo(Color color)
+            {
+                if (color == Color.Black)
+                {
+                    TailColor = color;
+                    Value = 0;
+                    IsHead = false;
+                    IsNeck = false;
+                    IsTail = false;
+                }
+
+                InitForTailColor(Color.Red, PlayerId.Jardik, color);
+                InitForTailColor(Color.Blue, PlayerId.Vazba, color);
+                InitForTailColor(Color.Aqua, PlayerId.Setal, color);
+                InitForTailColor(Color.White, PlayerId.SoulEater, color);
+                InitForTailColor(Color.Lime, PlayerId.ClockworkMole, color);
+            }
+
+            private void InitForTailColor(Color tailColor, PlayerId playerId, Color color)
+            {
+                if (color == GetTailColor(tailColor) || color == GetHeadColor(tailColor) || color == GetNeckColor(tailColor))
+                {
+                    TailColor = tailColor;
+                    Value = (int)playerId;
+                    IsHead = (color == GetHeadColor(tailColor));
+                    IsNeck = (color == GetNeckColor(tailColor));
+                    IsTail = (color == tailColor);
+                }
+            }
+
+            private Color GetHeadColor(Color color)
+            {
+                return Color.FromArgb(Math.Max(0, (int)color.R - 1), Math.Max(0, (int)color.G - 1), Math.Max(0, (int)color.B - 1));
+            }
+
+            private Color GetNeckColor(Color color)
+            {
+                return Color.FromArgb(color.R / 2, color.G / 2, color.B / 2);
+            }
+
+            private Color GetTailColor(Color color)
+            {
+                return Color.FromArgb(color.R, color.G, color.B);
+            }
+        }
+
+        #endregion
+
         #region GameInitialize
 
         private IEnumerable<Player> GetPlayers()
         {
             var players = new List<Player>();
+
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Red, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new PlayerBehaviour1Adapter(new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior()), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Lime, new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer(), (int)PlayerId.ClockworkMole, PlaygroundSizeInDots));
+            
+            // Jirko, až updatuješ hada, tak se zas odkomentuj.
+            //players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
 
             //jen pro pokusy
             //players.Add(new Player(new Position(1, 5), Direction.TopRight, Color.Lime, new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer(), (int)PlayerId.ClockworkMole, PlaygroundSizeInDots));
@@ -72,7 +200,7 @@ namespace NewGameUI
             if (_gameEngine != null)
                 _gameEngine.StopGame();
 
-            _gameEngine = new GameEngine(PlaygroundSizeInDots, Color.Magenta, GetPlayers());
+            _gameEngine = new GameEngine(new int[PlaygroundSizeInDots, PlaygroundSizeInDots], Color.Magenta, GetPlayers());
             _gameEngine.StepMode = _checkboxStepping.Checked;
             _gameEngine.StartGame(GameSpeed);
 

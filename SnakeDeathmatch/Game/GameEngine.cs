@@ -31,15 +31,14 @@ namespace SnakeDeathmatch.Game
         public IEnumerable<Player> Players { get { return _players; } }
 
         public GameEngine(int size, IEnumerable<Player> players)
-            : this(size, System.Windows.Media.Colors.Magenta, players)
+            : this(new int[size, size], System.Windows.Media.Colors.Magenta, players)
         {
         }
 
-
-        public GameEngine(int size, object headToHeadCrashColor, IEnumerable<Player> players)
+        public GameEngine(int[,] playground, object headToHeadCrashColor, IEnumerable<Player> players)
         {
-            Size = size;
-            _gameSurround = new int[size, size];
+            Size = playground.GetUpperBound(0) + 1;
+            _gameSurround = (int[,])playground.Clone();
             _recordLines = new List<RecordLine>();
             _players = players.ToList();
             _headToHeadCrashColor = headToHeadCrashColor;
@@ -49,7 +48,6 @@ namespace SnakeDeathmatch.Game
                 _gameSurround[player.Position.X, player.Position.Y] = player.Identifier;
             }
         }
-
 
         public void StartGame(int gameSpeed)
         {

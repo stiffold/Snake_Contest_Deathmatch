@@ -18,9 +18,6 @@ namespace SnakeDeathmatch.Players.Vazba
 
             Snake me = new Snake((int)PlayerId.Vazba, x, y, direction);
             _snakes = new Snakes(me);
-
-            //var form = new DebuggerForm(this);
-            //form.Show();
         }
 
         private Snakes _snakes;
@@ -44,6 +41,10 @@ namespace SnakeDeathmatch.Players.Vazba
                 Breakpoint(snakes, new BreakpointEventArgs(VazbaBreakpointNames.SnakesUpdated));
 
             Move move = Strategy.GetNextMove(intPlayground, snakes);
+
+            if (Breakpoint != null)
+                Breakpoint(snakes, new BreakpointEventArgs(VazbaBreakpointNames.MoveEnd));
+
             return move;
         }
     }

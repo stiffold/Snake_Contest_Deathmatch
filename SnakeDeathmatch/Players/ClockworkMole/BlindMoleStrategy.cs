@@ -11,7 +11,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
     public class BlindMoleStrategy
     {
 
-        private const int MaxRecursion = 25;
+        private const int MaxRecursion = 20;
         private int recursionTotalCounter;
 
         public Move GetNextMove(Playground playground, Position position)

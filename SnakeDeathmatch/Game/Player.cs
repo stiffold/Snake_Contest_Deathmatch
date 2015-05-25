@@ -9,7 +9,7 @@ namespace SnakeDeathmatch.Game
 {
     public class Player
     {
-        private PlayerBehaviourWrapper _playerBehaviour;
+        IPlayerBehaviour2 _playerBehaviour;
 
         public string Name { get; private set; }
         public int Identifier { get; private set; }
@@ -31,9 +31,9 @@ namespace SnakeDeathmatch.Game
         //    _playerBehaviour.Init(Identifier, playgroundSize, position.X, position.Y, Direction);
         //}
 
-        public Player(Position position, Direction direction, object color, object playerBehaviour, int identificator, int playgroundSize)
+        public Player(Position position, Direction direction, object color, IPlayerBehaviour2 playerBehaviour, int identificator, int playgroundSize)
         {
-            _playerBehaviour = new PlayerBehaviourWrapper(playerBehaviour);
+            _playerBehaviour = playerBehaviour;
             Name = _playerBehaviour.Name;
             Position = position;
             Direction = direction;
@@ -99,6 +99,6 @@ namespace SnakeDeathmatch.Game
         public string PositionAndDirection { get { return string.Format("[{0},{1}], {2}", Position.X, Position.Y, Direction); } }
 
         [ToDebug]
-        public IPlayerBehaviour2 Details { get { return _playerBehaviour.PlayerBehaviour2; } }
+        public IPlayerBehaviour2 Details { get { return _playerBehaviour; } }
     }
 }

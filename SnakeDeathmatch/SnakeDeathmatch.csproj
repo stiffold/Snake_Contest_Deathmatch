@@ -82,7 +82,7 @@
     <Compile Include="Debugger\TreeViewExt.cs" />
     <Compile Include="Game\GameEngineBreakpointNames.cs" />
     <Compile Include="Game\GameState.cs" />
-    <Compile Include="Game\PlayerBehaviourWrapper.cs" />
+    <Compile Include="Game\PlayerBehaviour1Adapter.cs" />
     <Compile Include="Game\RecordLine.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Interface\IPlayerBehaviour2.cs" />
@@ -122,6 +122,9 @@
     </Compile>
     <Compile Include="Debugger\DebuggerForm.Designer.cs">
       <DependentUpon>DebuggerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Players\Vazba\Debug\BlackAndWhiteIntArrayVisualizer.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Players\Vazba\Debug\PlayersIntArrayVisualizer.cs">
       <SubType>UserControl</SubType>
