@@ -169,8 +169,7 @@ namespace NewGameUI
         private IEnumerable<Player> GetPlayers()
         {
             var players = new List<Player>();
-
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Red, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.DeepPink, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new PlayerBehaviour1Adapter(new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior()), (int)PlayerId.SoulEater, PlaygroundSizeInDots));

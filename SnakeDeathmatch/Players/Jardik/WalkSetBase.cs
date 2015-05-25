@@ -11,8 +11,15 @@ namespace SnakeDeathmatch.Players.Jardik
         protected int _score = 0;
         protected int _myId = 0;
         protected int _round = 0;
+        protected Position _position;
+        protected Direction _direction;
+        protected Position _simulatePosition;
+        protected Direction _simulateDirection;
+        protected Move _nextMove;
+        protected List<Other> _others;
         protected bool _isPro;
         protected int[,] _simulateGameSurround;
+        protected int[,] _originalGameSurround;
         protected List<Walk> _walks = new List<Walk>();
 
         public int[,] SimulateGameSurround { get { return (int[,])_simulateGameSurround.Clone(); } }
@@ -24,12 +31,34 @@ namespace SnakeDeathmatch.Players.Jardik
             _isPro = isPro;
         }
 
-        public void Evaluate(int round, Position position, Direction direction, int[,] gameSurrond)
+        public void Evaluate(int round, Position position, Direction direction, int[,] gameSurrond, List<Other> others )
         {
             _round = round;
             _score = 0;
+            _others = others;
+            _position = position;
+            _direction = direction;
+            _originalGameSurround = gameSurrond;
+
+            _simulateDirection = direction;
+            _simulatePosition = position.Copy();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
+
             _walks.Clear();
             DoEvaluate(position, direction, gameSurrond);
+            if (!_simulatePosition.IsInCollission(_ch.Max))
+            {
+                if (_simulateGameSurround[_simulatePosition.X, _simulatePosition.Y] == 0)
+                {
+                    _simulateGameSurround[_simulatePosition.X, _simulatePosition.Y] = _myId;
+                }
+            }
+            int cutCount = CutCount();
+            if (cutCount != 0)
+            {
+                Cut(cutCount); 
+            }
+            
         }
 
         protected int TryGetCollissionTurn(Move move, Position _myPosition, Direction _myDirection, int[,] gameSurrond, int movestToStraight)
@@ -92,16 +121,38 @@ namespace SnakeDeathmatch.Players.Jardik
             int maxRound = _walks.Max(x => x.Round);
             for (int i = 0; i < count; i++)
             {
-                var w = _walks.Where(x => x.Round == maxRound - i).FirstOrDefault();
+                var w = _walks.FirstOrDefault(x => x.Round == maxRound - i);
                 if (w != null && !w.Position.IsInCollission(_ch.Max))
                 {
-                    _simulateGameSurround[w.Position.X, w.Position.Y] = 0;
+                    if (_originalGameSurround[w.Position.X, w.Position.Y] == 0)
+                    {
+                        _simulateGameSurround[w.Position.X, w.Position.Y] = 0;
+                    }
                 }
                 _walks.Remove(w);
             }
         }
 
+        protected void Update()
+        {
+            if (!_simulatePosition.IsInCollission(_ch.Max))
+            {
+                if (_simulateGameSurround[_simulatePosition.X, _simulatePosition.Y] == 0)
+                {
+                    _simulateGameSurround[_simulatePosition.X, _simulatePosition.Y] = _myId;
+                }
+            }
+            _simulateDirection = _simulateDirection.GetNewDirection(_nextMove);
+            _simulatePosition.Update(_simulateDirection);
+            _walks.Add(new Walk(_round, _nextMove, _simulateDirection, _simulatePosition.Copy()));
+            _round++;
+            _score++;
+            
+        }
+
         protected abstract void DoEvaluate(Position position, Direction direction, int[,] gameSurrond);
+
+        protected abstract int CutCount();
 
         public abstract WalkSetType Type();
 

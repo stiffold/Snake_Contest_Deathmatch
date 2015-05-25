@@ -24,30 +24,33 @@ namespace SnakeDeathmatch.Debugger
             var bitmap = new Bitmap(size * 4, size * 4);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
-                g.DrawRectangle(Pens.Black, 0, 0, size * 4, size * 4);
+                g.FillRectangle(Brushes.Black,0 , 0, size*4, size*4);
             }
             for (int x = 0; x < size; x++)
             {
                 for (int y = 0; y < size; y++)
                 {
-                    Color color = GetColorForValue(intArray.InnerArray[x, y]);
+                    if (intArray.InnerArray[x, y] != 0)
+                    {
+                        Color color = GetColorForValue(intArray.InnerArray[x, y]);
 
-                    bitmap.SetPixel(4 * x + 0, 4 * y + 0, color);
-                    bitmap.SetPixel(4 * x + 1, 4 * y + 0, color);
-                    bitmap.SetPixel(4 * x + 2, 4 * y + 0, color);
-                    bitmap.SetPixel(4 * x + 3, 4 * y + 0, Color.Black);
-                    bitmap.SetPixel(4 * x + 0, 4 * y + 1, color);
-                    bitmap.SetPixel(4 * x + 1, 4 * y + 1, color);
-                    bitmap.SetPixel(4 * x + 2, 4 * y + 1, color);
-                    bitmap.SetPixel(4 * x + 3, 4 * y + 1, Color.Black);
-                    bitmap.SetPixel(4 * x + 0, 4 * y + 2, color);
-                    bitmap.SetPixel(4 * x + 1, 4 * y + 2, color);
-                    bitmap.SetPixel(4 * x + 2, 4 * y + 2, color);
-                    bitmap.SetPixel(4 * x + 3, 4 * y + 2, Color.Black);
-                    bitmap.SetPixel(4 * x + 0, 4 * y + 3, Color.Black);
-                    bitmap.SetPixel(4 * x + 1, 4 * y + 3, Color.Black);
-                    bitmap.SetPixel(4 * x + 2, 4 * y + 3, Color.Black);
-                    bitmap.SetPixel(4 * x + 3, 4 * y + 3, Color.Black);
+                        bitmap.SetPixel(4 * x + 0, 4 * y + 0, color);
+                        bitmap.SetPixel(4 * x + 1, 4 * y + 0, color);
+                        bitmap.SetPixel(4 * x + 2, 4 * y + 0, color);
+                        bitmap.SetPixel(4 * x + 3, 4 * y + 0, Color.Black);
+                        bitmap.SetPixel(4 * x + 0, 4 * y + 1, color);
+                        bitmap.SetPixel(4 * x + 1, 4 * y + 1, color);
+                        bitmap.SetPixel(4 * x + 2, 4 * y + 1, color);
+                        bitmap.SetPixel(4 * x + 3, 4 * y + 1, Color.Black);
+                        bitmap.SetPixel(4 * x + 0, 4 * y + 2, color);
+                        bitmap.SetPixel(4 * x + 1, 4 * y + 2, color);
+                        bitmap.SetPixel(4 * x + 2, 4 * y + 2, color);
+                        bitmap.SetPixel(4 * x + 3, 4 * y + 2, Color.Black);
+                        bitmap.SetPixel(4 * x + 0, 4 * y + 3, Color.Black);
+                        bitmap.SetPixel(4 * x + 1, 4 * y + 3, Color.Black);
+                        bitmap.SetPixel(4 * x + 2, 4 * y + 3, Color.Black);
+                        bitmap.SetPixel(4 * x + 3, 4 * y + 3, Color.Black);
+                    }
                 }
             }
             return bitmap;

@@ -34,27 +34,10 @@ namespace SnakeDeathmatch.Players.Jardik
         public SnakeDeathmatch.Interface.Move GetNextMove(int[,] gameSurrond)
         {
             _round++;
-            _others.Update(gameSurrond);
-            if (!_myPlanedMoves.Any(s=>s.Round ==_round))
-            {
-                int maxround = 0;
-                if (_myPlanedMoves.Any())
-	            {
-		           maxround = _myPlanedMoves.Max(x=>x.Round);
-	            }
-                
-
-                //System.Windows.Forms.MessageBox.Show("DontFindMove round: " + _round + " MaxWalkRound: " + maxround);
-                _myPlanedMoves.AddRange(_planner.GetBestWalksToMe(_round, _myPosition, _myDirection, gameSurrond, _others.OthersList));
-                //_myPlanedMoves.AddRange(_planner.GetVariant(_round, _myPosition, _myDirection, gameSurrond,WalkSetType.Randomer));
-            }
-            else
-            {
-                _planner.RepairSteps(_round + 1, _myPlanedMoves, gameSurrond, _myPosition, _others.OthersList);
-            }
-
+            _others.Update(gameSurrond, _round);
+            _myPlanedMoves = _planner.UpdateMoves(_myPlanedMoves, _round, _myPosition, _myDirection, gameSurrond, _others.OthersList.Where(x => x.Live).ToList());
                       
-            var nextMove = _myPlanedMoves.Where(x => x.Round == _round).FirstOrDefault();
+            var nextMove = _myPlanedMoves.FirstOrDefault(x => x.Round == _round);
             if (nextMove!=null)
             {
                 _myDirection = _myDirection.GetNewDirection(nextMove.Move);

@@ -33,6 +33,15 @@ namespace SnakeDeathmatch.Players.Jardik
             return Math.Sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
         }
 
+        public bool IsSame(Position p)
+        {
+            if (p.X == X && p.Y == Y)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public bool IsInCollission(int max)
         {
             if (X < 0) return true;
@@ -106,6 +115,38 @@ namespace SnakeDeathmatch.Players.Jardik
                     _x--;
                     break;
             }
+        }
+
+        internal bool IsOpposite(Position position, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Top:
+                    if (Y > position.Y) return true;
+                    break;
+                case Direction.TopLeft:
+                    if (Y > position.Y && X > position.X) return true;
+                    break;
+                case Direction.Left:
+                    if (X > position.X) return true;
+                    break;
+                case Direction.BottomLeft:
+                    if (Y < position.Y && X > position.X) return true;
+                    break;
+                case Direction.Bottom:
+                    if (Y < position.Y) return true;
+                    break;
+                case Direction.BottomRight:
+                    if (Y < position.Y && X < position.X) return true;
+                    break;
+                case Direction.Right:
+                    if (X < position.X) return true;
+                    break;
+                case Direction.TopRight:
+                    if (Y > position.Y && X < position.X) return true;
+                    break;
+            }
+            return false;
         }
     }
 }
