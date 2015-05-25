@@ -6,7 +6,11 @@ namespace SnakeDeathmatch.Debugger
     {
         public Type VisualizerType { get; private set; }
 
-        public ToDebugAttribute(Type visualizerType = null)
+        public ToDebugAttribute() : this(null)
+        {
+        }
+
+        public ToDebugAttribute(Type visualizerType)
         {
             VisualizerType = visualizerType;
         }
