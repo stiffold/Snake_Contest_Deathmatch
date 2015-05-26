@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace SnakeDeathmatch.Players.Jardik
-{   
+{
+
     #region normal
-    class Straight : WalkSetBase
+
+    internal class Straight : WalkSetBase
     {
-        public Straight(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Straight(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Straight;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollission(Move.Straight, position, direction, gameSurrond);
@@ -22,13 +28,18 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Left45 : WalkSetBase
+
+    internal class Left45 : WalkSetBase
     {
-        public Left45(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Left45(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Left45;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 1);
@@ -39,13 +50,18 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Left90 : WalkSetBase
+
+    internal class Left90 : WalkSetBase
     {
-        public Left90(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Left90(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Left90;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 2);
@@ -56,13 +72,18 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Left125 : WalkSetBase
+
+    internal class Left125 : WalkSetBase
     {
-        public Left125(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Left125(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Left125;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 3);
@@ -73,13 +94,18 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Left180 : WalkSetBase
+
+    internal class Left180 : WalkSetBase
     {
-        public Left180(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Left180(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Left180;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 4);
@@ -90,13 +116,18 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Right45 : WalkSetBase
+
+    internal class Right45 : WalkSetBase
     {
-        public Right45(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Right45(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Right45;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 1);
@@ -107,17 +138,21 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Right90 : WalkSetBase
+
+    internal class Right90 : WalkSetBase
     {
-        public Right90(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Right90(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Right90;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 2);
-            
         }
 
         protected override int CutCount()
@@ -125,17 +160,21 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Right125 : WalkSetBase
+
+    internal class Right125 : WalkSetBase
     {
-        public Right125(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Right125(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Right125;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 3);
-            
         }
 
         protected override int CutCount()
@@ -143,17 +182,21 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Right180 : WalkSetBase
+
+    internal class Right180 : WalkSetBase
     {
-        public Right180(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Right180(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Right180;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 4);
-            
         }
 
         protected override int CutCount()
@@ -161,34 +204,37 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
+
     #endregion
 
     #region Pro
-    
-    class RightGap : WalkSetBase
+
+    internal class RightGap : WalkSetBase
     {
-        List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
 
         public RightGap(CollissionHelper ch, int myId)
             : base(ch, myId, true)
         {
-
             m.Add(new Tuple<int, Move>(1, Move.Right));
-            m.Add(new Tuple<int, Move>(2, Move.Left));
-            m.Add(new Tuple<int, Move>(3, Move.Left));
-            
+            m.Add(new Tuple<int, Move>(2, Move.Right));
+            m.Add(new Tuple<int, Move>(3, Move.Straight));
+            m.Add(new Tuple<int, Move>(4, Move.Left));
+            m.Add(new Tuple<int, Move>(5, Move.Left));
         }
+
         public override WalkSetType Type()
         {
             return WalkSetType.RightGap;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int nextMoves = 1;
+            var nextMoves = 1;
             _nextMove = Move.Right;
             do
             {
-                if (nextMoves > 3)
+                if (nextMoves > 5)
                 {
                     _nextMove = Move.Straight;
                 }
@@ -198,9 +244,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 }
                 Update();
                 nextMoves++;
-
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -209,30 +253,120 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class LeftGap : WalkSetBase
+    internal class Right180Bigger : WalkSetBase
     {
-        List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public Right180Bigger(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+            m.Add(new Tuple<int, Move>(1, Move.Right));
+            m.Add(new Tuple<int, Move>(2, Move.Right));
+            m.Add(new Tuple<int, Move>(3, Move.Straight));
+            m.Add(new Tuple<int, Move>(4, Move.Right));
+            m.Add(new Tuple<int, Move>(5, Move.Right));
+        }
+
+        public override WalkSetType Type()
+        {
+            return WalkSetType.Right180Bigger;
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            var nextMoves = 1;
+            _nextMove = Move.Right;
+            do
+            {
+                if (nextMoves > 5)
+                {
+                    _nextMove = Move.Straight;
+                }
+                else
+                {
+                    _nextMove = m.First(l => l.Item1 == nextMoves).Item2;
+                }
+                Update();
+                nextMoves++;
+            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
+        }
+
+        protected override int CutCount()
+        {
+            return 3;
+        }
+    }
+
+    internal class Left180Bigger : WalkSetBase
+    {
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public Left180Bigger(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+            m.Add(new Tuple<int, Move>(1, Move.Left));
+            m.Add(new Tuple<int, Move>(2, Move.Left));
+            m.Add(new Tuple<int, Move>(3, Move.Straight));
+            m.Add(new Tuple<int, Move>(4, Move.Left));
+            m.Add(new Tuple<int, Move>(5, Move.Left));
+        }
+
+        public override WalkSetType Type()
+        {
+            return WalkSetType.Left180Bigger;
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            var nextMoves = 1;
+            _nextMove = Move.Right;
+            do
+            {
+                if (nextMoves > 5)
+                {
+                    _nextMove = Move.Straight;
+                }
+                else
+                {
+                    _nextMove = m.First(l => l.Item1 == nextMoves).Item2;
+                }
+                Update();
+                nextMoves++;
+            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
+        }
+
+        protected override int CutCount()
+        {
+            return 3;
+        }
+    }
+
+    internal class LeftGap : WalkSetBase
+    {
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
 
         public LeftGap(CollissionHelper ch, int myId)
             : base(ch, myId, true)
         {
-
             m.Add(new Tuple<int, Move>(1, Move.Left));
-            m.Add(new Tuple<int, Move>(2, Move.Right));
-            m.Add(new Tuple<int, Move>(3, Move.Right));
-
+            m.Add(new Tuple<int, Move>(2, Move.Left));
+            m.Add(new Tuple<int, Move>(3, Move.Straight));
+            m.Add(new Tuple<int, Move>(4, Move.Right));
+            m.Add(new Tuple<int, Move>(5, Move.Right));
         }
+
         public override WalkSetType Type()
         {
             return WalkSetType.LeftGap;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int nextMoves = 1;
+            var nextMoves = 1;
             _nextMove = Move.Left;
             do
             {
-                if (nextMoves > 3)
+                if (nextMoves > 5)
                 {
                     _nextMove = Move.Straight;
                 }
@@ -242,9 +376,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 }
                 Update();
                 nextMoves++;
-
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -253,13 +385,266 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class GetToWall : WalkSetBase
+    internal class RightLightGap : WalkSetBase
     {
-        public GetToWall(CollissionHelper ch, int myId) : base(ch, myId) { }
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public RightLightGap(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+            m.Add(new Tuple<int, Move>(1, Move.Right));
+            m.Add(new Tuple<int, Move>(2, Move.Right));
+            m.Add(new Tuple<int, Move>(3, Move.Left));
+            m.Add(new Tuple<int, Move>(4, Move.Left));
+        }
+
+        public override WalkSetType Type()
+        {
+            return WalkSetType.RightLigntGap;
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            var nextMoves = 1;
+            _nextMove = Move.Right;
+            do
+            {
+                if (nextMoves > 4)
+                {
+                    _nextMove = Move.Straight;
+                }
+                else
+                {
+                    _nextMove = m.First(l => l.Item1 == nextMoves).Item2;
+                }
+                Update();
+                nextMoves++;
+            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
+        }
+
+        protected override int CutCount()
+        {
+            return 3;
+        }
+    }
+
+    internal class LeftLightGap : WalkSetBase
+    {
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public LeftLightGap(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+            m.Add(new Tuple<int, Move>(1, Move.Left));
+            m.Add(new Tuple<int, Move>(2, Move.Left));
+            m.Add(new Tuple<int, Move>(3, Move.Right));
+            m.Add(new Tuple<int, Move>(4, Move.Right));
+        }
+
+        public override WalkSetType Type()
+        {
+            return WalkSetType.LeftLightGap;
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            var nextMoves = 1;
+            _nextMove = Move.Left;
+            do
+            {
+                if (nextMoves > 4)
+                {
+                    _nextMove = Move.Straight;
+                }
+                else
+                {
+                    _nextMove = m.First(l => l.Item1 == nextMoves).Item2;
+                }
+                Update();
+                nextMoves++;
+            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
+        }
+
+        protected override int CutCount()
+        {
+            return 3;
+        }
+    }
+
+    internal class RightLightLightGap : WalkSetBase
+    {
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public RightLightLightGap(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+            m.Add(new Tuple<int, Move>(1, Move.Right));
+            m.Add(new Tuple<int, Move>(2, Move.Left));
+        }
+
+        public override WalkSetType Type()
+        {
+            return WalkSetType.RightLigntLightGap;
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            var nextMoves = 1;
+            _nextMove = Move.Right;
+            do
+            {
+                if (nextMoves > 2)
+                {
+                    _nextMove = Move.Straight;
+                }
+                else
+                {
+                    _nextMove = m.First(l => l.Item1 == nextMoves).Item2;
+                }
+                Update();
+                nextMoves++;
+            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
+        }
+
+        protected override int CutCount()
+        {
+            return 3;
+        }
+    }
+
+    internal class LeftLightLightGap : WalkSetBase
+    {
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public LeftLightLightGap(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+            m.Add(new Tuple<int, Move>(1, Move.Left));
+            m.Add(new Tuple<int, Move>(2, Move.Right));
+        }
+
+        public override WalkSetType Type()
+        {
+            return WalkSetType.LeftLightLightGap;
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            var nextMoves = 1;
+            _nextMove = Move.Left;
+            do
+            {
+                if (nextMoves > 2)
+                {
+                    _nextMove = Move.Straight;
+                }
+                else
+                {
+                    _nextMove = m.First(l => l.Item1 == nextMoves).Item2;
+                }
+                Update();
+                nextMoves++;
+            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
+        }
+
+        protected override int CutCount()
+        {
+            return 3;
+        }
+    }
+
+    internal class Love : WalkSetBase
+    {
+        private readonly List<Tuple<int, Move>> m = new List<Tuple<int, Move>>();
+
+        public Love(CollissionHelper ch, int myId)
+            : base(ch, myId, true)
+        {
+            m.Add(new Tuple<int, Move>(1, Move.Straight));
+            m.Add(new Tuple<int, Move>(2, Move.Right));
+            m.Add(new Tuple<int, Move>(3, Move.Straight));
+            m.Add(new Tuple<int, Move>(4, Move.Right));
+            m.Add(new Tuple<int, Move>(5, Move.Straight));
+            m.Add(new Tuple<int, Move>(6, Move.Straight));
+            m.Add(new Tuple<int, Move>(7, Move.Straight));
+            m.Add(new Tuple<int, Move>(8, Move.Right));
+            m.Add(new Tuple<int, Move>(9, Move.Straight));
+            m.Add(new Tuple<int, Move>(10, Move.Straight));
+            m.Add(new Tuple<int, Move>(11, Move.Left));
+            m.Add(new Tuple<int, Move>(12, Move.Left));
+            m.Add(new Tuple<int, Move>(13, Move.Straight));
+            m.Add(new Tuple<int, Move>(14, Move.Straight));
+            m.Add(new Tuple<int, Move>(15, Move.Right));
+            m.Add(new Tuple<int, Move>(16, Move.Straight));
+            m.Add(new Tuple<int, Move>(17, Move.Straight));
+            m.Add(new Tuple<int, Move>(18, Move.Straight));
+            m.Add(new Tuple<int, Move>(19, Move.Right));
+            m.Add(new Tuple<int, Move>(20, Move.Straight));
+            m.Add(new Tuple<int, Move>(21, Move.Right));
+            m.Add(new Tuple<int, Move>(22, Move.Straight));
+            m.Add(new Tuple<int, Move>(23, Move.Straight));
+            m.Add(new Tuple<int, Move>(24, Move.Right));
+            m.Add(new Tuple<int, Move>(25, Move.Straight));
+            m.Add(new Tuple<int, Move>(26, Move.Straight));
+            m.Add(new Tuple<int, Move>(27, Move.Straight));
+            m.Add(new Tuple<int, Move>(28, Move.Straight));
+            m.Add(new Tuple<int, Move>(29, Move.Straight));
+            m.Add(new Tuple<int, Move>(30, Move.Straight));
+            m.Add(new Tuple<int, Move>(31, Move.Straight));
+            m.Add(new Tuple<int, Move>(32, Move.Straight));
+            m.Add(new Tuple<int, Move>(33, Move.Right));
+            m.Add(new Tuple<int, Move>(34, Move.Right));
+            m.Add(new Tuple<int, Move>(35, Move.Straight));
+            m.Add(new Tuple<int, Move>(36, Move.Straight));
+            m.Add(new Tuple<int, Move>(37, Move.Straight));
+            m.Add(new Tuple<int, Move>(38, Move.Straight));
+            m.Add(new Tuple<int, Move>(39, Move.Straight));
+            m.Add(new Tuple<int, Move>(40, Move.Straight));
+            m.Add(new Tuple<int, Move>(41, Move.Straight));
+            m.Add(new Tuple<int, Move>(42, Move.Straight));
+        }
+
+        public override WalkSetType Type()
+        {
+            return WalkSetType.Love;
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            var nextMoves = 1;
+            _nextMove = Move.Left;
+            do
+            {
+                if (nextMoves > m.Count)
+                {
+                    _nextMove = Move.Straight;
+                }
+                else
+                {
+                    _nextMove = m.First(l => l.Item1 == nextMoves).Item2;
+                }
+                Update();
+                nextMoves++;
+            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
+        }
+
+        protected override int CutCount()
+        {
+            return 3;
+        }
+    }
+
+    internal class GetToWall : WalkSetBase
+    {
+        public GetToWall(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.GetToWall;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             throw new NotImplementedException();
@@ -270,17 +655,22 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    class Roll100 : WalkSetBase
+
+    internal class Roll100 : WalkSetBase
     {
-        public Roll100(CollissionHelper ch, int myId) : base(ch, myId) { }
+        public Roll100(CollissionHelper ch, int myId) : base(ch, myId)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Roll100;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int iteration = 1;
-            int limit = 1;
+            var iteration = 1;
+            var limit = 1;
             _nextMove = direction.IsDiagonal() ? Move.Straight : Move.Right;
             do
             {
@@ -299,9 +689,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 }
                 Update();
                 iteration++;
-
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -310,16 +698,20 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class RollLeft : WalkSetBase
+    internal class RollLeft : WalkSetBase
     {
-        public RollLeft(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public RollLeft(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.RollLeft;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 1;
+            var count = 1;
             _nextMove = Move.Left;
             do
             {
@@ -329,7 +721,6 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (count > 4) _nextMove = Move.Right;
                 if (count == 8) count = 1;
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -338,10 +729,14 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class Safer : WalkSetBase
+    internal class Safer : WalkSetBase
     {
-        List<Move> _moveList = new List<Move> { Move.Straight, Move.Left, Move.Right };
-        public Safer(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        private readonly List<Move> _moveList = new List<Move> {Move.Left, Move.Straight, Move.Right};
+
+        public Safer(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Safer;
@@ -349,85 +744,72 @@ namespace SnakeDeathmatch.Players.Jardik
 
         protected override int CutCount()
         {
-            return 0;
+            return 2;
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            _walks = MoveIt(_round, 9, position, direction, gameSurrond);
+            _walks = GetWalks(_round, position, direction, 10, gameSurrond, new List<Walk>());
         }
 
-        private List<Walk> MoveIt(int round, int moves, Position position, Direction direction, int[,] gameSurrond)
-        {
-            foreach (Move move in _moveList)
-            {
-                List<Walk> walks = GetWalks(round, position.Copy(), direction, move, moves, gameSurrond, new List<Walk>());
-                if (walks.Count >= moves - 1)
-                    return walks;
-            }
 
-            return MoveIt(round, --moves, position.Copy(), direction, gameSurrond);
-        }
-
-        private List<Walk> GetWalks(int round, Position position, Direction currentDirection, Move move, int moves, int[,] gameSurrond, List<Walk> walks)
+        private List<Walk> GetWalks(int round, Position position, Direction currentDirection, int moves,
+            int[,] gameSurrond, List<Walk> walks)
         {
             moves--;
             if (moves <= 0) return walks;
-            int[,] simulateGameSurround = (int[,])gameSurrond.Clone();
+            var simulateGameSurround = (int[,]) gameSurrond.Clone();
+            Walk myWalk = null;
+            var bestCount = 0;
+            var nextWalks = new List<Walk>();
 
-
-            Direction simulateDirection = currentDirection;
-            Position simulatePosition = position.Copy();
-            simulateDirection = simulateDirection.GetNewDirection(move);
-            simulatePosition.Update(simulateDirection);
-
-            if (_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+            foreach (var m in _moveList)
             {
-                return new List<Walk>();
-            }
-            simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
-            var myWalk = new Walk(round + walks.Count, move, simulateDirection, simulatePosition);
-            walks.Add(myWalk);
+                var simulateDirection = currentDirection;
+                var simulatePosition = position.Copy();
+                simulateDirection = simulateDirection.GetNewDirection(m);
+                simulatePosition.Update(simulateDirection);
 
-
-            List<Walk> straightWalks = GetWalks(round, simulatePosition, simulateDirection, Move.Straight, moves, simulateGameSurround, walks.ToList());
-            List<Walk> leftWalks = GetWalks(round, simulatePosition, simulateDirection, Move.Left, moves, simulateGameSurround, walks.ToList());
-            List<Walk> rightWalks = GetWalks(round, simulatePosition, simulateDirection, Move.Right, moves, simulateGameSurround, walks.ToList());
-
-
-            int max = new[] { leftWalks.Count, rightWalks.Count, straightWalks.Count }.Max();
-
-            if (straightWalks.Count == max)
-            {
-                straightWalks.Add(myWalk);
-                return straightWalks;
-            }
-            if (leftWalks.Count == max)
-            {
-                leftWalks.Add(myWalk);
-                return leftWalks;
-            }
-            if (rightWalks.Count == max)
-            {
-                rightWalks.Add(myWalk);
-                return rightWalks;
+                if (!_ch.Collission(simulateDirection, simulateGameSurround, simulatePosition))
+                {
+                    simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                    myWalk = new Walk(round + walks.Count, m, simulateDirection, simulatePosition);
+                    walks.Add(myWalk);
+                    var submoves = GetWalks(round, simulatePosition, simulateDirection, moves, simulateGameSurround,
+                        walks.ToList());
+                    if (submoves.Count > bestCount)
+                    {
+                        nextWalks = submoves;
+                        bestCount = submoves.Count;
+                    }
+                    walks.Remove(myWalk);
+                    simulateGameSurround[simulatePosition.Y, simulatePosition.Y] = 0;
+                }
             }
 
+            if (myWalk == null)
+            {
+                return walks;
+            }
 
-            return new List<Walk>();
+            return nextWalks;
         }
     }
 
-    class RollRight : WalkSetBase
+    internal class RollRight : WalkSetBase
     {
-        public RollRight(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public RollRight(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.RollRight;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 1;
+            var count = 1;
             _nextMove = Move.Right;
 
             do
@@ -438,27 +820,29 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (count > 4) _nextMove = Move.Left;
                 if (count == 8) count = 1;
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
         {
             return 3;
         }
-
     }
 
-    class Raper : WalkSetBase
+    internal class Raper : WalkSetBase
     {
-        public Raper(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public Raper(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Raper;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 2;
-            int straight = 3;
+            var count = 2;
+            var straight = 3;
             _nextMove = Move.Right;
             do
             {
@@ -472,9 +856,7 @@ namespace SnakeDeathmatch.Players.Jardik
                     count = 1;
                     straight++;
                 }
-
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -483,20 +865,24 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class Bingo : WalkSetBase
+    internal class Bingo : WalkSetBase
     {
-        public Bingo(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public Bingo(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Bingo;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 1;
-            int cycle = 1;
-            int straight = 2;
+            var count = 1;
+            var cycle = 1;
+            var straight = 2;
             _nextMove = Move.Right;
-           do
+            do
             {
                 Update();
                 count++;
@@ -506,15 +892,13 @@ namespace SnakeDeathmatch.Players.Jardik
                 {
                     cycle++;
                     count = 1;
-                    if (cycle> 4)
+                    if (cycle > 4)
                     {
                         straight++;
                         cycle = 1;
-                    }                    
+                    }
                 }
-
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -523,42 +907,48 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class Randomer : WalkSetBase
+    internal class Randomer : WalkSetBase
     {
-        public Randomer(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public Randomer(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Randomer;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            Random r = new Random();
-            _nextMove = (Move)r.Next(1, 4);
+            var r = new Random();
+            _nextMove = (Move) r.Next(1, 4);
             do
             {
                 Update();
-                _nextMove = (Move)r.Next(1, 4);
+                _nextMove = (Move) r.Next(1, 4);
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
         {
             return 3;
         }
-        
     }
 
-    class Snaker : WalkSetBase
+    internal class Snaker : WalkSetBase
     {
-        public Snaker(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public Snaker(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Snaker;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 2;
+            var count = 2;
             _nextMove = Move.Right;
             do
             {
@@ -568,7 +958,6 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (count > 6) _nextMove = Move.Left;
                 if (count == 11) count = 1;
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -577,16 +966,20 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class Quaker : WalkSetBase
+    internal class Quaker : WalkSetBase
     {
-        public Quaker(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public Quaker(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Quaker;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 1;
+            var count = 1;
             _nextMove = Move.Straight;
             do
             {
@@ -601,7 +994,6 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (count > 19 && count <= 21) _nextMove = Move.Right;
                 if (count > 21) count = 1;
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -610,16 +1002,20 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class SquareRight : WalkSetBase
+    internal class SquareRight : WalkSetBase
     {
-        public SquareRight(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public SquareRight(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.SquareRight;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 1;
+            var count = 1;
             _nextMove = Move.Straight;
             do
             {
@@ -635,7 +1031,6 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (count > 38 && count <= 40) _nextMove = Move.Left;
                 if (count > 40) _nextMove = Move.Straight;
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -644,16 +1039,20 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class SquareLeft : WalkSetBase
+    internal class SquareLeft : WalkSetBase
     {
-        public SquareLeft(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public SquareLeft(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.SquareLeft;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 1;
+            var count = 1;
             _nextMove = Move.Straight;
             do
             {
@@ -669,7 +1068,6 @@ namespace SnakeDeathmatch.Players.Jardik
                 if (count > 38 && count <= 40) _nextMove = Move.Right;
                 if (count > 40) _nextMove = Move.Straight;
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
@@ -678,15 +1076,14 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
-    class FunkyTerror : WalkSetBase
+    internal class FunkyTerror : WalkSetBase
     {
-        List<Tuple<int, Move>> left_nextMoves = new List<Tuple<int, Move>>();
-        List<Tuple<int, Move>> right_nextMoves = new List<Tuple<int, Move>>();
+        private readonly List<Tuple<int, Move>> left_nextMoves = new List<Tuple<int, Move>>();
+        private readonly List<Tuple<int, Move>> right_nextMoves = new List<Tuple<int, Move>>();
 
         public FunkyTerror(CollissionHelper ch, int myId)
             : base(ch, myId, true)
         {
-
             left_nextMoves.Add(new Tuple<int, Move>(1, Move.Left));
             left_nextMoves.Add(new Tuple<int, Move>(2, Move.Left));
             left_nextMoves.Add(new Tuple<int, Move>(3, Move.Straight));
@@ -701,7 +1098,7 @@ namespace SnakeDeathmatch.Players.Jardik
             left_nextMoves.Add(new Tuple<int, Move>(12, Move.Right));
 
             right_nextMoves.Add(new Tuple<int, Move>(1, Move.Right));
-            right_nextMoves.Add(new Tuple<int, Move>(2, Move.Right));                      
+            right_nextMoves.Add(new Tuple<int, Move>(2, Move.Right));
             right_nextMoves.Add(new Tuple<int, Move>(3, Move.Straight));
             right_nextMoves.Add(new Tuple<int, Move>(4, Move.Left));
             right_nextMoves.Add(new Tuple<int, Move>(5, Move.Left));
@@ -713,16 +1110,18 @@ namespace SnakeDeathmatch.Players.Jardik
             right_nextMoves.Add(new Tuple<int, Move>(11, Move.Left));
             right_nextMoves.Add(new Tuple<int, Move>(12, Move.Left));
         }
+
         public override WalkSetType Type()
         {
             return WalkSetType.FunkyTerror;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int straightMoves = 5;
-            int nextMoves = 1;
-            bool left = true;
-            bool doStraightMoves = false;
+            var straightMoves = 5;
+            var nextMoves = 1;
+            var left = true;
+            var doStraightMoves = false;
             _nextMove = direction.IsDiagonal() ? Move.Straight : Move.Right;
 
 
@@ -734,7 +1133,9 @@ namespace SnakeDeathmatch.Players.Jardik
                 }
                 else
                 {
-                    _nextMove = left ? left_nextMoves.First(l => l.Item1 == nextMoves).Item2 : right_nextMoves.First(l => l.Item1 == nextMoves).Item2;
+                    _nextMove = left
+                        ? left_nextMoves.First(l => l.Item1 == nextMoves).Item2
+                        : right_nextMoves.First(l => l.Item1 == nextMoves).Item2;
                 }
                 Update();
                 nextMoves++;
@@ -752,169 +1153,168 @@ namespace SnakeDeathmatch.Players.Jardik
                     nextMoves = 1;
                 }
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
         }
 
         protected override int CutCount()
         {
             return 3;
         }
-
-
     }
 
-    class VazbaKiller : WalkSetBase
+    internal class Killer : WalkSetBase
     {
-        List<Tuple<int, Move>> _nextMoves = new List<Tuple<int, Move>>();
-        public VazbaKiller(CollissionHelper ch, int myId) : base(ch, myId, true) { }
+        public Killer(CollissionHelper ch, int myId) : base(ch, myId, true)
+        {
+        }
+
         public override WalkSetType Type()
         {
             return WalkSetType.Killer;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int step = 1;
-            Position vazbaPosition = new Position(0, 0);
-            for (int x = 0; x < _ch.Max; x++)
+            var targetPosition = new Position(0, 0);
+            double min = 500;
+            foreach (var o in _others.Where(x => x.Id != 4))
             {
-                for (int y = 0; y < _ch.Max; y++)
+                if (position.Distance(o.Position) < min)
                 {
-                    if (gameSurrond[x, y] == 2)
+                    min = position.Distance(o.Position);
+                    targetPosition = o.Position;
+                }
+            }
+
+            var distance = targetPosition.Distance(position);
+            var targets = new List<Tuple<int, Position>>();
+            var number = 1;
+            foreach (var dir in Enum.GetValues(typeof (Direction)))
+            {
+                var p = targetPosition.Copy();
+                for (var i = 0; i < ((distance/6) + 5); i++)
+                {
+                    p.Update((Direction) dir);
+                    if (p.IsInCollission(100))
                     {
-                        vazbaPosition = new Position(x, y);
+                        return;
+                    }
+                }
+                targets.Add(new Tuple<int, Position>(number, p));
+                if (!p.IsInCollission(100) && _simulateGameSurround[p.X, p.Y] == 0)
+                {
+                    _simulateGameSurround[p.X, p.Y] = 200;
+                }
+                number++;
+            }
+
+            double minDistance = 200;
+            var tartetPoint = targets.First();
+            foreach (var p in targets)
+            {
+                if (p.Item2.Distance(_position) < minDistance)
+                {
+                    tartetPoint = p;
+                    minDistance = p.Item2.Distance(_position);
+                }
+            }
+
+            var succes = MovesToGetPosition(_position, _direction, tartetPoint.Item2);
+
+
+            if (succes)
+            {
+                foreach (var t in targets.Where(x => x.Item1 > tartetPoint.Item1).OrderBy(x => x.Item1))
+                {
+                    if (succes)
+                    {
+                        succes = MovesToGetPosition(_simulatePosition, _simulateDirection, t.Item2);
                     }
                 }
             }
-            double distance = vazbaPosition.Distance(position);
 
-            if (distance > 75)
+            if (succes)
             {
-                return;
+                foreach (var t in targets.Where(x => x.Item1 < tartetPoint.Item1).OrderBy(x => x.Item1))
+                {
+                    if (succes)
+                    {
+                        succes = MovesToGetPosition(_simulatePosition, _simulateDirection, t.Item2);
+                    }
+                }
             }
 
-            Direction targetDirection = position.PositionDiagonalDirection(vazbaPosition);
-            var afterPosition = position.Copy();
-            foreach (var m in direction.MovesToGetDirection(targetDirection))
+            if (succes)
             {
-                _nextMoves.Add(new Tuple<int,Move>(step,m));
-                step++;
+                MovesToGetPosition(_simulatePosition, _simulateDirection, tartetPoint.Item2);
             }
-            double minDistance = 300;
-            while (vazbaPosition.Distance(afterPosition) < minDistance)
-            {
-                minDistance = vazbaPosition.Distance(afterPosition);
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Straight));
-                afterPosition.Update(targetDirection);                
-                step++;
-            }
+        }
 
-            for (int s = 0; s < distance/2.5; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Straight));
-                step++;
-            }
+        private bool MovesToGetPosition(Position position, Direction direction, Position targetPosition)
+        {
+            var pos = position.Copy();
+            var dir = direction;
+            var myMove = Move.Right;
+            var i = 0;
 
-            //right
-            for (int s = 0; s < 2; s++)
+            var myDirection = direction;
+            var myPosition = position.Copy();
+            while (!targetPosition.IsSame(_simulatePosition) && i < 150)
             {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Right));
-                step++;
-            }
+                i++;
+                double minDistance = 200;
+                var chosen = false;
+                foreach (var m in Enum.GetValues(typeof (Move)))
+                {
+                    var p = pos.Copy();
+                    var d = dir.GetNewDirection((Move) m);
 
-            //straight
-            for (int s = 0; s < distance / 3 /2; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Straight));
-                step++;
-            }
+                    p.Update(d);
 
-            //left
-            for (int s = 0; s < 2; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Left));
-                step++;
-            }
-
-            //straight
-            for (int s = 0; s < distance / 3; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Straight));
-                step++;
-            }
-
-            //left
-            for (int s = 0; s < 2; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Left));
-                step++;
+                    if (!p.IsInCollission(100) && p.Distance(targetPosition) < minDistance &&
+                        (_simulateGameSurround[p.X, p.Y] == 0 || _simulateGameSurround[p.X, p.Y] == 200))
+                    {
+                        myMove = (Move) m;
+                        myDirection = d;
+                        myPosition = p;
+                        minDistance = p.Distance(targetPosition);
+                        chosen = true;
+                    }
+                }
+                if (chosen)
+                {
+                    pos = myPosition;
+                    dir = myDirection;
+                    _nextMove = myMove;
+                    Update();
+                }
+                else
+                {
+                    var notChoosenPosition = pos.Copy();
+                    dir = dir.GetNewDirection(Move.Right);
+                    notChoosenPosition.Update(myDirection);
+                    pos = notChoosenPosition;
+                    _nextMove = Move.Right;
+                    Update();
+                }
             }
 
-            //straight
-            for (int s = 0; s < distance / 3; s++)
+            if (i < 150)
             {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Straight));
-                step++;
+                return true;
             }
-
-            //left
-            for (int s = 0; s < 2; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Left));
-                step++;
-            }
-
-            //straight
-            for (int s = 0; s < distance / 3; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Straight));
-                step++;
-            }
-
-            //left
-            for (int s = 0; s < 2; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Left));
-                step++;
-            }
-
-            //straight
-            for (int s = 0; s < (distance / 3 / 2) -4; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Straight));
-                step++;
-            }
-
-            //right
-            for (int s = 0; s < 2; s++)
-            {
-                _nextMoves.Add(new Tuple<int, Move>(step, Move.Right));
-                step++;
-            }
-
-            int count = 1;
-            _nextMove = _nextMoves.First(x => x.Item1 == count).Item2;
-
-            do
-            {
-                Update();
-                count++;
-                _nextMove = count <= _nextMoves.Count ? _nextMoves.First(x => x.Item1 == count).Item2 : Move.Straight;
-            }while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-            
+            return false;
         }
 
         protected override int CutCount()
         {
-            return 3;
+            return 2;
         }
-
-
     }
 
-    class StrikeLeft : WalkSetBase
+    internal class StrikeLeft : WalkSetBase
     {
-        List<Tuple<int, Move>> _nextMoveList = new List<Tuple<int, Move>>();
-        
+        private readonly List<Tuple<int, Move>> _nextMoveList = new List<Tuple<int, Move>>();
+
 
         public StrikeLeft(CollissionHelper ch, int myId)
             : base(ch, myId, true)
@@ -934,17 +1334,21 @@ namespace SnakeDeathmatch.Players.Jardik
             _nextMoveList.Add(new Tuple<int, Move>(13, Move.Right));
             _nextMoveList.Add(new Tuple<int, Move>(14, Move.Right));
         }
+
         public override WalkSetType Type()
         {
             return WalkSetType.StrikeLeft;
         }
+
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
             _nextMove = _nextMoveList.First(x => x.Item1 == 1).Item2;
-            int count = 1;
+            var count = 1;
             do
             {
-                _nextMove = count <= _nextMoveList.Count ? _nextMoveList.First(l => l.Item1 == count).Item2 : Move.Straight;
+                _nextMove = count <= _nextMoveList.Count
+                    ? _nextMoveList.First(l => l.Item1 == count).Item2
+                    : Move.Straight;
                 Update();
                 count++;
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
@@ -958,7 +1362,7 @@ namespace SnakeDeathmatch.Players.Jardik
 
     internal class StrikeRight : WalkSetBase
     {
-        private List<Tuple<int, Move>> _nextMoveList = new List<Tuple<int, Move>>();
+        private readonly List<Tuple<int, Move>> _nextMoveList = new List<Tuple<int, Move>>();
 
         public StrikeRight(CollissionHelper ch, int myId)
             : base(ch, myId, true)
@@ -986,11 +1390,13 @@ namespace SnakeDeathmatch.Players.Jardik
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            int count = 1;
+            var count = 1;
             _nextMove = _nextMoveList.First(x => x.Item1 == 1).Item2;
             do
             {
-                _nextMove = count <= _nextMoveList.Count ? _nextMoveList.First(l => l.Item1 == count).Item2 : Move.Straight;
+                _nextMove = count <= _nextMoveList.Count
+                    ? _nextMoveList.First(l => l.Item1 == count).Item2
+                    : Move.Straight;
                 Update();
                 count++;
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
@@ -1001,6 +1407,6 @@ namespace SnakeDeathmatch.Players.Jardik
             return 3;
         }
     }
-    #endregion
 
+    #endregion
 }

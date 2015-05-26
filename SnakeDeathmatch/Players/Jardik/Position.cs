@@ -148,5 +148,23 @@ namespace SnakeDeathmatch.Players.Jardik
             }
             return false;
         }
+
+        public bool AuraContains(Position position)
+        {
+            if (this.IsSame(position))
+            {
+                return true;
+            }
+            foreach (var dir in Enum.GetValues(typeof(Direction)))
+            {
+                Position newPos = this.Copy();
+                newPos.Update((Direction)dir);
+                if (newPos.IsSame(position))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

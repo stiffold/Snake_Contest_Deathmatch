@@ -20,6 +20,8 @@ namespace SnakeDeathmatch.Players.Jardik.Debug
                 case SnakeDeathmatch.Game.GameEngine.HeadToHeadCrashId: return Color.Magenta;
                 case 100: return Color.LightCoral;
                 case 101: return Color.LightGreen;
+
+                case 200: return Color.Khaki;
    
             }
             return Color.Magenta;
