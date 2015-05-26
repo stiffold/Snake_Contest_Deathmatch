@@ -41,58 +41,91 @@ namespace NewGameUI
 
         #region Load initial state from file
 
+        private const int WallId = 55;
+
         private GameEngine CreateGameEngineWithInitialStateFromFile(string fileName)
         {
             var imageWithInitialState = new Bitmap(fileName);
             int size = imageWithInitialState.Width;
             int[,] arrayWithInitialState = new int[size, size];
-            var heads = new Dictionary<PlayerId, Position>();
-            var necks = new Dictionary<PlayerId, Position>();
-            var tailColors = new Dictionary<PlayerId, Color>();
+            var players = new List<Player>();
             for (int y = 0; y < size; y++)
             {
                 for (int x = 0; x < size; x++)
                 {
-                    var colorInfo = new ColorInfo(imageWithInitialState.GetPixel(x, y));
-                    arrayWithInitialState[x, y] = colorInfo.Value;
-
-                    if (colorInfo.IsHead && !heads.ContainsKey(colorInfo.PlayerId))
+                    Color color = imageWithInitialState.GetPixel(x, y);
+                    if (ColorEquals(color, Color.Black))
                     {
-                        heads.Add(colorInfo.PlayerId, new Position(x, y));
-                        tailColors.Add(colorInfo.PlayerId, colorInfo.TailColor);
+                        arrayWithInitialState[x, y] = 0;
                     }
+                    else if (IsPlayerColor(color))
+                    {
+                        PlayerId playerId = GetPlayerIdFromColor(color);
+                        Position position = new Position(x, y);
+                        Direction direction = GetDirection(imageWithInitialState, position);
 
-                    if (colorInfo.IsNeck && !necks.ContainsKey(colorInfo.PlayerId))
-                        necks.Add(colorInfo.PlayerId, new Position(x, y));
+                        arrayWithInitialState[x, y] = (int)playerId;
+
+                        IPlayerBehaviour2 playerBehaviour = GetPlayerBehaviour(playerId);
+                        players.Add(new Player(position, direction, color, GetPlayerBehaviour(playerId), (int)playerId, size));
+                    }
+                    else if (IsColorForDirectionDetermination(color))
+                    {
+                        arrayWithInitialState[x, y] = 0;
+                    }
+                    else
+                    {
+                        arrayWithInitialState[x, y] = WallId;
+                    }
                 }
-            }
-
-            if (heads.Count != necks.Count)
-                throw new Exception("Snake head count differs from snake neck count.");
-
-            var players = new List<Player>();
-            foreach (PlayerId playerId in heads.Keys)
-            {
-                Direction direction = GetDirection(necks[playerId], heads[playerId]);
-                IPlayerBehaviour2 playerBehaviour = GetPlayerBehaviour(playerId);
-                players.Add(new Player(heads[playerId], direction, tailColors[playerId], GetPlayerBehaviour(playerId), (int)playerId, size));
             }
 
             return new GameEngine(arrayWithInitialState, Color.Magenta, players);
         }
 
-        private Direction GetDirection(Position neck, Position head)
+        private bool IsPlayerColor(Color color)
         {
-            if (neck.X == head.X && neck.Y - 1 == head.Y) return Direction.Top;
-            if (neck.X == head.X && neck.Y + 1 == head.Y) return Direction.Bottom;
-            if (neck.X + 1 == head.X && neck.Y == head.Y) return Direction.Right;
-            if (neck.X - 1 == head.X && neck.Y == head.Y) return Direction.Left;
-            if (neck.X + 1 == head.X && neck.Y - 1 == head.Y) return Direction.TopRight;
-            if (neck.X - 1 == head.X && neck.Y - 1 == head.Y) return Direction.TopLeft;
-            if (neck.X + 1 == head.X && neck.Y + 1 == head.Y) return Direction.BottomRight;
-            if (neck.X - 1 == head.X && neck.Y + 1 == head.Y) return Direction.BottomLeft;
+            return ColorEquals(color, Color.Red)
+                || ColorEquals(color, Color.Blue)
+                || ColorEquals(color, Color.Aqua)
+                || ColorEquals(color, Color.White)
+                || ColorEquals(color, Color.Lime);
+        }
 
-            throw new Exception(string.Format("Neck position [{0},{1}] and head position [{2},{3}] are not next to each other.", neck.X, neck.Y, head.X, head.Y));
+        private PlayerId GetPlayerIdFromColor(Color color)
+        {
+            if (ColorEquals(color, Color.Red)) return PlayerId.Jardik;
+            if (ColorEquals(color, Color.Blue)) return PlayerId.Vazba;
+            if (ColorEquals(color, Color.Aqua)) return PlayerId.Setal;
+            if (ColorEquals(color, Color.White)) return PlayerId.SoulEater;
+            if (ColorEquals(color, Color.Lime)) return PlayerId.ClockworkMole;
+
+            throw new NotImplementedException("Unknown player color.");
+        }
+
+        private Direction GetDirection(Bitmap image, Position position)
+        {
+            int size = image.Size.Width;
+            Color color = image.GetPixel(position.X, position.Y);
+            if (IsColorForDirectionDetermination(image.GetPixel(position.X, Math.Max(0, position.Y - 1)))) return Direction.Bottom;
+            if (IsColorForDirectionDetermination(image.GetPixel(Math.Min(size - 1, position.X + 1), Math.Max(0, position.Y - 1)))) return Direction.BottomLeft;
+            if (IsColorForDirectionDetermination(image.GetPixel(Math.Min(size - 1, position.X + 1), position.Y))) return Direction.Left;
+            if (IsColorForDirectionDetermination(image.GetPixel(Math.Min(size - 1, position.X + 1), Math.Min(size - 1, position.Y + 1)))) return Direction.TopLeft;
+            if (IsColorForDirectionDetermination(image.GetPixel(position.X, Math.Min(size - 1, position.Y + 1)))) return Direction.Top;
+            if (IsColorForDirectionDetermination(image.GetPixel(Math.Max(0, position.X - 1), Math.Min(size - 1, position.Y + 1)))) return Direction.TopRight;
+            if (IsColorForDirectionDetermination(image.GetPixel(Math.Max(0, position.X - 1), position.Y))) return Direction.Right;
+            if (IsColorForDirectionDetermination(image.GetPixel(Math.Max(0, position.X - 1), Math.Max(0, position.Y - 1)))) return Direction.BottomRight;
+
+            throw new NotImplementedException("Color for direction determination not found.");
+        }
+
+        private bool IsColorForDirectionDetermination(Color color)
+        {
+            return ColorEquals(color, Color.FromArgb(Color.Red.R / 2, Color.Red.G / 2, Color.Red.B / 2))
+                || ColorEquals(color, Color.FromArgb(Color.Blue.R / 2, Color.Blue.G / 2, Color.Blue.B / 2))
+                || ColorEquals(color, Color.FromArgb(Color.Aqua.R / 2, Color.Aqua.G / 2, Color.Aqua.B / 2))
+                || ColorEquals(color, Color.FromArgb(Color.White.R / 2, Color.White.G / 2, Color.White.B / 2))
+                || ColorEquals(color, Color.FromArgb(Color.Lime.R / 2, Color.Lime.G / 2, Color.Lime.B / 2));
         }
 
         private IPlayerBehaviour2 GetPlayerBehaviour(PlayerId playerId)
@@ -106,60 +139,9 @@ namespace NewGameUI
             throw new NotImplementedException(string.Format("Unknown playerId {0}.", playerId));
         }
 
-        private class ColorInfo
+        private bool ColorEquals(Color color1, Color color2)
         {
-            public Color TailColor { get; private set; }
-            public PlayerId PlayerId { get { return (PlayerId)Value; } }
-            public int Value { get; private set; }
-            public bool IsPlayer { get { return IsHead || IsNeck || IsTail; } }
-            public bool IsHead { get; private set; }
-            public bool IsNeck { get; private set; }
-            public bool IsTail { get; private set; }
-
-            public ColorInfo(Color color)
-            {
-                if (color == Color.Black)
-                {
-                    TailColor = color;
-                    Value = 0;
-                    IsHead = false;
-                    IsNeck = false;
-                    IsTail = false;
-                }
-
-                InitForTailColor(Color.Red, PlayerId.Jardik, color);
-                InitForTailColor(Color.Blue, PlayerId.Vazba, color);
-                InitForTailColor(Color.Aqua, PlayerId.Setal, color);
-                InitForTailColor(Color.White, PlayerId.SoulEater, color);
-                InitForTailColor(Color.Lime, PlayerId.ClockworkMole, color);
-            }
-
-            private void InitForTailColor(Color tailColor, PlayerId playerId, Color color)
-            {
-                if (color == GetTailColor(tailColor) || color == GetHeadColor(tailColor) || color == GetNeckColor(tailColor))
-                {
-                    TailColor = tailColor;
-                    Value = (int)playerId;
-                    IsHead = (color == GetHeadColor(tailColor));
-                    IsNeck = (color == GetNeckColor(tailColor));
-                    IsTail = (color == tailColor);
-                }
-            }
-
-            private Color GetHeadColor(Color color)
-            {
-                return Color.FromArgb(Math.Max(0, (int)color.R - 1), Math.Max(0, (int)color.G - 1), Math.Max(0, (int)color.B - 1));
-            }
-
-            private Color GetNeckColor(Color color)
-            {
-                return Color.FromArgb(color.R / 2, color.G / 2, color.B / 2);
-            }
-
-            private Color GetTailColor(Color color)
-            {
-                return Color.FromArgb(color.R, color.G, color.B);
-            }
+            return (color1.R == color2.R && color1.G == color2.G && color1.B == color2.B);
         }
 
         #endregion
@@ -285,7 +267,7 @@ namespace NewGameUI
             var game = new Game()
             {
                 GamePicture = _arenaPicture,
-                PlayGroundSizeInDots = PlaygroundSizeInDots,
+                PlayGroundSizeInDots = _gameEngine.Size,
                 RecordLines = gameState.RecordLines,
                 GameStats = _gameEngine.ScoreMessage(),
                 Players = _gameEngine.Players,
@@ -376,12 +358,13 @@ namespace NewGameUI
 
         private void DrawGameStateToImage(GameState gameState)
         {
-            int dotSize = PlaygroundSizeInPixels / PlaygroundSizeInDots;
+            int size = gameState.GameSurround.GetUpperBound(0) + 1;
+            int dotSize = PlaygroundSizeInPixels / size;
             using (var graphics = Graphics.FromImage(_arenaPicture))
             {
-                for (int x = 0; x <= gameState.GameSurround.GetUpperBound(0); x++)
+                for (int x = 0; x < size; x++)
                 {
-                    for (int y = 0; y <= gameState.GameSurround.GetUpperBound(1); y++)
+                    for (int y = 0; y < size; y++)
                     {
                         if (gameState.GameSurround[x, y] != 0 && IsPointInArrayChanged(gameState, x, y))
                         {

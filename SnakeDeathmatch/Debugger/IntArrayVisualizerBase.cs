@@ -37,19 +37,19 @@ namespace SnakeDeathmatch.Debugger
                         bitmap.SetPixel(4 * x + 0, 4 * y + 0, color);
                         bitmap.SetPixel(4 * x + 1, 4 * y + 0, color);
                         bitmap.SetPixel(4 * x + 2, 4 * y + 0, color);
-                        bitmap.SetPixel(4 * x + 3, 4 * y + 0, Color.Black);
+                        //bitmap.SetPixel(4 * x + 3, 4 * y + 0, Color.Black);
                         bitmap.SetPixel(4 * x + 0, 4 * y + 1, color);
                         bitmap.SetPixel(4 * x + 1, 4 * y + 1, color);
                         bitmap.SetPixel(4 * x + 2, 4 * y + 1, color);
-                        bitmap.SetPixel(4 * x + 3, 4 * y + 1, Color.Black);
+                        //bitmap.SetPixel(4 * x + 3, 4 * y + 1, Color.Black);
                         bitmap.SetPixel(4 * x + 0, 4 * y + 2, color);
                         bitmap.SetPixel(4 * x + 1, 4 * y + 2, color);
                         bitmap.SetPixel(4 * x + 2, 4 * y + 2, color);
-                        bitmap.SetPixel(4 * x + 3, 4 * y + 2, Color.Black);
-                        bitmap.SetPixel(4 * x + 0, 4 * y + 3, Color.Black);
-                        bitmap.SetPixel(4 * x + 1, 4 * y + 3, Color.Black);
-                        bitmap.SetPixel(4 * x + 2, 4 * y + 3, Color.Black);
-                        bitmap.SetPixel(4 * x + 3, 4 * y + 3, Color.Black);
+                        //bitmap.SetPixel(4 * x + 3, 4 * y + 2, Color.Black);
+                        //bitmap.SetPixel(4 * x + 0, 4 * y + 3, Color.Black);
+                        //bitmap.SetPixel(4 * x + 1, 4 * y + 3, Color.Black);
+                        //bitmap.SetPixel(4 * x + 2, 4 * y + 3, Color.Black);
+                        //bitmap.SetPixel(4 * x + 3, 4 * y + 3, Color.Black);
                     }
                 }
             }

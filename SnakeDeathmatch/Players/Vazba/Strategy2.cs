@@ -5,10 +5,12 @@ using SnakeDeathmatch.Players.Vazba.Debug;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
-    public class Strategy2 : IStrategy
+    public class Strategy2 : IStrategy, IDebuggable
     {
         public const int MyWTF = 18;
         public const int OthersWTF = 5;
+
+        public event BreakpointEventHandler Breakpoint;
 
         [ToDebug(typeof(PlayersIntArrayVisualizer))]
         public IntPlayground PlaygroundForTrack { get; private set; }
@@ -27,6 +29,9 @@ namespace SnakeDeathmatch.Players.Vazba
             _snakes = liveSnakes;
 
             CreateAndInitPlaygroundsForAllSteps();
+
+            if (Breakpoint != null)
+                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.PlaygroundForStepInitialized));
 
             Snake me = liveSnakes.Me;
 
