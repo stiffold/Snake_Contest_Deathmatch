@@ -22,6 +22,10 @@ namespace SnakeDeathmatch.Players.Jardik
         RollRight,
         LeftGap,
         RightGap,
+        LeftLightGap,
+        RightLigntGap,
+        LeftLightLightGap,
+        RightLigntLightGap,
         SquareLeft,
         SquareRight,
         Snaker,
@@ -33,6 +37,9 @@ namespace SnakeDeathmatch.Players.Jardik
         Bingo,
         Randomer,
         StrikeLeft,
-        StrikeRight
+        StrikeRight,
+        Right180Bigger,
+        Left180Bigger,
+        Love,
     }
 }
