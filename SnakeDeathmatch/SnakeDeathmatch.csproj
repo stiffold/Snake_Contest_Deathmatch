@@ -157,6 +157,8 @@
     <Compile Include="Players\Vazba\Snakes.cs" />
     <Compile Include="Players\Vazba\Strategy2.cs" />
     <Compile Include="Debugger\ToDebugAttribute.cs" />
+    <Compile Include="Players\Vazba\Strategy3.cs" />
+    <Compile Include="Players\Vazba\StrategyBarricade.cs" />
     <Compile Include="Tests\CollisionTests.cs" />
     <Compile Include="Interface\Direction.cs" />
     <Compile Include="Interface\Move.cs" />

@@ -5,7 +5,7 @@ using SnakeDeathmatch.Players.Vazba.Debug;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
-    public class Strategy2 : IStrategy, IDebuggable
+    public class Strategy3 : IStrategy, IDebuggable
     {
         public const int MyWTF = 18;
         public const int OthersWTF = 5;
@@ -37,17 +37,17 @@ namespace SnakeDeathmatch.Players.Vazba
 
             Next next = me.GetNext(PlaygroundForTrack);
 
-            var resultForLeft = next.Left.HasValue ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
-            var resultForStraight = (resultForLeft != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
-            var resultForRight = (resultForLeft != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Right.HasValue) ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            //var resultForLeft = next.Left.HasValue ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            //var resultForStraight = (resultForLeft != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            //var resultForRight = (resultForLeft != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Right.HasValue) ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
 
             //var resultForStraight = next.Straight.HasValue ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
             //var resultForLeft = (resultForStraight != TrackExplorationResult.BestPossibleResult && next.Left.HasValue) ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
             //var resultForRight = (resultForLeft != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Right.HasValue) ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
 
-            //var resultForRight = next.Right.HasValue ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
-            //var resultForStraight = (resultForRight != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
-            //var resultForLeft = (resultForRight != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Left.HasValue) ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            var resultForRight = next.Right.HasValue ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            var resultForStraight = (resultForRight != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            var resultForLeft = (resultForRight != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Left.HasValue) ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
 
             if (resultForLeft >= resultForStraight && resultForLeft >= resultForRight) return Move.Left;
             if (resultForStraight >= resultForLeft && resultForStraight >= resultForRight) return Move.Straight;
@@ -151,84 +151,5 @@ namespace SnakeDeathmatch.Players.Vazba
 
             return new TrackExplorationResult(currentBestResult.Depth, currentBestResult.AliveProbability * aliveProbabilityForCurrentStep);
         }
-    }
-
-    public class TrackExplorationResult
-    {
-        public int Depth;
-        public decimal AliveProbability;
-
-        public TrackExplorationResult(int depth, decimal aliveProbability)
-        {
-            Depth = depth;
-            AliveProbability = aliveProbability;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("Depth: {0}, AliveProbability: {1:0.0000000000}", Depth, AliveProbability);
-        }
-
-        public int CompareTo(TrackExplorationResult other)
-        {
-            if (Depth > other.Depth)
-                return 1;
-
-            if (Depth == other.Depth && AliveProbability > other.AliveProbability)
-                return 1;
-
-            if (Depth == other.Depth && AliveProbability == other.AliveProbability)
-                return 0;
-
-            return -1;
-        }
-
-        public static bool operator <(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.CompareTo(result2) < 0;
-        }
-
-        public static bool operator >(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.CompareTo(result2) > 0;
-        }
-
-        public static bool operator >=(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.CompareTo(result2) >= 0;
-        }
-
-        public static bool operator <=(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.CompareTo(result2) <= 0;
-        }
-
-        public static bool operator ==(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.Equals(result2);
-        }
-
-        public static bool operator !=(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return !result1.Equals(result2);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-            
-            return CompareTo((TrackExplorationResult)obj) == 0;
-        }
-
-        public override int GetHashCode()
-        {
-            return Depth.GetHashCode() * 17 + AliveProbability.GetHashCode();
-        }
-
-        public static TrackExplorationResult BestPossibleResult { get { return new TrackExplorationResult(Strategy2.MyWTF, 1); } }
-        public static TrackExplorationResult WorstPossibleResult { get { return new TrackExplorationResult(0, 0); } }
     }
 }
