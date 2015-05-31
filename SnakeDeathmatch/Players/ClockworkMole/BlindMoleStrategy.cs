@@ -11,7 +11,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
     public class BlindMoleStrategy
     {
 
-        private const int MaxRecursion = 20;
+        private const int MaxRecursion = 15;
         private int recursionTotalCounter;
 
         public Move GetNextMove(Playground playground, Position position)
@@ -22,7 +22,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
             var result = CaluclateMove(playground, position);
             var bestresult = result.OrderByDescending(x => x.Value).First();
 
-            for (int i = 0; i < playground.HeadTestDistance; i++)
+            for (int i = 0; i < Playground.HeadTestDistance; i++)
             {
                 playground.DecreaseTestCollistionArrayByOne();
 

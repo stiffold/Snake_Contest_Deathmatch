@@ -11,7 +11,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
     public class Playground
     {
 
-        public int HeadTestDistance = 4;
+        public const int HeadTestDistance = 4;
 
         public int _playgroundsize;
 
@@ -35,75 +35,31 @@ namespace SnakeDeathmatch.Players.ClockworkMole
         {
             TestCollissionArray = (int[,])CurrentArray.Clone();
 
-            int xSize = TestCollissionArray.GetUpperBound(0);
-            int ySize = TestCollissionArray.GetUpperBound(1);
-
-            foreach (var playerHead in PlayerHeads)
+            foreach (var playerHeadItem in PlayerHeads)
             {
-                int x1 = playerHead.Value.X - HeadTestDistance;
-                x1 = x1 >= 0 ? x1 : 0;
+                var playerHead = playerHeadItem.Value;
 
-                int x2 = playerHead.Value.X + HeadTestDistance;
-                x2 = x2 <= xSize ? x2 : xSize;
-
-                int y1 = playerHead.Value.Y - HeadTestDistance;
-                y1 = y1 >= 0 ? y1 : 0;
-
-                int y2 = playerHead.Value.Y + HeadTestDistance;
-                y2 = y2 <= ySize ? y2 : ySize;
-
-                for (int x = x1; x <= x2; x++)
-                {
-                    for (int y = y1; y <= y2; y++)
-                    {
-                        int value = Math.Max(Math.Abs(playerHead.Value.X - x), Math.Abs(playerHead.Value.Y - y));
-                        value = HeadTestDistance - value + 1;
-                        if (TestCollissionArray[x, y] == 0)
-                            TestCollissionArray[x, y] = value + 100;
-                    }
-                }
-
+                TestCollissionArray.Enumerate(playerHead, HeadTestDistance)
+                    .Where(x => x.Value == 0)
+                    .Apply(x => x.Value = 100 + (HeadTestDistance - x.DistanceTo(playerHead.X, playerHead.Y) + 1))
+                    .ToList();
             }
 
         }
 
         public void DecreaseTestCollistionArrayByOne()
         {
-            int xSize = TestCollissionArray.GetUpperBound(0);
-            int ySize = TestCollissionArray.GetUpperBound(1);
 
-            foreach (var playerHead in PlayerHeads)
+            foreach (var playerHeadItem in PlayerHeads)
             {
-                int x1 = playerHead.Value.X - HeadTestDistance;
-                x1 = x1 >= 0 ? x1 : 0;
+                var playerHead = playerHeadItem.Value;
 
-                int x2 = playerHead.Value.X + HeadTestDistance;
-                x2 = x2 <= xSize ? x2 : xSize;
-
-                int y1 = playerHead.Value.Y - HeadTestDistance;
-                y1 = y1 >= 0 ? y1 : 0;
-
-                int y2 = playerHead.Value.Y + HeadTestDistance;
-                y2 = y2 <= ySize ? y2 : ySize;
-
-                for (int x = x1; x <= x2; x++)
-                {
-                    for (int y = y1; y <= y2; y++)
-                    {
-                        if (TestCollissionArray[x, y] > 100 && TestCollissionArray[x, y] < 200)
-                        {
-                            TestCollissionArray[x, y]--;
-                            if (TestCollissionArray[x, y] == 100)
-                            {
-                                TestCollissionArray[x, y] = 0;
-                            }
-                        }
-
-
-                    }
-                }
-
+                TestCollissionArray.Enumerate(playerHead, HeadTestDistance)
+                    .Where(x => x.Value > 100 && x.Value < 200)
+                    .Apply(x => x.Value = x.Value == 101 ? 0 : x.Value - 1)
+                    .ToList();
             }
+
         }
 
         public void ApplyNextMove(int[,] playgroundArray)
@@ -128,63 +84,40 @@ namespace SnakeDeathmatch.Players.ClockworkMole
 
         private void InitializeOtherPlayers()
         {
-            for (int x = 0; x < _playgroundsize; x++)
-            {
-                for (int y = 0; y < _playgroundsize; y++)
-                {
-                    int arrayValue = CurrentArray[x, y];
 
-                    if (arrayValue != 0 && arrayValue != _playerId)
-                    {
-                        PlayerHeads.Add(arrayValue, new Position(x, y, 0));
-                    }
-                }
-            }
+            CurrentArray.Enumerate()
+                    .Where(x => x.Value != 0 && x.Value != _playerId)
+                    .Apply(x => PlayerHeads.Add(x.Value, new Position(x.X, x.Y, 0)))
+                    .ToList();
+
         }
 
         private void ActualizeOtherPlayers()
         {
-            var deadPlayers = new List<int>();
-            int xSize = CurrentArray.GetUpperBound(0);
-            int ySize = CurrentArray.GetUpperBound(1);
 
-            foreach (var playerHead in PlayerHeads)
+            List<int> foundHeads = new List<int>();
+
+            foreach (var playerHeadItem in PlayerHeads)
             {
-                int x1 = playerHead.Value.X > 0 ? playerHead.Value.X - 1 : 0;
-                int x2 = playerHead.Value.X < xSize ? playerHead.Value.X + 1 : xSize;
 
-                int y1 = playerHead.Value.Y > 0 ? playerHead.Value.Y - 1 : 0;
-                int y2 = playerHead.Value.Y < ySize ? playerHead.Value.Y + 1 : ySize;
-
-                bool headFound = false;
-                for (int x = x1; x <= x2; x++)
-                {
-                    for (int y = y1; y <= y2; y++)
+                CurrentArray.Enumerate(playerHeadItem.Value, 1)
+                    .Where(arrayItem => arrayItem.Value == playerHeadItem.Key && arrayItem.Value != PreviousArray[arrayItem.X, arrayItem.Y])
+                    .Apply(arrayItem =>
                     {
-                        if (CurrentArray[x, y] == playerHead.Key)
-                        {
-                            if (CurrentArray[x, y] != PreviousArray[x, y])
-                            {
-                                //bingo, tady je hlava
-                                playerHead.Value.Update(x, y);
-                                headFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (headFound)
-                        break;
-                }
-
-                if (headFound == false)
-                    deadPlayers.Add(playerHead.Key);
+                        playerHeadItem.Value.Update(arrayItem.X, arrayItem.Y);
+                        foundHeads.Add(playerHeadItem.Key);
+                    })
+                    .ToList();
 
             }
 
-            foreach (var deadPlayer in deadPlayers)
+            //remove dead players
+            foreach (var key in PlayerHeads.Keys.ToArray())
             {
-                PlayerHeads.Remove(deadPlayer);
+                if (foundHeads.Contains(key) == false)
+                {
+                    PlayerHeads.Remove(key);
+                }
             }
 
         }
