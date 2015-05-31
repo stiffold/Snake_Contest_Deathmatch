@@ -39,10 +39,10 @@
             this._labelRPS = new System.Windows.Forms.Label();
             this._labelRoundCounter = new System.Windows.Forms.Label();
             this._labelRound = new System.Windows.Forms.Label();
-            this._buttonTest = new System.Windows.Forms.Button();
             this._buttonRestart = new System.Windows.Forms.Button();
             this._timerUI = new System.Windows.Forms.Timer(this.components);
             this._panelArena = new System.Windows.Forms.PictureBox();
+            this.btTournament = new System.Windows.Forms.Button();
             this._panelTop.SuspendLayout();
             this._panelRound.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._panelArena)).BeginInit();
@@ -52,12 +52,12 @@
             // 
             this._panelTop.AutoSize = true;
             this._panelTop.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this._panelTop.Controls.Add(this.btTournament);
             this._panelTop.Controls.Add(this._buttonDebugger);
             this._panelTop.Controls.Add(this._buttonStep);
             this._panelTop.Controls.Add(this._checkboxStepping);
             this._panelTop.Controls.Add(this._buttonReplay);
             this._panelTop.Controls.Add(this._panelRound);
-            this._panelTop.Controls.Add(this._buttonTest);
             this._panelTop.Controls.Add(this._buttonRestart);
             this._panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this._panelTop.Location = new System.Drawing.Point(0, 0);
@@ -100,7 +100,7 @@
             // 
             // _buttonReplay
             // 
-            this._buttonReplay.Location = new System.Drawing.Point(79, 6);
+            this._buttonReplay.Location = new System.Drawing.Point(155, 6);
             this._buttonReplay.Name = "_buttonReplay";
             this._buttonReplay.Size = new System.Drawing.Size(70, 23);
             this._buttonReplay.TabIndex = 3;
@@ -150,16 +150,6 @@
             this._labelRound.TabIndex = 3;
             this._labelRound.Text = "Round";
             // 
-            // _buttonTest
-            // 
-            this._buttonTest.Enabled = false;
-            this._buttonTest.Location = new System.Drawing.Point(155, 6);
-            this._buttonTest.Name = "_buttonTest";
-            this._buttonTest.Size = new System.Drawing.Size(70, 23);
-            this._buttonTest.TabIndex = 1;
-            this._buttonTest.Text = "Tests";
-            this._buttonTest.UseVisualStyleBackColor = true;
-            // 
             // _buttonRestart
             // 
             this._buttonRestart.Location = new System.Drawing.Point(3, 6);
@@ -183,6 +173,16 @@
             this._panelArena.Size = new System.Drawing.Size(637, 640);
             this._panelArena.TabIndex = 7;
             this._panelArena.TabStop = false;
+            // 
+            // btTournament
+            // 
+            this.btTournament.Location = new System.Drawing.Point(74, 6);
+            this.btTournament.Name = "btTournament";
+            this.btTournament.Size = new System.Drawing.Size(75, 23);
+            this.btTournament.TabIndex = 13;
+            this.btTournament.Text = "Tournament";
+            this.btTournament.UseVisualStyleBackColor = true;
+            this.btTournament.Click += new System.EventHandler(this.btTournament_Click);
             // 
             // MainForm
             // 
@@ -209,7 +209,6 @@
         #endregion
 
         private System.Windows.Forms.Panel _panelTop;
-        private System.Windows.Forms.Button _buttonTest;
         private System.Windows.Forms.Button _buttonRestart;
         private System.Windows.Forms.Panel _panelRound;
         private System.Windows.Forms.Label _labelRoundCounter;
@@ -221,6 +220,7 @@
         private System.Windows.Forms.Button _buttonStep;
         private System.Windows.Forms.CheckBox _checkboxStepping;
         private System.Windows.Forms.Button _buttonDebugger;
+        private System.Windows.Forms.Button btTournament;
 
     }
 }

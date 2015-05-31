@@ -24,7 +24,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
                 || newPotentialPosition.Direction == Direction.TopLeft
                 || newPotentialPosition.Direction == Direction.TopRight)
 
-                if (playground.CurrentArray[newPotentialPosition.X, position.Y] != 0 && playground.TestCollissionArray[position.X, newPotentialPosition.Y] != 0)
+                if (playground.TestCollissionArray[newPotentialPosition.X, position.Y] != 0 && playground.TestCollissionArray[position.X, newPotentialPosition.Y] != 0)
                     return true;
 
             return false;

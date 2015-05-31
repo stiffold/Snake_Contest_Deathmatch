@@ -117,31 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="_buttonStep.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADr4AAA6+AepCscAAAAM+SURBVDhPdZJvTNR1HMd/TxAR/0AIh/dniHpz4ZYuzGph
-        4aMeaJsWITTCrEHWpDYrWa4yR1otmzywVAhJ583KTdrabZEKW0lwUODaAQLiKQfe8ZM7jt9xd7/787tX
-        3zuuB656b+/t8+Dzfn/e38/nK/0L668v0z99s3xrzURT5ZH7XVUNcve2Wmer4ZnRquVF9odSXf+NFRsH
-        dlYclm9Z+sP0K3HGgLE4yfr7G2FePio7czb/VZVqfxA5xQMHD7TMYXVEuSJr/CpEvSrYBH+b0+iQY/x8
-        N8r7FxRWPj70eUq2gEWFth0VRz009YY4OxzhiivMj26Vy7MaVgXaPGBxarQMRfimT2Xvl17SzLY9C+rc
-        zqWF28fvHLAo1F9V+WpQJRiLMx2Kcs0d4KQjQONEnMY7cMyucahD5b3v/Dz8wl2PpGvPE9N7yp54w03Z
-        mTkqrVHq/1CZjcTxxyAgjOzeIMfts7zUFaSiG6rbY5Q3K5S+I5O+zrZPynxksGnT/mmKv1DYcFFjd0cI
-        bziOLwK+aJyABvNRjc7Jeaqv+lh3PsTmxgBbhMHyx25ekjK3jF8vqHFh/MSP7ts4u9qDwkBLpvClmKjn
-        RSKvqnFqwI+pQabwzWmyShy2hEGX6TUXhgY/ea1xtlsDeEJaMkVCmKBH1PMiiRLRaO2ZQP/hBIbXp1lW
-        4uiVMjbaWwzV9zB85CO3WePZn4LcFwYzqhAK+hNPELu4NuLiRcsw2cenWHVEwfiqi8zi4ctS2pquSt3z
-        UxjfnWHlCZXSthBySEyOgvCh3zlDXdsg5jMOdOej6L+OYaz3sqp8ikXmvrckqaAza8VTY/dMYg+5H8xR
-        cs6fvMCI7OeQdYSi06MUXAiy+gfQN8cwiOmmfW6ytjmUDNMv+uRXSFvbvTt3hxOjWMzqwzNUnr1N0YlR
-        sk8pGCxgEMvVnwwviMXFdLsmSTf37U+K/0H6+j+P5T0nTGrc5Lwtk/+xEH8WRP9pICk0HvQkJ+t2TrJ4
-        w43TKdmDWLzm9z1ZW2+588vETl4Rp611L3Cvi3zx5uzS2950s60u1f4/EN8zfW1v7ZJNgxeXPjneLdiz
-        5NGhSyJyXYah05jqSkGS/gZcsVN/FesH/gAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <metadata name="_timerUI.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
-  </metadata>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>54</value>
   </metadata>
 </root>

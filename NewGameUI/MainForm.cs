@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Xml;
 using NewGameUI.Dialogs;
 using NewGameUI.Services.FTP;
 using SnakeDeathmatch.Interface;
@@ -156,7 +157,7 @@ namespace NewGameUI
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new PlayerBehaviour1Adapter(new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior()), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Lime, new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer(), (int)PlayerId.ClockworkMole, PlaygroundSizeInDots));
-            
+
             // Jirko, až updatuješ hada, tak se zas odkomentuj.
             //players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
 
@@ -435,5 +436,20 @@ namespace NewGameUI
             var form = new DebuggerForm(_gameEngine);
             form.Show();
         }
+
+        private void btTournament_Click(object sender, EventArgs e)
+        {
+
+            var form = new TournamentDialog();
+            form.OpenDialog(CreateGame);
+
+        }
+
+        //toto je špageta, za tohle se budu smažit
+        private GameEngine CreateGame()
+        {
+            return new GameEngine(new int[PlaygroundSizeInDots, PlaygroundSizeInDots], Color.Magenta, GetPlayers());
+        }
+
     }
 }
