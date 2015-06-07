@@ -53,10 +53,9 @@ namespace SnakeDeathmatch.Players.Jardik
                     _simulateGameSurround[_simulatePosition.X, _simulatePosition.Y] = _myId;
                 }
             }
-            int cutCount = CutCount();
-            if (cutCount != 0)
+            if (CutCount != 0)
             {
-                Cut(cutCount); 
+                Cut(CutCount); 
             }
             
         }
@@ -152,9 +151,13 @@ namespace SnakeDeathmatch.Players.Jardik
 
         protected abstract void DoEvaluate(Position position, Direction direction, int[,] gameSurrond);
 
-        protected abstract int CutCount();
+        protected virtual int CutCount {
+            get { return 0; }
+        }
 
-        public abstract WalkSetType Type();
+        public virtual WalkSetType Type {
+            get { return WalkSetType.Straight;}
+        }
 
         public int Score { get { return _score; } }
 

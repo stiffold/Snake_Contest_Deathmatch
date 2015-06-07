@@ -14,6 +14,7 @@ namespace SnakeDeathmatch.Players.Jardik.Debug
         public const string Behind = "Jardik.Behind";
         public const string KillMode = "Jardik.KillMode";
         public const string VictimFinded = "Jardik.VictimFinded";
+        public const string GTH = "Jardik.GTH";
 
         public IEnumerable<string> GetNames()
         {
@@ -23,6 +24,7 @@ namespace SnakeDeathmatch.Players.Jardik.Debug
             yield return Behind;
             yield return KillMode;
             yield return VictimFinded;
+            yield return GTH;
         }
     }
 }

@@ -68,5 +68,25 @@ namespace SnakeDeathmatch.Game
                     break;
             }
         }
+
+        internal bool IsInTrap(int[,] gameSurround, int max)
+        {
+            if (Y < max -2 && Y > 2)
+            {
+                if (gameSurround[X, Y - 2] != 0 && gameSurround[X, Y + 2] != 0)
+                {
+                    return true;
+                }
+            }
+
+            if (X < max - 2 && X > 2)
+            {
+                if (gameSurround[X + 2, Y] != 0 && gameSurround[X - 2, Y] != 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
