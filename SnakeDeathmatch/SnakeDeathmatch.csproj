@@ -80,7 +80,6 @@
     <Compile Include="Debugger\IDecimalArray.cs" />
     <Compile Include="Debugger\IIntArray.cs" />
     <Compile Include="Debugger\TreeViewExt.cs" />
-    <Compile Include="Game\GameEngineBreakpointNames.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\PlayerBehaviour1Adapter.cs" />
     <Compile Include="Game\RecordLine.cs" />
@@ -159,7 +158,9 @@
     <Compile Include="Players\Vazba\Strategy2.cs" />
     <Compile Include="Debugger\ToDebugAttribute.cs" />
     <Compile Include="Players\Vazba\Strategy3.cs" />
+    <Compile Include="Players\Vazba\Strategy4.cs" />
     <Compile Include="Players\Vazba\StrategyBarricade.cs" />
+    <Compile Include="Players\Vazba\TrackExplorationResult.cs" />
     <Compile Include="Tests\CollisionTests.cs" />
     <Compile Include="Interface\Direction.cs" />
     <Compile Include="Interface\Move.cs" />

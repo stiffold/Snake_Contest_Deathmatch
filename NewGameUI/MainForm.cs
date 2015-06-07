@@ -13,6 +13,7 @@ using NewGameUI.Services.FTP;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Game;
 using SnakeDeathmatch.Debugger;
+using SnakeDeathmatch.Players.Vazba.Debug;
 
 namespace NewGameUI
 {
@@ -182,7 +183,18 @@ namespace NewGameUI
             if (_gameEngine != null)
                 _gameEngine.StopGame();
 
-            _gameEngine = new GameEngine(new int[PlaygroundSizeInDots, PlaygroundSizeInDots], Color.Magenta, GetPlayers());
+            if (true)
+            {
+                _gameEngine = CreateGameEngineWithInitialStateFromFile(@"c:\a\__snake\initial-state.png");
+
+                var form = new DebuggerForm(_gameEngine, defaultBreakpointName: VazbaBreakpointNames.Strategy4DeathPlaygroundsRecalculated);
+                form.Show();
+                form.UpdateUI();
+            }
+            else
+            {
+                _gameEngine = new GameEngine(new int[PlaygroundSizeInDots, PlaygroundSizeInDots], Color.Magenta, GetPlayers());
+            }
             _gameEngine.StepMode = _checkboxStepping.Checked;
             _gameEngine.StartGame(GameSpeed);
 
@@ -228,7 +240,7 @@ namespace NewGameUI
             this.Top = (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2;
             this.Left = (Screen.PrimaryScreen.WorkingArea.Width - this.Width) / 2;
 
-            RestartGame();
+            //RestartGame();
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

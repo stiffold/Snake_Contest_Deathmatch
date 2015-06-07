@@ -31,7 +31,7 @@ namespace SnakeDeathmatch.Players.Vazba
             CreateAndInitPlaygroundsForAllSteps();
 
             if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.PlaygroundForStepInitialized));
+                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy3Initialized));
 
             Snake me = liveSnakes.Me;
 

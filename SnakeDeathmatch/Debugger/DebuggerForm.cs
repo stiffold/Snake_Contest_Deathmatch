@@ -19,15 +19,16 @@ namespace SnakeDeathmatch.Debugger
 
         private List<string> _affectedPaths = new List<string>();
         private Dictionary<string, DebugNode> _debugNodes = new Dictionary<string, DebugNode>();
-        private string _nextBreakpointName = GameEngineBreakpointNames.MoveBegin;
+        private string _nextBreakpointName;
         private bool _shouldContinue = true;
 
-        public DebuggerForm(object rootObjToDebug)
+        public DebuggerForm(object rootObjToDebug, string defaultBreakpointName = "")
         {
             InitializeComponent();
             _treeView.TreeViewNodeSorter = new TreeNodeSorter();
 
             _rootObj = rootObjToDebug;
+            _nextBreakpointName = defaultBreakpointName;
         }
 
         private void DebuggerForm_Load(object sender, EventArgs e)
@@ -243,7 +244,7 @@ namespace SnakeDeathmatch.Debugger
                     IBreakpointNames instance = (IBreakpointNames)Activator.CreateInstance(breakpointNamesType);
                     _comboBoxBreakpoint.Items.AddRange(instance.GetNames().ToArray());
                 }
-                _comboBoxBreakpoint.SelectedItem = GameEngineBreakpointNames.MoveBegin;
+                _comboBoxBreakpoint.SelectedItem = _nextBreakpointName;
             }
             finally
             {
@@ -272,12 +273,7 @@ namespace SnakeDeathmatch.Debugger
                 nextBreakpointName = _nextBreakpointName;
             }
 
-            if (e.BreakpointName == nextBreakpointName && nextBreakpointName == GameEngineBreakpointNames.MoveBegin_Running)
-            {
-                Invoke(new UpdateUIDelegate(UpdateUI), null);
-                Thread.Sleep(300);
-            }
-            else if (e.BreakpointName == nextBreakpointName)
+            if (e.BreakpointName == nextBreakpointName)
             {
                 Invoke(new UpdateUIDelegate(UpdateUI), null);
 

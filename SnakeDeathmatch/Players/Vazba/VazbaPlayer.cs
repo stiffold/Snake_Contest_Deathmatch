@@ -5,13 +5,13 @@ using SnakeDeathmatch.Players.Vazba.Debug;
 
 namespace SnakeDeathmatch.Players.Vazba
 {
-    public class VazbaPlayer : IPlayerBehaviour2, IDebuggable
+    public class VazbaPlayer : IPlayerBehaviour2
     {
         public string Name { get { return "Vazba"; } }
 
         public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)
         {
-            Strategy = new StrategyBarricade();
+            Strategy = new Strategy4();
 
             if (playerId != (int)PlayerId.Vazba)
                 throw new ArgumentException(string.Format("Expected playerId {0} ({1}) but got {2}.", (int)PlayerId.Vazba, PlayerId.Vazba, playerId), "playerId");
@@ -28,8 +28,6 @@ namespace SnakeDeathmatch.Players.Vazba
         [ToDebug]
         public IStrategy Strategy { get; private set; }
 
-        public event BreakpointEventHandler Breakpoint;
-
         public Move GetNextMove(int[,] playground)
         {
             var intPlayground = new IntPlayground(playground);
@@ -37,13 +35,8 @@ namespace SnakeDeathmatch.Players.Vazba
             _snakes.Update(intPlayground);
 
             var snakes = _snakes.IsInitialized ? _snakes : new Snakes(_snakes.Me);
-            if (Breakpoint != null)
-                Breakpoint(snakes, new BreakpointEventArgs(VazbaBreakpointNames.SnakesUpdated));
 
             Move move = Strategy.GetNextMove(intPlayground, snakes);
-
-            if (Breakpoint != null)
-                Breakpoint(snakes, new BreakpointEventArgs(VazbaBreakpointNames.MoveEnd));
 
             return move;
         }

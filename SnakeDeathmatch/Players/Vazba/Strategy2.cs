@@ -31,7 +31,7 @@ namespace SnakeDeathmatch.Players.Vazba
             CreateAndInitPlaygroundsForAllSteps();
 
             if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.PlaygroundForStepInitialized));
+                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy2Initialized));
 
             Snake me = liveSnakes.Me;
 
@@ -117,7 +117,10 @@ namespace SnakeDeathmatch.Players.Vazba
             if (step == MyWTF)
                 return new TrackExplorationResult(step, aliveProbability: 1);
 
-            if (step > 0) PlaygroundForTrack[me.X, me.Y] = me.Id;
+            if (step > 0) PlaygroundForTrack[me.X, me.Y] = PlayersIntArrayVisualizer.TrackId;
+
+            if (Breakpoint != null)
+                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy2TrackChanged));
 
             Next next = me.GetNext(PlaygroundForTrack);
 
@@ -151,84 +154,5 @@ namespace SnakeDeathmatch.Players.Vazba
 
             return new TrackExplorationResult(currentBestResult.Depth, currentBestResult.AliveProbability * aliveProbabilityForCurrentStep);
         }
-    }
-
-    public class TrackExplorationResult
-    {
-        public int Depth;
-        public decimal AliveProbability;
-
-        public TrackExplorationResult(int depth, decimal aliveProbability)
-        {
-            Depth = depth;
-            AliveProbability = aliveProbability;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("Depth: {0}, AliveProbability: {1:0.0000000000}", Depth, AliveProbability);
-        }
-
-        public int CompareTo(TrackExplorationResult other)
-        {
-            if (Depth > other.Depth)
-                return 1;
-
-            if (Depth == other.Depth && AliveProbability > other.AliveProbability)
-                return 1;
-
-            if (Depth == other.Depth && AliveProbability == other.AliveProbability)
-                return 0;
-
-            return -1;
-        }
-
-        public static bool operator <(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.CompareTo(result2) < 0;
-        }
-
-        public static bool operator >(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.CompareTo(result2) > 0;
-        }
-
-        public static bool operator >=(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.CompareTo(result2) >= 0;
-        }
-
-        public static bool operator <=(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.CompareTo(result2) <= 0;
-        }
-
-        public static bool operator ==(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return result1.Equals(result2);
-        }
-
-        public static bool operator !=(TrackExplorationResult result1, TrackExplorationResult result2)
-        {
-            return !result1.Equals(result2);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-            
-            return CompareTo((TrackExplorationResult)obj) == 0;
-        }
-
-        public override int GetHashCode()
-        {
-            return Depth.GetHashCode() * 17 + AliveProbability.GetHashCode();
-        }
-
-        public static TrackExplorationResult BestPossibleResult { get { return new TrackExplorationResult(Strategy2.MyWTF, 1); } }
-        public static TrackExplorationResult WorstPossibleResult { get { return new TrackExplorationResult(0, 0); } }
     }
 }

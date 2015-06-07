@@ -9,7 +9,7 @@ using SnakeDeathmatch.Debugger;
 
 namespace SnakeDeathmatch.Game
 {
-    public class GameEngine : IDebuggable
+    public class GameEngine
     {
         public const int HeadToHeadCrashId = -1;
         public object _headToHeadCrashColor;
@@ -104,12 +104,6 @@ namespace SnakeDeathmatch.Game
 
         public int[,] Move()
         {
-            if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.MoveBegin));
-
-            if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.MoveBegin_Running));
-
             List<Player> livePlayers;
 
             // necháme všechny přeživší odehrát svůj tah
@@ -205,9 +199,6 @@ namespace SnakeDeathmatch.Game
                 _gameOver = true;
             }
 
-            if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(GameEngineBreakpointNames.MoveEnd));
-
             return _gameSurround;
         }
 
@@ -249,7 +240,5 @@ namespace SnakeDeathmatch.Game
         {
             return string.Format("round {0}", _round);
         }
-
-        public event BreakpointEventHandler Breakpoint;
     }
 }
