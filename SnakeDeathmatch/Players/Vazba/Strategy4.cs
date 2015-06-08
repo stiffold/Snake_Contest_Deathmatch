@@ -114,7 +114,7 @@ namespace SnakeDeathmatch.Players.Vazba
                 Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4DeathPlaygroundsRecalculated));
 
 
-            if (false)
+            if (true)
             {
                 Next next = me.GetNext(playground);
 
@@ -375,23 +375,33 @@ namespace SnakeDeathmatch.Players.Vazba
                     // nestojím na překážce
                     // zjistím si, kolik kroků do smrti mi zbývá na pozici, kam bych chtěl jet (ve všech třech směrech)
                     // pokud najdu jistou smrt, poznačím si, na kolik kroků ta smrt bude
-                    IntPlayground deathPlaygroundLeft = _deathPlaygroundByDirection[vector.Direction.TurnLeft()];
-                    IntPlayground deathPlaygroundStraight = deathPlaygroundForDirection;
-                    IntPlayground deathPlaygroundRight = _deathPlaygroundByDirection[vector.Direction.TurnRight()];
+                    Point? nextPoint = vector.GetNextPoint(deathPlaygroundForDirection);
 
-                    Point? nextPointLeft = vector.GetNextPoint(deathPlaygroundLeft);
-                    Point? nextPointStraight = vector.GetNextPoint(deathPlaygroundStraight);
-                    Point? nextPointRight = vector.GetNextPoint(deathPlaygroundRight);
-
-                    int valueLeft = (nextPointLeft == null) ? 0 : deathPlaygroundLeft[nextPointLeft.Value.X, nextPointLeft.Value.Y];
-                    int valueStraight = (nextPointStraight == null) ? 0 : deathPlaygroundStraight[nextPointStraight.Value.X, nextPointStraight.Value.Y];
-                    int valueRight = (nextPointRight == null) ? 0 : deathPlaygroundRight[nextPointRight.Value.X, nextPointRight.Value.Y];
-
-                    int maxValue = Math.Max(Math.Max(valueLeft, valueStraight), valueRight);
-                    if (maxValue < InfinityId && deathPlaygroundForDirection[vector.X, vector.Y] > maxValue + 1)
+                    if (nextPoint == null)
                     {
-                        deathPlaygroundForDirection[vector.X, vector.Y] = maxValue + 1;
-                        EnqueueVectors(GetAffectedVectorsForDirection(vector.X, vector.Y, vector.Direction));
+                        if (deathPlaygroundForDirection[vector.X, vector.Y] > 1)
+                        {
+                            deathPlaygroundForDirection[vector.X, vector.Y] = 1;
+                            EnqueueVectors(GetAffectedVectorsAsRectangle(vector.X, vector.Y, vector.Direction));
+                        }
+                    }
+                    else
+                    {
+                        IntPlayground deathPlaygroundLeft = _deathPlaygroundByDirection[vector.Direction.TurnLeft()];
+                        IntPlayground deathPlaygroundStraight = deathPlaygroundForDirection;
+                        IntPlayground deathPlaygroundRight = _deathPlaygroundByDirection[vector.Direction.TurnRight()];
+
+                        int valueLeft = deathPlaygroundLeft[nextPoint.Value.X, nextPoint.Value.Y];
+                        int valueStraight = deathPlaygroundStraight[nextPoint.Value.X, nextPoint.Value.Y];
+                        int valueRight = deathPlaygroundRight[nextPoint.Value.X, nextPoint.Value.Y];
+
+                        int maxValue = Math.Max(Math.Max(valueLeft, valueStraight), valueRight);
+                        int minValue = Math.Min(Math.Min(valueLeft, valueStraight), valueRight);
+                        if (maxValue < InfinityId && deathPlaygroundForDirection[vector.X, vector.Y] > minValue + 1)
+                        {
+                            deathPlaygroundForDirection[vector.X, vector.Y] = minValue + 1;
+                            EnqueueVectors(GetAffectedVectorsAsRectangle(vector.X, vector.Y, vector.Direction));
+                        }
                     }
                 }
             }
@@ -481,6 +491,19 @@ namespace SnakeDeathmatch.Players.Vazba
                 if (x < _size - 1 && y < _size - 1)
                     yield return new Vector(x + 1, y + 1, Direction.TopLeft);
             }
+        }
+
+        private bool IsInRange(int x, int y)
+        {
+            return (x > 0 && y > 0 && x < _size && y < _size);
+        }
+
+        private IEnumerable<Vector> GetAffectedVectorsAsRectangle(int x, int y, Direction direction)
+        {
+            for (int newX = x - 4; newX <= x + 4; newX++)
+                for (int newY = y - 4; newY <= y + 4; newY++)
+                    if (IsInRange(newX, newY))
+                        yield return new Vector(newX, newY, direction);
         }
 
         private IEnumerable<Vector> GetNeighborhoodVectors(int x, int y)
