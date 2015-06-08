@@ -36,10 +36,9 @@ namespace SnakeDeathmatch.Players.Jardik
         Raper,
         Bingo,
         Randomer,
-        StrikeLeft,
-        StrikeRight,
         Right180Bigger,
         Left180Bigger,
         Love,
+        GetToHead
     }
 }

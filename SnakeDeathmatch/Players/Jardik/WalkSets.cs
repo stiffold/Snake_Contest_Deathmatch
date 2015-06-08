@@ -13,9 +13,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Straight;
+            get { return WalkSetType.Straight;}
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -23,9 +23,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollission(Move.Straight, position, direction, gameSurrond);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -35,9 +35,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Left45;
+            get { return WalkSetType.Left45; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -45,9 +45,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 1);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -57,9 +57,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Left90;
+            get { return WalkSetType.Left90; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -67,9 +67,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 2);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -79,9 +79,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Left125;
+            get { return WalkSetType.Left125; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -89,9 +89,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 3);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -101,9 +101,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Left180;
+            get { return WalkSetType.Left180; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -111,9 +111,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollissionTurn(Move.Left, position, direction, gameSurrond, 4);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -123,9 +123,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Right45;
+            get { return WalkSetType.Right45; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -133,9 +133,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 1);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -145,9 +145,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Right90;
+            get { return WalkSetType.Right90; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -155,9 +155,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 2);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -167,9 +167,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Right125;
+            get { return WalkSetType.Right125; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -177,9 +177,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 3);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -189,9 +189,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Right180;
+            get { return WalkSetType.Right180; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -199,9 +199,9 @@ namespace SnakeDeathmatch.Players.Jardik
             TryGetCollissionTurn(Move.Right, position, direction, gameSurrond, 4);
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -223,9 +223,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(5, Move.Left));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.RightGap;
+            get { return WalkSetType.RightGap; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -247,9 +247,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -267,9 +267,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(5, Move.Right));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Right180Bigger;
+            get { return WalkSetType.Right180Bigger; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -291,9 +291,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -311,9 +311,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(5, Move.Left));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Left180Bigger;
+            get { return WalkSetType.Left180Bigger; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -335,9 +335,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -355,9 +355,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(5, Move.Right));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.LeftGap;
+            get { return WalkSetType.LeftGap; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -379,9 +379,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -398,9 +398,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(4, Move.Left));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.RightLigntGap;
+            get { return WalkSetType.RightLigntGap; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -422,9 +422,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -441,9 +441,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(4, Move.Right));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.LeftLightGap;
+            get { return WalkSetType.LeftLightGap; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -465,9 +465,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -482,9 +482,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(2, Move.Left));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.RightLigntLightGap;
+            get { return WalkSetType.RightLigntLightGap; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -506,9 +506,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -523,9 +523,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(2, Move.Right));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.LeftLightLightGap;
+            get { return WalkSetType.LeftLightLightGap; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -547,9 +547,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -604,9 +604,9 @@ namespace SnakeDeathmatch.Players.Jardik
             m.Add(new Tuple<int, Move>(42, Move.Straight));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Love;
+            get { return WalkSetType.Love; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -628,9 +628,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -640,9 +640,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.GetToWall;
+            get { return WalkSetType.GetToWall; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -650,9 +650,9 @@ namespace SnakeDeathmatch.Players.Jardik
             throw new NotImplementedException();
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -662,9 +662,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Roll100;
+            get { return WalkSetType.Roll100; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -692,9 +692,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -704,9 +704,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.RollLeft;
+            get { return WalkSetType.RollLeft; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -723,28 +723,28 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
     internal class Safer : WalkSetBase
     {
-        private readonly List<Move> _moveList = new List<Move> {Move.Left, Move.Straight, Move.Right};
+        private readonly List<Move> _moveList = new List<Move> { Move.Left,Move.Right, Move.Straight};
 
         public Safer(CollissionHelper ch, int myId) : base(ch, myId, true)
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Safer;
+            get { return WalkSetType.Safer; }
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 2;
+            get { return 2; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -802,9 +802,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.RollRight;
+            get { return WalkSetType.RollRight; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -822,9 +822,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -834,9 +834,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Raper;
+            get { return WalkSetType.Raper; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -859,9 +859,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -871,9 +871,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Bingo;
+            get { return WalkSetType.Bingo; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -901,26 +901,28 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
     internal class Randomer : WalkSetBase
     {
+        Random r = new Random();
         public Randomer(CollissionHelper ch, int myId) : base(ch, myId, true)
         {
+            
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Randomer;
+            get { return WalkSetType.Randomer; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            var r = new Random();
+           
             _nextMove = (Move) r.Next(1, 4);
             do
             {
@@ -929,9 +931,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -941,9 +943,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Snaker;
+            get { return WalkSetType.Snaker; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -960,9 +962,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -972,9 +974,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Quaker;
+            get { return WalkSetType.Quaker; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -996,9 +998,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -1008,9 +1010,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.SquareRight;
+            get { return WalkSetType.SquareRight; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -1033,9 +1035,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -1045,9 +1047,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.SquareLeft;
+            get { return WalkSetType.SquareLeft; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -1070,9 +1072,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -1111,9 +1113,9 @@ namespace SnakeDeathmatch.Players.Jardik
             right_nextMoves.Add(new Tuple<int, Move>(12, Move.Left));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.FunkyTerror;
+            get { return WalkSetType.FunkyTerror; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -1155,9 +1157,9 @@ namespace SnakeDeathmatch.Players.Jardik
             } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 3;
+            get { return 3; }
         }
     }
 
@@ -1167,9 +1169,9 @@ namespace SnakeDeathmatch.Players.Jardik
         {
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.Killer;
+            get { return WalkSetType.Killer; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
@@ -1190,17 +1192,19 @@ namespace SnakeDeathmatch.Players.Jardik
             var number = 1;
             foreach (var dir in Enum.GetValues(typeof (Direction)))
             {
+                Direction d = (Direction) dir;
+
                 var p = targetPosition.Copy();
-                for (var i = 0; i < ((distance/6) + 5); i++)
+                for (var i = 0; i < (distance/6+6); i++)
                 {
-                    p.Update((Direction) dir);
-                    if (p.IsInCollission(100))
+                    p.Update(d);
+                    if (p.IsInCollission(_ch.Max))
                     {
                         return;
                     }
                 }
                 targets.Add(new Tuple<int, Position>(number, p));
-                if (!p.IsInCollission(100) && _simulateGameSurround[p.X, p.Y] == 0)
+                if (!p.IsInCollission(_ch.Max) && _simulateGameSurround[p.X, p.Y] == 0)
                 {
                     _simulateGameSurround[p.X, p.Y] = 200;
                 }
@@ -1305,108 +1309,106 @@ namespace SnakeDeathmatch.Players.Jardik
             return false;
         }
 
-        protected override int CutCount()
+        protected override int CutCount
         {
-            return 2;
+            get { return 2; }
         }
     }
 
-    internal class StrikeLeft : WalkSetBase
+    internal class GetToHead : WalkSetBase
     {
-        private readonly List<Tuple<int, Move>> _nextMoveList = new List<Tuple<int, Move>>();
-
-
-        public StrikeLeft(CollissionHelper ch, int myId)
+        public GetToHead(CollissionHelper ch, int myId)
             : base(ch, myId, true)
         {
-            _nextMoveList.Add(new Tuple<int, Move>(1, Move.Left));
-            _nextMoveList.Add(new Tuple<int, Move>(2, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(3, Move.Left));
-            _nextMoveList.Add(new Tuple<int, Move>(4, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(5, Move.Left));
-            _nextMoveList.Add(new Tuple<int, Move>(6, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(7, Move.Left));
-            _nextMoveList.Add(new Tuple<int, Move>(8, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(9, Move.Left));
-            _nextMoveList.Add(new Tuple<int, Move>(10, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(11, Move.Left));
-            _nextMoveList.Add(new Tuple<int, Move>(12, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(13, Move.Right));
-            _nextMoveList.Add(new Tuple<int, Move>(14, Move.Right));
         }
 
-        public override WalkSetType Type()
+        public override WalkSetType Type
         {
-            return WalkSetType.StrikeLeft;
+            get { return WalkSetType.GetToHead; }
         }
 
         protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
         {
-            _nextMove = _nextMoveList.First(x => x.Item1 == 1).Item2;
-            var count = 1;
-            do
+            var targetPosition = new Position(0, 0);
+            if (_others.Count < 1)
             {
-                _nextMove = count <= _nextMoveList.Count
-                    ? _nextMoveList.First(l => l.Item1 == count).Item2
-                    : Move.Straight;
-                Update();
-                count++;
-            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
+                return;
+            }
+            double min = 500;
+            foreach (var o in _others)
+            {
+                if (position.Distance(o.Position) < min)
+                {
+                    min = position.Distance(o.Position);
+                    targetPosition = o.Position;
+                }
+            }
+
+            _simulateGameSurround[targetPosition.X, targetPosition.Y] = 101;
+
+            var succes = MovesToGetPosition(_position, _direction, targetPosition);
+
+            if (!succes)
+            {
+                _score = 0;
+                _walks.Clear();
+            }
         }
 
-        protected override int CutCount()
+        private bool MovesToGetPosition(Position position, Direction direction, Position targetPosition)
         {
-            return 3;
+            var pos = position.Copy();
+            var dir = direction;
+            var myMove = Move.Right;
+            var i = 0;
+            
+            var myDirection = direction;
+            var myPosition = position.Copy();
+            while (!targetPosition.AuraContains(_simulatePosition) && i < 150)
+            {
+                i++;
+                double minDistance = 200;
+                bool chosen = false;
+                foreach (var m in Enum.GetValues(typeof(Move)))
+                {
+                    var p = pos.Copy();
+                    var d = dir.GetNewDirection((Move)m);
+
+                    p.Update(d);
+
+                    if (!p.IsInCollission(_ch.Max) && p.Distance(targetPosition) < minDistance &&
+                        (_simulateGameSurround[p.X, p.Y] == 0) && !_ch.Collission(d,SimulateGameSurround,p))
+                    {
+                        myMove = (Move)m;
+                        myDirection = d;
+                        myPosition = p;
+                        minDistance = p.Distance(targetPosition);
+                        chosen = true;
+                        if (targetPosition.AuraContains(_simulatePosition))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                if (chosen)
+                {
+                    pos = myPosition;
+                    dir = myDirection;
+                    _nextMove = myMove;
+                    Update();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        protected override int CutCount
+        {
+            get { return 4; }
         }
     }
-
-    internal class StrikeRight : WalkSetBase
-    {
-        private readonly List<Tuple<int, Move>> _nextMoveList = new List<Tuple<int, Move>>();
-
-        public StrikeRight(CollissionHelper ch, int myId)
-            : base(ch, myId, true)
-        {
-            _nextMoveList.Add(new Tuple<int, Move>(1, Move.Right));
-            _nextMoveList.Add(new Tuple<int, Move>(2, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(3, Move.Right));
-            _nextMoveList.Add(new Tuple<int, Move>(4, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(5, Move.Right));
-            _nextMoveList.Add(new Tuple<int, Move>(6, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(7, Move.Right));
-            _nextMoveList.Add(new Tuple<int, Move>(8, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(9, Move.Right));
-            _nextMoveList.Add(new Tuple<int, Move>(10, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(11, Move.Right));
-            _nextMoveList.Add(new Tuple<int, Move>(12, Move.Straight));
-            _nextMoveList.Add(new Tuple<int, Move>(13, Move.Left));
-            _nextMoveList.Add(new Tuple<int, Move>(14, Move.Left));
-        }
-
-        public override WalkSetType Type()
-        {
-            return WalkSetType.StrikeRight;
-        }
-
-        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
-        {
-            var count = 1;
-            _nextMove = _nextMoveList.First(x => x.Item1 == 1).Item2;
-            do
-            {
-                _nextMove = count <= _nextMoveList.Count
-                    ? _nextMoveList.First(l => l.Item1 == count).Item2
-                    : Move.Straight;
-                Update();
-                count++;
-            } while (!_ch.Collission(_simulateDirection, _simulateGameSurround, _simulatePosition));
-        }
-
-        protected override int CutCount()
-        {
-            return 3;
-        }
-    }
-
     #endregion
 }
