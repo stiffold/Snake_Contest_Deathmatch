@@ -89,14 +89,14 @@
             this._treeView.Dock = System.Windows.Forms.DockStyle.Left;
             this._treeView.Location = new System.Drawing.Point(0, 25);
             this._treeView.Name = "_treeView";
-            this._treeView.Size = new System.Drawing.Size(250, 356);
+            this._treeView.Size = new System.Drawing.Size(277, 356);
             this._treeView.TabIndex = 1;
             this._treeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this._treeView_AfterCheck);
             this._treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this._treeView_AfterSelect);
             // 
             // _splitter
             // 
-            this._splitter.Location = new System.Drawing.Point(250, 25);
+            this._splitter.Location = new System.Drawing.Point(277, 25);
             this._splitter.Name = "_splitter";
             this._splitter.Size = new System.Drawing.Size(3, 356);
             this._splitter.TabIndex = 2;
@@ -106,9 +106,9 @@
             // 
             this._panelControls.AutoScroll = true;
             this._panelControls.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._panelControls.Location = new System.Drawing.Point(253, 25);
+            this._panelControls.Location = new System.Drawing.Point(280, 25);
             this._panelControls.Name = "_panelControls";
-            this._panelControls.Size = new System.Drawing.Size(396, 356);
+            this._panelControls.Size = new System.Drawing.Size(369, 356);
             this._panelControls.TabIndex = 6;
             // 
             // DebuggerForm
@@ -122,6 +122,7 @@
             this.Controls.Add(this.panelTop);
             this.Name = "DebuggerForm";
             this.Text = "Debugger";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DebuggerForm_FormClosed);
             this.Load += new System.EventHandler(this.DebuggerForm_Load);
             this.panelTop.ResumeLayout(false);

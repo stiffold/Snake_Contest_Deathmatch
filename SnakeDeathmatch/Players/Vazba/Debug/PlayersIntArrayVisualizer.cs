@@ -7,6 +7,7 @@ namespace SnakeDeathmatch.Players.Vazba.Debug
     public class PlayersIntArrayVisualizer : IntArrayVisualizerBase
     {
         public const int TrackId = 1000;
+        public const int InfinityId = 10000;
 
         protected override Color GetColorForValue(int value)
         {

@@ -126,6 +126,9 @@
     <Compile Include="Players\Vazba\Debug\BlackAndWhiteIntArrayVisualizer.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Players\Vazba\Debug\DeathIntArrayVisualizer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Players\Vazba\Debug\PlayersIntArrayVisualizer.cs">
       <SubType>UserControl</SubType>
     </Compile>

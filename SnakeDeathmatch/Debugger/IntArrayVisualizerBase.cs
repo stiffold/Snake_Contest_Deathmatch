@@ -24,13 +24,13 @@ namespace SnakeDeathmatch.Debugger
             var bitmap = new Bitmap(size * 4, size * 4);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
-                g.FillRectangle(Brushes.Black,0 , 0, size*4, size*4);
+                g.FillRectangle(Brushes.Gray, 0 , 0, size*4, size*4);
             }
             for (int x = 0; x < size; x++)
             {
                 for (int y = 0; y < size; y++)
                 {
-                    if (intArray.InnerArray[x, y] != 0)
+                    //if (intArray.InnerArray[x, y] != 0)
                     {
                         Color color = GetColorForValue(intArray.InnerArray[x, y]);
 

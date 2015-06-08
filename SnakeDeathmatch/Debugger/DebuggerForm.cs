@@ -21,6 +21,7 @@ namespace SnakeDeathmatch.Debugger
         private Dictionary<string, DebugNode> _debugNodes = new Dictionary<string, DebugNode>();
         private string _nextBreakpointName;
         private bool _shouldContinue = true;
+        private int _updateUISuspended;
 
         public DebuggerForm(object rootObjToDebug, string defaultBreakpointName = "")
         {
@@ -40,6 +41,9 @@ namespace SnakeDeathmatch.Debugger
 
         public void UpdateUI()
         {
+            if (_updateUISuspended > 0)
+                return;
+
             var oldRootDebugNode = _rootDebugNode;
             var newRootDebugNode = new DebugNode(null, _rootObj.GetType().Name, _rootObj, _rootObj.GetType(), null);
             _rootDebugNode = newRootDebugNode;
@@ -109,8 +113,8 @@ namespace SnakeDeathmatch.Debugger
                         newTreeNode = CreateNewTreeNode(debugNode);
                         _treeView.Nodes.Add(newTreeNode);
                     }
-                    if (!debugNode.CanHaveVisualizer)
-                        newTreeNode.HideCheckBox();
+                    //if (!debugNode.CanHaveVisualizer)
+                    //    newTreeNode.HideCheckBox();
                 }
 
                 IEnumerable<string> pathsToUpdate = oldPaths.Intersect(newPaths);
@@ -322,6 +326,13 @@ namespace SnakeDeathmatch.Debugger
 
         private void _treeView_AfterCheck(object sender, TreeViewEventArgs e)
         {
+            _updateUISuspended++;
+            foreach (TreeNode treeNode in e.Node.Nodes)
+            {
+                treeNode.Checked = e.Node.Checked;
+            }
+            _updateUISuspended--;
+
             UpdateUI();
         }
     }
