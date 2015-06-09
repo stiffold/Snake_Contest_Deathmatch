@@ -39,6 +39,12 @@ namespace SnakeDeathmatch.Players.Jardik
         Right180Bigger,
         Left180Bigger,
         Love,
-        GetToHead
+        GetToHead,
+        Left2,
+        Left3,
+        Left4,
+        Right2,
+        Right3,
+        Right4
     }
 }

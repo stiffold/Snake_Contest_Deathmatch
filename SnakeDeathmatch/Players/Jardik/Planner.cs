@@ -36,13 +36,15 @@ namespace SnakeDeathmatch.Players.Jardik
             _ch = new CollissionHelper(max, _myId);
             _safer = new Safer(_ch, _myId);
             _gth = new GetToHead(_ch, _myId);
+            GoodGuy();
 
             _leftSets.Add(new Left90(_ch, _myId));
             _leftSets.Add(new Left125(_ch, _myId));
             _leftSets.Add(new LeftGap(_ch, _myId));
             _leftSets.Add(new LeftLightGap(_ch, _myId));
             _leftSets.Add(new LeftLightLightGap(_ch, _myId));
-            _rightSets.Add(new Right90(_ch, _myId)); if (DateTime.Now.Date.Day != 3) { Chaos(); } else { GoodGuy(); }
+            _rightSets.Add(new Right90(_ch, _myId));  
+            
             _rightSets.Add(new Right125(_ch, _myId));
             _rightSets.Add(new RightGap(_ch, _myId));
             _rightSets.Add(new RightLightGap(_ch, _myId));
@@ -95,6 +97,14 @@ namespace SnakeDeathmatch.Players.Jardik
             _walkSets.Add(new Left180(_ch, _myId));
             _walkSets.Add(new LeftGap(_ch, _myId));
             _walkSets.Add(new RightGap(_ch, _myId));
+
+            //_walkSets.Add(new Left2(_ch, _myId));
+            //_walkSets.Add(new Left3(_ch, _myId));
+            //_walkSets.Add(new Left4(_ch, _myId));
+
+            //_walkSets.Add(new Right2(_ch, _myId));
+            //_walkSets.Add(new Right3(_ch, _myId));
+            //_walkSets.Add(new Right4(_ch, _myId));
 
             _walkSets.Add(new Right180Bigger(_ch, _myId));
             _walkSets.Add(new Left180Bigger(_ch, _myId));
@@ -220,7 +230,7 @@ namespace SnakeDeathmatch.Players.Jardik
                 });
             }
 
-            AddBestWalksetsRecursively(results, 2 , others);
+            AddBestWalksetsRecursively(results, 5 , others);
             Options =
                 results.Where(x => x.SimulateSurround != null)
                     .Select(x => new DebugablePlayground(x.SimulateSurround, x.ToString()))
