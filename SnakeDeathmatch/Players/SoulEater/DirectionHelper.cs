@@ -6,7 +6,7 @@ using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.SoulEater
 {
-    public class DirectionHelper
+    public static class DirectionHelper
     {
         public static IEnumerable<Point> GetBorderPoints(Point point)
         {
@@ -21,80 +21,118 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         }
 
-        public static Interface.Direction GetDirection(Point oldPoint, Point newPoint)
+        public static Direction GetDirection(Point oldPoint, Point newPoint)
         {
             int xDiff = newPoint.X - oldPoint.X;
             int yDiff = newPoint.Y - oldPoint.Y;
 
             if (xDiff == 0 && yDiff == 1)
-                return Interface.Direction.Bottom;
+                return Direction.Bottom;
 
             if (xDiff == -1 && yDiff == 1)
-                return Interface.Direction.BottomLeft;
+                return Direction.BottomLeft;
 
             if (xDiff == 1 && yDiff == 1)
-                return Interface.Direction.BottomRight;
+                return Direction.BottomRight;
 
             if (xDiff == -1 && yDiff == 0)
-                return Interface.Direction.Left;
+                return Direction.Left;
 
             if (xDiff == 1 && yDiff == 0)
-                return Interface.Direction.Right;
+                return Direction.Right;
 
             if (xDiff == 0 && yDiff == -1)
-                return Interface.Direction.Top;
+                return Direction.Top;
 
             if (xDiff == -1 && yDiff == -1)
-                return Interface.Direction.TopLeft;
+                return Direction.TopLeft;
 
             if (xDiff == 1 && yDiff == -1)
-                return Interface.Direction.TopRight;
+                return Direction.TopRight;
 
             // sem by to nemelo jit :)
-            return Interface.Direction.BottomRight;
+            return Direction.BottomRight;
         }
 
-        public static Point GetNextPoint(Point position, Interface.Direction absoluteDirection)
+        public static Point GetNextPoint(Point position, Direction absoluteDirection)
         {
             switch (absoluteDirection)
             {
-                case Interface.Direction.Top:
+                case Direction.Top:
                     return new Point(position.X, position.Y - 1);
-                case Interface.Direction.TopRight:
+                case Direction.TopRight:
                     return new Point(position.X + 1, position.Y - 1);
-                case Interface.Direction.Right:
+                case Direction.Right:
                     return new Point(position.X + 1, position.Y);
-                case Interface.Direction.BottomRight:
+                case Direction.BottomRight:
                     return new Point(position.X + 1, position.Y + 1);
-                case Interface.Direction.Bottom:
+                case Direction.Bottom:
                     return new Point(position.X, position.Y + 1);
-                case Interface.Direction.BottomLeft:
+                case Direction.BottomLeft:
                     return new Point(position.X - 1, position.Y + 1);
-                case Interface.Direction.Left:
+                case Direction.Left:
                     return new Point(position.X - 1, position.Y);
-                case Interface.Direction.TopLeft:
+                case Direction.TopLeft:
                     return new Point(position.X - 1, position.Y - 1);
             }
             throw new InvalidProgramException("uuu");
         }
 
-        public static Interface.Direction GetAbsoluteDirection(Interface.Direction direction, Interface.Move move)
+        public static Direction GetAbsoluteDirection(Direction direction, Move move)
         {
-            if (move == Interface.Move.Left)
+            if (move == Move.Left)
             {
-                if (direction == Interface.Direction.Top)
-                    return Interface.Direction.TopLeft;
+                if (direction == Direction.Top)
+                    return Direction.TopLeft;
                 return direction - 1;
             }
 
-            if (move == Interface.Move.Right)
+            if (move == Move.Right)
             {
-                if (direction == Interface.Direction.TopLeft)
-                    return Interface.Direction.Top;
+                if (direction == Direction.TopLeft)
+                    return Direction.Top;
                 return direction + 1;
             }
 
             return direction;
+        }
+
+        public static Direction GetOpositeDirection(this Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Top:
+                    return Direction.Bottom;
+                case Direction.TopRight:
+                    return Direction.BottomLeft;
+                case Direction.Right:
+                    return Direction.Left;
+                case Direction.BottomRight:
+                    return Direction.TopLeft;
+                case Direction.Bottom:
+                    return Direction.Top;
+                case Direction.BottomLeft:
+                    return Direction.TopRight;
+                case Direction.Left:
+                    return Direction.Right;
+                case Direction.TopLeft:
+                    return Direction.BottomRight;
+            }
+            throw new InvalidProgramException("uuu");
+        }
+
+        public static Move GetMove(Direction direction1, Direction direction2)
+        {
+            if (GetAbsoluteDirection(direction1,Move.Left) == direction2)
+                return Move.Left;
+
+            if (GetAbsoluteDirection(direction1, Move.Straight) == direction2)
+                return Move.Straight;
+
+            if (GetAbsoluteDirection(direction1, Move.Right) == direction2)
+                return Move.Right;
+
+            throw new InvalidOperationException();
         }
     }
 }

@@ -114,6 +114,14 @@
     <Compile Include="Players\Setal\Setal.cs" />
     <Compile Include="Players\SoulEater\DirectionHelper.cs" />
     <Compile Include="Players\SoulEater\GameGround.cs" />
+    <Compile Include="Players\SoulEater\MK2\Debug\MyFirstDebugVizualizer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Players\SoulEater\MK2\GameGroundMK2.cs" />
+    <Compile Include="Players\SoulEater\MK2\BasicRecursiveStrategy.cs" />
+    <Compile Include="Players\SoulEater\MK2\Plan.cs" />
+    <Compile Include="Players\SoulEater\MK2\PlayerInfoMk2.cs" />
+    <Compile Include="Players\SoulEater\MK2\SoulEaterMK2Behaiviour.cs" />
     <Compile Include="Players\SoulEater\PlayerInfo.cs" />
     <Compile Include="Players\SoulEater\Point.cs" />
     <Compile Include="Players\SoulEater\SoulEaterBehavior.cs" />

@@ -17,7 +17,7 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         private GameGround _currentGameGround;
 
-        private IList<Move> _moveList = new List<Move> { Move.Straight, Move.Left, Move.Right };
+        private IList<Move> _moveList = new List<Move> { Move.Left, Move.Straight, Move.Right };
 
         private bool _isFirstMove = true;
 
@@ -55,19 +55,19 @@ namespace SnakeDeathmatch.Players.SoulEater
 
         private void ProcessMove(Move nextMove)
         {
-            if (_mode == Mode.WallFinded)
-                return;
+            //if (_mode == Mode.WallFinded)
+            //    return;
 
-            if (nextMove == Move.Left)
-            {
-                _mode = Mode.WallFinded;
-                _moveList = new List<Move> { Move.Right, Move.Straight, Move.Left };
-            }
-            if (nextMove == Move.Right)
-            {
-                _mode = Mode.WallFinded;
-                _moveList = new List<Move> { Move.Left, Move.Straight, Move.Right };
-            }
+            //if (nextMove == Move.Left)
+            //{
+            //    _mode = Mode.WallFinded;
+            //    _moveList = new List<Move> { Move.Right, Move.Straight, Move.Left };
+            //}
+            //if (nextMove == Move.Right)
+            //{
+            //    _mode = Mode.WallFinded;
+            //    _moveList = new List<Move> { Move.Left, Move.Straight, Move.Right };
+            //}
         }
 
         public string MyName()
