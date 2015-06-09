@@ -72,28 +72,49 @@ namespace NewGameUI.Dialogs
 
             listPlayers.Items.Clear();
 
-            foreach (var player in players.OrderByDescending(x => x.Score))
+            int rankPoints = players.Count();
+            foreach (var group in players.GroupBy(x => x.Score).OrderByDescending(x => x.Key))
             {
+                var scoreForEachPlayerInGroup = CalculateScoreForPlayers(rankPoints, group.Count());
 
-                var playerIcon = new Bitmap(16, 16);
-                using (Graphics graphics = Graphics.FromImage(playerIcon))
+                foreach (var player in group)
                 {
-                    graphics.Clear(listPlayers.BackColor);
-                    var rectangle = new Rectangle(2, 2, 12, 12);
-                    graphics.FillEllipse(new SolidBrush((Color)player.Color), rectangle);
+                    var playerIcon = new Bitmap(16, 16);
+                    using (Graphics graphics = Graphics.FromImage(playerIcon))
+                    {
+                        graphics.Clear(listPlayers.BackColor);
+                        var rectangle = new Rectangle(2, 2, 12, 12);
+                        graphics.FillEllipse(new SolidBrush((Color)player.Color), rectangle);
+                    }
+                    imagelist.Images.Add(player.Identifier.ToString(CultureInfo.InvariantCulture), playerIcon);
+
+                    var item = new ListViewItem();
+                    item.Text = "";
+                    item.SubItems.Add(scoreForEachPlayerInGroup.ToString(CultureInfo.InvariantCulture));
+                    item.SubItems.Add(player.Score.ToString(CultureInfo.InvariantCulture));
+                    item.SubItems.Add(player.Name);
+                    item.SubItems.Add(player.State.ToString());
+                    item.ImageKey = player.Identifier.ToString(CultureInfo.InvariantCulture);
+
+                    listPlayers.Items.Add(item);
                 }
-                imagelist.Images.Add(player.Identifier.ToString(CultureInfo.InvariantCulture), playerIcon);
+                rankPoints -= group.Count();
 
-                var item = new ListViewItem();
-                item.Text = "";
-                item.SubItems.Add(player.Score.ToString(CultureInfo.InvariantCulture));
-                item.SubItems.Add(player.Name);
-                item.SubItems.Add(player.State.ToString());
-                item.ImageKey = player.Identifier.ToString(CultureInfo.InvariantCulture);
-
-                listPlayers.Items.Add(item);
             }
+
         }
+
+        private decimal CalculateScoreForPlayers(int startingPoints, int playerCount)
+        {
+            int sum = 0;
+            for (int i = 0; i < playerCount; i++)
+            {
+                sum += startingPoints;
+                startingPoints--;
+            }
+            return ((decimal)sum) / (decimal)playerCount;
+        }
+
 
     }
 }

@@ -33,7 +33,7 @@ namespace NewGameUI.Dialogs
             // jeden konec špagety
             _createGameDelegate = createGameDelegate;
 
-            this.ShowDialog();
+            this.Show();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -80,13 +80,20 @@ namespace NewGameUI.Dialogs
 
                 foreach (var finishedGame in finishedGames)
                 {
-                    int rankCounter = 1;
-                    foreach (var player in finishedGame.Players.OrderBy(x => x.Score))
+                    int rankPoints = finishedGame.Players.Count();
+                    foreach (var group in finishedGame.Players.GroupBy(x => x.Score).OrderByDescending(x => x.Key))
                     {
-                        var item = listItems.Single(x => x.Id == player.Identifier);
-                        item.UpdateTotalScore(rankCounter);
-                        rankCounter++;
+                        var scoreForEachPlayerInGroup = CalculateScoreForPlayers(rankPoints, group.Count());
+
+                        foreach (var player in group)
+                        {
+                            var item = listItems.Single(x => x.Id == player.Identifier);
+                            item.UpdateTotalScore(scoreForEachPlayerInGroup);
+                        }
+                        rankPoints -= group.Count();
+
                     }
+
 
                     _currentlyRunning.Remove(finishedGame);
                     _finishedGames.Add(finishedGame);
@@ -98,6 +105,17 @@ namespace NewGameUI.Dialogs
                 listItems.OrderByDescending(x => x.Score).Select(x => listPlayers.Items.Add(x)).ToList();
             }
 
+        }
+
+        private decimal CalculateScoreForPlayers(int startingPoints, int playerCount)
+        {
+            int sum = 0;
+            for (int i = 0; i < playerCount; i++)
+            {
+                sum += startingPoints;
+                startingPoints--;
+            }
+            return ((decimal)sum) / (decimal)playerCount;
         }
 
 
@@ -177,21 +195,21 @@ namespace NewGameUI.Dialogs
             {
                 Id = id;
                 _scoreSubItem = SubItems.Add("0");
-                _scoreSubItem.Tag = 0;
+                _scoreSubItem.Tag = 0m;
                 _nameSubItem = SubItems.Add(name);
             }
 
             public int Id { get; private set; }
 
-            public void UpdateTotalScore(int score)
+            public void UpdateTotalScore(decimal score)
             {
-                _scoreSubItem.Tag = (int)_scoreSubItem.Tag + score;
+                _scoreSubItem.Tag = (decimal)_scoreSubItem.Tag + score;
                 _scoreSubItem.Text = _scoreSubItem.Tag.ToString();
             }
 
-            public int Score
+            public decimal Score
             {
-                get { return (int)_scoreSubItem.Tag; }
+                get { return (decimal)_scoreSubItem.Tag; }
             }
 
         }

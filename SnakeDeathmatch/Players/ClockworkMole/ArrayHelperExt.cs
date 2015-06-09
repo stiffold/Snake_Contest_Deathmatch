@@ -8,7 +8,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
 {
     public static class ArrayHelperExt
     {
-        public static IEnumerable<ArrayItem<T>> Enumerate<T>(this T[,] array, int xFrom, int xTo, int yFrom, int yTo)
+        public static IEnumerable<ArrayItem<T>> SelectItemsAndEnumerate<T>(this T[,] array, int xFrom, int xTo, int yFrom, int yTo)
         {
 
             int xSize = array.GetUpperBound(0);
@@ -29,7 +29,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
             }
         }
 
-        public static IEnumerable<ArrayItem<T>> Enumerate<T>(this T[,] array, Position position, int sizeArroundPosition)
+        public static IEnumerable<ArrayItem<T>> SelectItemsAndEnumerate<T>(this T[,] array, Position position, int sizeArroundPosition)
         {
 
             var xFrom = position.X - sizeArroundPosition;
@@ -37,13 +37,25 @@ namespace SnakeDeathmatch.Players.ClockworkMole
             var yFrom = position.Y - sizeArroundPosition;
             var yTo = position.Y + sizeArroundPosition;
 
-            return Enumerate(array, xFrom, xTo, yFrom, yTo);
+            return SelectItemsAndEnumerate(array, xFrom, xTo, yFrom, yTo);
 
         }
 
-        public static IEnumerable<ArrayItem<T>> Enumerate<T>(this T[,] array)
+        public static IEnumerable<ArrayItem<T>> SelectItemsAndEnumerate<T>(this T[,] array, int x, int y, int sizeArroundPosition)
         {
-            return Enumerate(array, 0, array.GetUpperBound(0), 0, array.GetUpperBound(1));
+
+            var xFrom = x - sizeArroundPosition;
+            var xTo = x + sizeArroundPosition;
+            var yFrom = y - sizeArroundPosition;
+            var yTo = y + sizeArroundPosition;
+
+            return SelectItemsAndEnumerate(array, xFrom, xTo, yFrom, yTo);
+
+        }
+
+        public static IEnumerable<ArrayItem<T>> SelectItemsAndEnumerate<T>(this T[,] array)
+        {
+            return SelectItemsAndEnumerate(array, 0, array.GetUpperBound(0), 0, array.GetUpperBound(1));
         }
 
 
@@ -58,6 +70,12 @@ namespace SnakeDeathmatch.Players.ClockworkMole
                 yield return x;
             }
         }
+
+        public static void Execute<T>(this IEnumerable<ArrayItem<T>> arrayItems)
+        {
+            arrayItems.ToList();
+        }
+
     }
 
     public class ArrayItem<T>
@@ -85,6 +103,11 @@ namespace SnakeDeathmatch.Players.ClockworkMole
         public int DistanceTo(int compareToX, int compareToY)
         {
             return Math.Max(Math.Abs(compareToX - X), Math.Abs(compareToY - Y));
+        }
+
+        public int DistanceTo(Position position)
+        {
+            return DistanceTo(position.X, position.Y);
         }
     }
 
