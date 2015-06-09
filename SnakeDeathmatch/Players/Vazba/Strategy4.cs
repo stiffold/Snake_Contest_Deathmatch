@@ -74,7 +74,7 @@ namespace SnakeDeathmatch.Players.Vazba
             }
         }
 
-        private const int WTF = 6;
+        private const int WTF = 14;
         private int _size;
         private bool _deathPlaygroundsCreated;
         private Snakes _snakes;
@@ -363,7 +363,7 @@ namespace SnakeDeathmatch.Players.Vazba
                 Vector vector = _queue.Dequeue();
                 IntPlayground deathPlaygroundForDirection = _deathPlaygroundByDirection[vector.Direction];
 
-                if (_Playground[vector.X, vector.Y] != 0 && _snakes.Me.X == vector.X && _snakes.Me.Y == vector.Y) 
+                if (_Playground[vector.X, vector.Y] != 0 && _snakes.Union(new[] {_snakes.Me}).Any(snake => snake.X == vector.X && snake.Y == vector.Y))
                 {
                     // stojím na překážce
                     // poznačím si, že smrt je okamžitá (0 kroků do smrti)
