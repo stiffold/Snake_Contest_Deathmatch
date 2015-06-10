@@ -17,10 +17,11 @@ namespace NewGameUI.Dialogs
         //špagetááááááá :-D
         private Func<GameEngine> _createGameDelegate;
 
-        private Queue<GameEngine> _gamesReadyToRun;
-        private IList<GameEngine> _currentlyRunning = new List<GameEngine>();
-        private List<GameEngine> _finishedGames = new List<GameEngine>();
         private Stopwatch _stopwatch;
+
+        private IList<GameEngine> _currentlyRunning = new List<GameEngine>();
+        private int _gamesToRun = 0;
+        private int _gamesFinished = 0;
 
         public TournamentDialog()
         {
@@ -38,14 +39,14 @@ namespace NewGameUI.Dialogs
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (_currentlyRunning.Count == 0 && _gamesReadyToRun.Count == 0)
+            if (_currentlyRunning.Count == 0 && _gamesToRun == 0)
             {
                 timer1.Stop();
                 _stopwatch.Stop();
             }
 
-            lblFinished.Text = _finishedGames.Count.ToString();
-            lblToRun.Text = _gamesReadyToRun.Count.ToString();
+            lblFinished.Text = _gamesFinished.ToString();
+            lblToRun.Text = _gamesToRun.ToString();
             lblRunning.Text = _currentlyRunning.Count().ToString();
             lblTime.Text = _stopwatch.Elapsed.ToString();
 
@@ -59,9 +60,10 @@ namespace NewGameUI.Dialogs
         {
 
             //každý refresh okna se nastartuje jedna hra
-            if (_currentlyRunning.Count < upDownThreads.Value && _gamesReadyToRun.Count > 0)
+            if (_currentlyRunning.Count < upDownThreads.Value && _gamesToRun > 0)
             {
-                var gameEngine = _gamesReadyToRun.Dequeue();
+                _gamesToRun--;
+                var gameEngine = _createGameDelegate.Invoke();
                 _currentlyRunning.Add(gameEngine);
                 gameEngine.StartGame(1001);
             }
@@ -96,7 +98,7 @@ namespace NewGameUI.Dialogs
 
 
                     _currentlyRunning.Remove(finishedGame);
-                    _finishedGames.Add(finishedGame);
+                    _gamesFinished++;
 
                 }
 
@@ -138,20 +140,18 @@ namespace NewGameUI.Dialogs
 
         private void btStartGames_Click(object sender, EventArgs e)
         {
+            StopAllGames();
 
             lblGameTotalCount.Text = upDownGamesCount.Value.ToString();
             _stopwatch = new Stopwatch();
             _stopwatch.Start();
 
-            _gamesReadyToRun = new Queue<GameEngine>();
+            _gamesToRun = (int)upDownGamesCount.Value;
+            _gamesFinished = 0;
+            _currentlyRunning.Clear();
 
-            for (int i = 0; i < upDownGamesCount.Value; i++)
-            {
-                var game = _createGameDelegate.Invoke();
-                _gamesReadyToRun.Enqueue(game);
-            }
-
-            InitializeList(_gamesReadyToRun.First().Players);
+            var dummyGameForInitList = _createGameDelegate.Invoke();
+            InitializeList(dummyGameForInitList.Players);
 
             timer1.Interval = 300;
             timer1.Start();
