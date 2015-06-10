@@ -201,7 +201,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             //    }
             //}
 
-            CreateDangerZone(6, player.Point, player.Direction.Value);
+            //CreateDangerZone(6, player.Point, player.Direction.Value);
         }
 
         private void CreateDangerZone(int numberOfPoints, PointClass point, Direction direction)
