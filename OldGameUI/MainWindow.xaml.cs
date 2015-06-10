@@ -14,6 +14,7 @@ using System.IO;
 using System.Net;
 using System.Windows.Media.Imaging;
 using OldGameUI.Views;
+using SnakeDeathmatch.Players.SoulEater.MK2;
 
 namespace OldGameUI
 {
@@ -104,7 +105,7 @@ namespace OldGameUI
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Red, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.White, new PlayerBehaviour1Adapter(new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior()), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.White, new SoulEaterMK2Behaiviour(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Colors.Yellow, new SnakeDeathmatch.Players.Jirka.Jirka(), (int)PlayerId.Jirka, PlaygroundSizeInDots));
             return players;
         }
