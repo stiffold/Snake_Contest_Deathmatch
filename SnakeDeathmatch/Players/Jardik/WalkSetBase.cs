@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -105,6 +106,47 @@ namespace SnakeDeathmatch.Players.Jardik
                 _score++;
                 _round++;
                 _walks.Add(new Walk(_round, move, simulateDirection, simulatePosition.Copy()));
+            }
+
+            return _score;
+        }
+
+        protected int TryGetCollissionStraightMoves(Move move, Position _myPosition, Direction _myDirection, int[,] gameSurrond, int moveCount)
+        {
+            _score = 1;
+            int count = 1;
+            Move negateMove = (move == Move.Left) ? Move.Right : Move.Left;
+            Move nextMove = Move.Straight;
+            Direction simulateDirection = _myDirection;
+            Position simulatePosition = _myPosition.Copy();
+            _simulateGameSurround = (int[,])gameSurrond.Clone();
+
+            simulateDirection = simulateDirection.GetNewDirection(nextMove);
+            simulatePosition.Update(simulateDirection);
+            _walks.Add(new Walk(_round, nextMove, simulateDirection, simulatePosition.Copy()));
+
+
+            while (!_ch.Collission(simulateDirection, _simulateGameSurround, simulatePosition))
+            {
+                count++;
+                if (count == moveCount)
+                {
+                    nextMove = move;
+                    count = 0;
+                }
+                else
+                {
+                    nextMove = Move.Straight;
+                }
+
+                if (count == 1) nextMove = negateMove;
+
+                _simulateGameSurround[simulatePosition.X, simulatePosition.Y] = _myId;
+                simulateDirection = simulateDirection.GetNewDirection(nextMove);
+                simulatePosition.Update(simulateDirection);
+                _score++;
+                _round++;
+                _walks.Add(new Walk(_round, nextMove, simulateDirection, simulatePosition.Copy()));
             }
 
             return _score;

@@ -28,19 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EndGameDialog));
             this.buttonYes = new System.Windows.Forms.Button();
             this.buttonNo = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.listPlayers = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.body = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Skóre = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Jméno = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Smrt = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblFileName = new System.Windows.Forms.Label();
             this.buttonSave = new System.Windows.Forms.Button();
             this.txtFileName = new System.Windows.Forms.TextBox();
             this.lblGameStats = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.listPlayers = new System.Windows.Forms.ListView();
-            this.Skóre = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Jméno = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Smrt = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,6 +77,50 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(463, 188);
             this.panel1.TabIndex = 9;
+            // 
+            // listPlayers
+            // 
+            this.listPlayers.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.listPlayers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listPlayers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.body,
+            this.Skóre,
+            this.Jméno,
+            this.Smrt});
+            this.listPlayers.Location = new System.Drawing.Point(-1, -1);
+            this.listPlayers.Name = "listPlayers";
+            this.listPlayers.Size = new System.Drawing.Size(467, 155);
+            this.listPlayers.TabIndex = 13;
+            this.listPlayers.UseCompatibleStateImageBehavior = false;
+            this.listPlayers.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "";
+            this.columnHeader1.Width = 20;
+            // 
+            // body
+            // 
+            this.body.Text = "Body";
+            this.body.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.body.Width = 47;
+            // 
+            // Skóre
+            // 
+            this.Skóre.Text = "Skóre";
+            this.Skóre.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.Skóre.Width = 50;
+            // 
+            // Jméno
+            // 
+            this.Jméno.Text = "Jméno";
+            this.Jméno.Width = 160;
+            // 
+            // Smrt
+            // 
+            this.Smrt.Text = "Smrt";
+            this.Smrt.Width = 140;
             // 
             // lblFileName
             // 
@@ -119,43 +165,6 @@
             this.label1.TabIndex = 10;
             this.label1.Text = "Spustit další hru?";
             // 
-            // listPlayers
-            // 
-            this.listPlayers.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.listPlayers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.listPlayers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.Skóre,
-            this.Jméno,
-            this.Smrt});
-            this.listPlayers.Location = new System.Drawing.Point(-5, -1);
-            this.listPlayers.Name = "listPlayers";
-            this.listPlayers.Size = new System.Drawing.Size(467, 155);
-            this.listPlayers.TabIndex = 13;
-            this.listPlayers.UseCompatibleStateImageBehavior = false;
-            this.listPlayers.View = System.Windows.Forms.View.Details;
-            // 
-            // Skóre
-            // 
-            this.Skóre.Text = "Skóre";
-            this.Skóre.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.Skóre.Width = 50;
-            // 
-            // Jméno
-            // 
-            this.Jméno.Text = "Jméno";
-            this.Jméno.Width = 160;
-            // 
-            // Smrt
-            // 
-            this.Smrt.Text = "Smrt";
-            this.Smrt.Width = 220;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "";
-            this.columnHeader1.Width = 20;
-            // 
             // EndGameDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -168,6 +177,7 @@
             this.Controls.Add(this.buttonYes);
             this.Controls.Add(this.lblGameStats);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "EndGameDialog";
@@ -196,5 +206,6 @@
         private System.Windows.Forms.ColumnHeader Jméno;
         private System.Windows.Forms.ColumnHeader Smrt;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader body;
     }
 }

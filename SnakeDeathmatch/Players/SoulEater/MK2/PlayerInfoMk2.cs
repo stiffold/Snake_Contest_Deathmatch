@@ -18,21 +18,6 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
         public void UpdatePosition(PointClass newPoint)
         {
-            if (PreviousPoints.Count >= NumberOfSavedLastPoints)
-            {
-                PointClass lastPoint = PreviousPoints.Last();
-                PreviousPoints.Remove(lastPoint);
-            }
-            if (Point != null)
-            {
-                PreviousPoints.Add(Point);
-            }
-            
-
-            var newDirection = DirectionHelper.GetDirection(new Point(Point.X, Point.Y),
-                new Point(newPoint.X, newPoint.Y));
-            Direction = newDirection;
-            Point = newPoint;
             IsDown = false;
         }
 
@@ -45,7 +30,5 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
         public Direction? Direction { get; set; }
 
         public bool IsDown { get; set; }
-
-        private const int NumberOfSavedLastPoints = 10;
     }
 }

@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this._panelTop = new System.Windows.Forms.Panel();
+            this.btTournament = new System.Windows.Forms.Button();
             this._buttonDebugger = new System.Windows.Forms.Button();
             this._buttonStep = new System.Windows.Forms.Button();
             this._checkboxStepping = new System.Windows.Forms.CheckBox();
@@ -42,7 +43,6 @@
             this._buttonRestart = new System.Windows.Forms.Button();
             this._timerUI = new System.Windows.Forms.Timer(this.components);
             this._panelArena = new System.Windows.Forms.PictureBox();
-            this.btTournament = new System.Windows.Forms.Button();
             this._panelTop.SuspendLayout();
             this._panelRound.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._panelArena)).BeginInit();
@@ -64,6 +64,16 @@
             this._panelTop.Name = "_panelTop";
             this._panelTop.Size = new System.Drawing.Size(637, 36);
             this._panelTop.TabIndex = 2;
+            // 
+            // btTournament
+            // 
+            this.btTournament.Location = new System.Drawing.Point(74, 6);
+            this.btTournament.Name = "btTournament";
+            this.btTournament.Size = new System.Drawing.Size(75, 23);
+            this.btTournament.TabIndex = 13;
+            this.btTournament.Text = "Tournament";
+            this.btTournament.UseVisualStyleBackColor = true;
+            this.btTournament.Click += new System.EventHandler(this.btTournament_Click);
             // 
             // _buttonDebugger
             // 
@@ -174,16 +184,6 @@
             this._panelArena.TabIndex = 7;
             this._panelArena.TabStop = false;
             // 
-            // btTournament
-            // 
-            this.btTournament.Location = new System.Drawing.Point(74, 6);
-            this.btTournament.Name = "btTournament";
-            this.btTournament.Size = new System.Drawing.Size(75, 23);
-            this.btTournament.TabIndex = 13;
-            this.btTournament.Text = "Tournament";
-            this.btTournament.UseVisualStyleBackColor = true;
-            this.btTournament.Click += new System.EventHandler(this.btTournament_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -193,6 +193,7 @@
             this.Controls.Add(this._panelArena);
             this.Controls.Add(this._panelTop);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Snake Deathmatch (New UI)";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);

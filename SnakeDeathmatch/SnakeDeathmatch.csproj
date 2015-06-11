@@ -90,6 +90,7 @@
     <Compile Include="Players\ClockworkMole\BlindMoleStrategy.cs" />
     <Compile Include="Players\ClockworkMole\ClockWorkMolePlayer.cs" />
     <Compile Include="Players\ClockworkMole\CollisionHelper.cs" />
+    <Compile Include="Players\ClockworkMole\FloodStrategy.cs" />
     <Compile Include="Players\ClockworkMole\Playground.cs" />
     <Compile Include="Players\ClockworkMole\Position.cs" />
     <Compile Include="Players\Fools\StraightPlayer.cs" />

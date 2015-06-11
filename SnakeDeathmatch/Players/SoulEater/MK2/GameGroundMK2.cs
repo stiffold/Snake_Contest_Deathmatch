@@ -32,7 +32,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             {
                 for (int x = 0; x < GroundSize; x++)
                 {
-                    var newPoint = new PointClass(x, y);
+                    var newPoint = new PointClass();
                     Points[x,y] = newPoint;
 
                     InitPointLinks(newPoint, x, y, fakePoint);
@@ -83,7 +83,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
         private PointClass CreateFakePoint()
         {
-            PointClass fakePoint = new PointClass(-1, -1);
+            PointClass fakePoint = new PointClass();
 
             var bottomWay = new PathClass(fakePoint, fakePoint, Direction.Bottom, PathState.DeathInThisRound);
             bottomWay.OpositePath = bottomWay;
@@ -122,8 +122,6 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             return fakePoint;
         }
 
-        private BasicRecursiveStrategy otherPlayersStrategy = new BasicRecursiveStrategy(4, false);
-
         public void Update(int[,] newGround)
         {
             foreach (var player in Players)
@@ -136,7 +134,6 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
                 for (int x = 0; x < GroundSize; x++)
                 {
                     PointClass point = Points[x, y];
-                    point.Danger = DangerType.None;
 
                     foreach (var path in point.PathsFromPoint)
                     {
@@ -183,49 +180,6 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             }
 
             player.UpdatePosition(point);
-
-            if (player.Direction == null)
-                return;
-
-            CreateDangerZoneForPlayer(player);
-        }
-
-        private void CreateDangerZoneForPlayer(PlayerInfoMk2 player)
-        {
-            //foreach (var previousPoint in player.PreviousPoints)
-            //{
-            //    var points = previousPoint.PathsFromPoint.Select(x => x.PointTo);
-            //    foreach (var point in points)
-            //    {
-            //        point.Danger = DangerType.Danger1;
-            //    }
-            //}
-
-            CreateDangerZone(6, player.Point, player.Direction.Value);
-        }
-
-        private void CreateDangerZone(int numberOfPoints, PointClass point, Direction direction)
-        {
-            point = point.GetLinkedPoint(direction);
-
-            if (numberOfPoints == 0)
-                return;
-            
-            if (point.IsUsed)
-                return;
-
-            point.Danger = DangerType.Danger3;
-
-            //var paths = point.PathsFromPoint.Where(p => p.PointTo.IsUsed == false);
-
-            //foreach (var neibPoint in paths.Select(p => p.PointTo))
-            //{
-            //    neibPoint.Danger = DangerType.Danger1;
-            //}
-
-            //otherPlayersStrategy.GetNextMoveAndUpdateMyNextPositionAndDirection(this, ref point, ref direction);
-
-            CreateDangerZone(--numberOfPoints, point, direction);
         }
 
         public PointClass this[int x, int y]
@@ -426,22 +380,14 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
     public class PointClass
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-
         public bool IsUsed { get; set; }
-        public DangerType Danger { get; set; }
 
         public IList<PathClass> PathsFromPoint { get; set; }
 
-        public PointClass(int x, int y)
+        public PointClass()
         {
-            X = x;
-            Y = y;
-
             PathsFromPoint = new List<PathClass>();
             IsUsed = false;
-            Danger = DangerType.None;
         }
 
         public void AddPath(PathClass path)
@@ -472,11 +418,6 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             }
 
             IsUsed = true;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("[{0},{1}]", X, Y);
         }
 
         public PointClass GetLinkedPoint(Direction direction)

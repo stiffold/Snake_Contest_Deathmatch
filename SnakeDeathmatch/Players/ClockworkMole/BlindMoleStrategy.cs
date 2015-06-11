@@ -40,9 +40,9 @@ namespace SnakeDeathmatch.Players.ClockworkMole
         {
             var list = new List<KeyValuePair<Move, int>>();
 
-            list.Add(new KeyValuePair<Move, int>(Move.Left, PossibleMoveCount(playground, position, Move.Left, 0)));
-            list.Add(new KeyValuePair<Move, int>(Move.Straight, PossibleMoveCount(playground, position, Move.Straight, 0)));
             list.Add(new KeyValuePair<Move, int>(Move.Right, PossibleMoveCount(playground, position, Move.Right, 0)));
+            list.Add(new KeyValuePair<Move, int>(Move.Straight, PossibleMoveCount(playground, position, Move.Straight, 0)));
+            list.Add(new KeyValuePair<Move, int>(Move.Left, PossibleMoveCount(playground, position, Move.Left, 0)));
 
             return list;
         }
@@ -61,18 +61,28 @@ namespace SnakeDeathmatch.Players.ClockworkMole
             playground.TestCollissionArray[newPosition.X, newPosition.Y] = 1000; // naplnit necim, aby se jednou projite pole znovu netestovalo
             counter++;
 
-            int leftMoves = PossibleMoveCount(playground, newPosition, Move.Left, counter);
-            if (leftMoves > MaxRecursion) return leftMoves;
+            int rightMoves = PossibleMoveCount(playground, newPosition, Move.Right, counter);
+            if (rightMoves > MaxRecursion)
+            {
+                playground.TestCollissionArray[newPosition.X, newPosition.Y] = 0; // a tady vratit zpet 
+                return rightMoves;
+            }
 
             int straightMoves = PossibleMoveCount(playground, newPosition, Move.Straight, counter);
-            if (straightMoves > MaxRecursion) return straightMoves;
+            if (straightMoves > MaxRecursion)
+            {
+                playground.TestCollissionArray[newPosition.X, newPosition.Y] = 0; // a tady vratit zpet 
+                return straightMoves;
+            }
 
-            int rightMoves = PossibleMoveCount(playground, newPosition, Move.Right, counter);
-            if (rightMoves > MaxRecursion) return rightMoves;
-
+            int leftMoves = PossibleMoveCount(playground, newPosition, Move.Left, counter);
+            if (leftMoves > MaxRecursion)
+            {
+                playground.TestCollissionArray[newPosition.X, newPosition.Y] = 0; // a tady vratit zpet 
+                return leftMoves;
+            }
 
             playground.TestCollissionArray[newPosition.X, newPosition.Y] = 0; // a tady vratit zpet 
-
             return Math.Max(Math.Max(leftMoves, straightMoves), rightMoves);
 
         }

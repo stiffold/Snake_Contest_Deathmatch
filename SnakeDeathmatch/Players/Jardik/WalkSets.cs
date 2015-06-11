@@ -205,6 +205,144 @@ namespace SnakeDeathmatch.Players.Jardik
         }
     }
 
+    internal class Left2 : WalkSetBase
+    {
+        public Left2(CollissionHelper ch, int myId)
+            : base(ch, myId)
+        {
+        }
+
+        public override WalkSetType Type
+        {
+            get { return WalkSetType.Left2; }
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            TryGetCollissionStraightMoves(Move.Left, position, direction, gameSurrond, 2);
+        }
+
+        protected override int CutCount
+        {
+            get { return 3; }
+        }
+    }
+
+    internal class Left3 : WalkSetBase
+    {
+        public Left3(CollissionHelper ch, int myId)
+            : base(ch, myId)
+        {
+        }
+
+        public override WalkSetType Type
+        {
+            get { return WalkSetType.Left3; }
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            TryGetCollissionStraightMoves(Move.Left, position, direction, gameSurrond, 3);
+        }
+
+        protected override int CutCount
+        {
+            get { return 3; }
+        }
+    }
+
+    internal class Left4 : WalkSetBase
+    {
+        public Left4(CollissionHelper ch, int myId)
+            : base(ch, myId)
+        {
+        }
+
+        public override WalkSetType Type
+        {
+            get { return WalkSetType.Left4; }
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            TryGetCollissionStraightMoves(Move.Left, position, direction, gameSurrond, 4);
+        }
+
+        protected override int CutCount
+        {
+            get { return 3; }
+        }
+    }
+
+    internal class Right2 : WalkSetBase
+    {
+        public Right2(CollissionHelper ch, int myId)
+            : base(ch, myId)
+        {
+        }
+
+        public override WalkSetType Type
+        {
+            get { return WalkSetType.Right2; }
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            TryGetCollissionStraightMoves(Move.Right, position, direction, gameSurrond, 2);
+        }
+
+        protected override int CutCount
+        {
+            get { return 3; }
+        }
+    }
+
+    internal class Right3 : WalkSetBase
+    {
+        public Right3(CollissionHelper ch, int myId)
+            : base(ch, myId)
+        {
+        }
+
+        public override WalkSetType Type
+        {
+            get { return WalkSetType.Right3; }
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            TryGetCollissionStraightMoves(Move.Right, position, direction, gameSurrond, 3);
+        }
+
+        protected override int CutCount
+        {
+            get { return 3; }
+        }
+    }
+
+    internal class Right4 : WalkSetBase
+    {
+        public Right4(CollissionHelper ch, int myId)
+            : base(ch, myId)
+        {
+        }
+
+        public override WalkSetType Type
+        {
+            get { return WalkSetType.Right4; }
+        }
+
+        protected override void DoEvaluate(Position position, Direction direction, int[,] gameSurrond)
+        {
+            TryGetCollissionStraightMoves(Move.Right, position, direction, gameSurrond, 4);
+        }
+
+        protected override int CutCount
+        {
+            get { return 3; }
+        }
+    }
+
     #endregion
 
     #region Pro
@@ -1178,7 +1316,7 @@ namespace SnakeDeathmatch.Players.Jardik
         {
             var targetPosition = new Position(0, 0);
             double min = 500;
-            foreach (var o in _others.Where(x => x.Id != 4))
+            foreach (var o in _others)
             {
                 if (position.Distance(o.Position) < min)
                 {

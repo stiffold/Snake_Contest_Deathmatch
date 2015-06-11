@@ -36,14 +36,14 @@ namespace SoulEaterTest.Infrastructure
 
         public static PointClass IsUnused(this PointClass point)
         {
-            Assert.IsTrue(point.IsUsed == false, string.Format("Bylo očekáváno, že bod [{0},{1}] nezabraný", point.X, point.Y));
+            Assert.IsTrue(point.IsUsed == false, string.Format("Bylo očekáváno, že bod [{0},{1}] nezabraný"));// todo tp
 
             return point;
         }
 
         public static PointClass IsUsed(this PointClass point)
         {
-            Assert.IsTrue(point.IsUsed, string.Format("Bylo očekáváno, že bod [{0},{1}] zabraný", point.X, point.Y));
+            Assert.IsTrue(point.IsUsed, string.Format("Bylo očekáváno, že bod [{0},{1}] zabraný"));// todo tp
 
             return point;
         }

@@ -33,13 +33,13 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
             foreach (var path in paths)
             {
-                if (path.PathState == PathState.Ok && path.PointTo.Danger != DangerType.Danger3)
+                if (path.PathState == PathState.Ok)
                 {
                     var points= TryPathRecursive(path, 0, new List<PathClass>());
                     var result = new RecurseResult(points, path);
                     recurseResults.Add(result);
 
-                    if (result.Danger == DangerType.None && points == RecurseDepth) 
+                    if (points == RecurseDepth) 
                         break;
                 }
             }
@@ -85,10 +85,6 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
                 PathClass nextPath = point.GetPath(move);
 
                 if (nextPath.PathState != PathState.Ok)
-                {
-                    continue;
-                }
-                if (nextPath.PointTo.Danger == DangerType.Danger3)
                 {
                     continue;
                 }
@@ -150,10 +146,6 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             public int Depth;
 
             public PathClass Path;
-
-            public DangerType Danger {
-                get { return Path.PointTo.Danger; }
-            }
 
             public RecurseResult(int depth, PathClass path)
             {

@@ -39,7 +39,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
             {
                 var playerHead = playerHeadItem.Value;
 
-                TestCollissionArray.Enumerate(playerHead, HeadTestDistance)
+                TestCollissionArray.SelectItemsAndEnumerate(playerHead, HeadTestDistance)
                     .Where(x => x.Value == 0)
                     .Apply(x => x.Value = 100 + (HeadTestDistance - x.DistanceTo(playerHead.X, playerHead.Y) + 1))
                     .ToList();
@@ -54,7 +54,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
             {
                 var playerHead = playerHeadItem.Value;
 
-                TestCollissionArray.Enumerate(playerHead, HeadTestDistance)
+                TestCollissionArray.SelectItemsAndEnumerate(playerHead, HeadTestDistance)
                     .Where(x => x.Value > 100 && x.Value < 200)
                     .Apply(x => x.Value = x.Value == 101 ? 0 : x.Value - 1)
                     .ToList();
@@ -85,7 +85,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
         private void InitializeOtherPlayers()
         {
 
-            CurrentArray.Enumerate()
+            CurrentArray.SelectItemsAndEnumerate()
                     .Where(x => x.Value != 0 && x.Value != _playerId)
                     .Apply(x => PlayerHeads.Add(x.Value, new Position(x.X, x.Y, 0)))
                     .ToList();
@@ -100,7 +100,7 @@ namespace SnakeDeathmatch.Players.ClockworkMole
             foreach (var playerHeadItem in PlayerHeads)
             {
 
-                CurrentArray.Enumerate(playerHeadItem.Value, 1)
+                CurrentArray.SelectItemsAndEnumerate(playerHeadItem.Value, 1)
                     .Where(arrayItem => arrayItem.Value == playerHeadItem.Key && arrayItem.Value != PreviousArray[arrayItem.X, arrayItem.Y])
                     .Apply(arrayItem =>
                     {
@@ -122,5 +122,59 @@ namespace SnakeDeathmatch.Players.ClockworkMole
 
         }
 
+        public string CurrentArrayString
+        {
+            get
+            {
+                if (CurrentArray != null)
+                {
+                    var maxX = CurrentArray.GetUpperBound(0);
+                    var maxY = CurrentArray.GetUpperBound(1);
+
+                    var sb = new StringBuilder();
+                    for (int y = 0; y <= maxY; y++)
+                    {
+                        for (int x = 0; x <= maxX; x++)
+                        {
+                            sb.Append(CurrentArray[x, y]);
+                        }
+                        sb.AppendLine();
+                    }
+
+                    return sb.ToString();
+
+                }
+
+                return base.ToString();
+            }
+        }
+
+
+        public string TestCollisionArrayString
+        {
+            get
+            {
+                if (CurrentArray != null)
+                {
+                    var maxX = TestCollissionArray.GetUpperBound(0);
+                    var maxY = TestCollissionArray.GetUpperBound(1);
+
+                    var sb = new StringBuilder();
+                    for (int y = 0; y <= maxY; y++)
+                    {
+                        for (int x = 0; x <= maxX; x++)
+                        {
+                            sb.Append(TestCollissionArray[x, y]);
+                        }
+                        sb.AppendLine();
+                    }
+
+                    return sb.ToString();
+
+                }
+
+                return base.ToString();
+            }
+        }
     }
 }

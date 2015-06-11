@@ -105,6 +105,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\ICO.ico" />
     <Content Include="Images\Icons-Land-Play-Stop-Pause-Play-Hot.ico" />
   </ItemGroup>
   <ItemGroup>
