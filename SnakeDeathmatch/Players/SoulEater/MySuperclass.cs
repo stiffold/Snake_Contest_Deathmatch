@@ -6,7 +6,7 @@ using SnakeDeathmatch.Interface;
 
 namespace SnakeDeathmatch.Players.SoulEater
 {
-    public static class DirectionHelper
+    public static class MySuperClass
     {
         public static IEnumerable<Point> GetBorderPoints(Point point)
         {

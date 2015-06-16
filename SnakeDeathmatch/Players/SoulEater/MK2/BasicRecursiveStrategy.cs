@@ -8,7 +8,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 {
     public class BasicRecursiveStrategy
     {
-        private IList<Move> _moves = new List<Move> { Move.Left, Move.Straight, Move.Right };
+        private IList<Move> _moves = new List<Move> { Move.Right, Move.Straight, Move.Left };
         public int RecurseDepth { get; set; }
 
         public BasicRecursiveStrategy(int depth, bool useEstimation)
@@ -19,15 +19,15 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
         public bool UseEstimation { get; set; }
 
-        public Move GetNextMoveAndUpdateMyNextPositionAndDirection(GameGroundMK2 gameGround, ref PointClass myPositionPointClass, ref Direction myDirection)
+        public Move GetNextMove(GameGroundMK2 gameGround, Snake ourSnake)
         {
             IList<RecurseResult> recurseResults = new List<RecurseResult>();
 
             var paths = new List<PathClass>();
             foreach (var move in _moves)
             {
-                var absoluteDirection = DirectionHelper.GetAbsoluteDirection(myDirection, move);
-                PathClass path = myPositionPointClass.GetPath(absoluteDirection);
+                var absoluteDirection = MySuperClass.GetAbsoluteDirection(ourSnake.Direction, move);
+                PathClass path = ourSnake.Point.GetPath(absoluteDirection);
                 paths.Add(path);
             }
 
@@ -50,10 +50,8 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
             if (bestResult != null)
             {
-                var move = DirectionHelper.GetMove(myDirection, bestResult.Path.Direction);
+                var move = MySuperClass.GetMove(ourSnake.Direction, bestResult.Path.Direction);
 
-                myPositionPointClass = bestResult.Path.PointTo;
-                myDirection = bestResult.Path.Direction;
                 return move;
             }
 
@@ -71,7 +69,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             int i = 0;
             foreach (var move in _moves)
             {
-                possibleDirections[i++] = DirectionHelper.GetAbsoluteDirection(path.Direction, move);
+                possibleDirections[i++] = MySuperClass.GetAbsoluteDirection(path.Direction, move);
             }
 
             actualDepth++;

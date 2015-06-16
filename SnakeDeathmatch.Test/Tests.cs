@@ -240,50 +240,50 @@ namespace SoulEaterTest
         }
 
 
-        [TestMethod]
-        public void test()
-        {
-            GameGroundMK2 gameground = new GameGroundMK2(6, 5);
+        //[TestMethod]
+        //public void test()
+        //{
+        //    GameGroundMK2 gameground = new GameGroundMK2(6, 5);
 
-            gameground.Init();
+        //    gameground.Init();
 
-            /*
-             00 10 20
-             01 11 21
-             02 12 22
-             */
+        //    /*
+        //     00 10 20
+        //     01 11 21
+        //     02 12 22
+        //     */
 
-            gameground.Update(
-                new int[6, 6]
-                {
-                    {1,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                }.SwapXWithY()
-                );
+        //    gameground.Update(
+        //        new int[6, 6]
+        //        {
+        //            {1,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //        }.SwapXWithY()
+        //        );
 
-            gameground.Update(
-                new int[6, 6]
-                {
-                    {1,0,0,0,0,0},
-                    {1,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                    {0,0,0,0,0,0},
-                }.SwapXWithY()
-                );
+        //    gameground.Update(
+        //        new int[6, 6]
+        //        {
+        //            {1,0,0,0,0,0},
+        //            {1,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //            {0,0,0,0,0,0},
+        //        }.SwapXWithY()
+        //        );
 
-            var strategy = new BasicRecursiveStrategy(5, true);
+        //    var strategy = new BasicRecursiveStrategy(5, true);
 
-            var myPoint = gameground[0, 5];
-            var myDirection = Direction.Top;
+        //    var myPoint = gameground[0, 5];
+        //    var myDirection = Direction.Top;
 
-            strategy.GetNextMoveAndUpdateMyNextPositionAndDirection(gameground, ref myPoint,ref myDirection);
-        }
+        //    strategy.GetNextMove(gameground, ref myPoint,ref myDirection);
+        //}
 
         
     }

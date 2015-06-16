@@ -135,7 +135,7 @@ namespace NewGameUI
             if (playerId == PlayerId.Jardik) return new SnakeDeathmatch.Players.Jardik.Jardik();
             if (playerId == PlayerId.Vazba) return new SnakeDeathmatch.Players.Vazba.VazbaPlayer();
             if (playerId == PlayerId.Setal) return new SnakeDeathmatch.Players.Setal.Setal();
-            if (playerId == PlayerId.SoulEater) return new SoulEaterMK2Behaiviour();
+            //if (playerId == PlayerId.SoulEater) return new SoulEaterMK2Behaiviour();
             if (playerId == PlayerId.ClockworkMole) return new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer();
 
             throw new NotImplementedException(string.Format("Unknown playerId {0}.", playerId));
@@ -156,7 +156,7 @@ namespace NewGameUI
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.DeepPink, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SoulEaterMK2Behaiviour(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
+            //players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SoulEaterMK2Behaiviour(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
             //players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new PlayerBehaviour1Adapter(new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior()), (int)PlayerId.SoulEater, PlaygroundSizeInDots));         
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Lime, new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer(), (int)PlayerId.ClockworkMole, PlaygroundSizeInDots));
 
