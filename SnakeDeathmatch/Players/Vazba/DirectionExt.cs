@@ -47,5 +47,21 @@ namespace SnakeDeathmatch.Players.Vazba
             }
             throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
         }
+
+        public static Direction Opposite(this Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Top: return Direction.Bottom;
+                case Direction.TopRight: return Direction.BottomLeft;
+                case Direction.Right: return Direction.Left;
+                case Direction.BottomRight: return Direction.TopLeft;
+                case Direction.Bottom: return Direction.Top;
+                case Direction.BottomLeft: return Direction.TopRight;
+                case Direction.Left: return Direction.Right;
+                case Direction.TopLeft: return Direction.BottomRight;
+            }
+            throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
+        }
     }
 }

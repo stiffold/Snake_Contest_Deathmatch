@@ -173,6 +173,7 @@
     <Compile Include="Players\Vazba\Strategy4.cs" />
     <Compile Include="Players\Vazba\StrategyBarricade.cs" />
     <Compile Include="Players\Vazba\TrackExplorationResult.cs" />
+    <Compile Include="Players\Vazba\Vector.cs" />
     <Compile Include="Tests\CollisionTests.cs" />
     <Compile Include="Interface\Direction.cs" />
     <Compile Include="Interface\Move.cs" />

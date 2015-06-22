@@ -9,70 +9,7 @@ namespace SnakeDeathmatch.Players.Vazba
 {
     public class Strategy4 : IStrategy, IDebuggable
     {
-        private struct Point
-        {
-            public int X;
-            public int Y;
-            public Point(int x, int y) { X = x; Y = y; }
-            public override string ToString() { return string.Format("[{0},{1}]", X, Y); }
-        }
-
-        private struct Vector
-        {
-            public int X;
-            public int Y;
-            public Direction Direction;
-            public Vector(int x, int y, Direction direction) { X = x; Y = y; Direction = direction; }
-            public override string ToString() { return string.Format("[{0},{1},{2}]", X, Y, Direction); }
-            public Point? GetNextPoint(IntPlayground playground)
-            {
-                return CanMove(Direction, playground) ? Move(Direction) : (Point?)null;
-            }
-
-            public bool CanMove(Direction direction, IntPlayground playground)
-            {
-                Point s = Move(direction);
-
-                // detekce kolize s okrajem pole
-                if (s.X < 0 || s.Y < 0 || s.X >= playground.Size || s.Y >= playground.Size)
-                {
-                    return false;
-                }
-
-                // detekce kolize do těla jiného hada
-                if (playground[s.X, s.Y] == 0)
-                {
-                    return false;
-                }
-
-                // detekce snahy projet diagonálně skrz tělo jiného hada
-                if ((direction == Direction.TopRight && (playground[s.X, s.Y + 1] == 0) && (playground[s.X - 1, s.Y] == 0)) ||
-                    (direction == Direction.BottomRight && (playground[s.X, s.Y - 1] == 0) && (playground[s.X - 1, s.Y] == 0)) ||
-                    (direction == Direction.BottomLeft && (playground[s.X, s.Y - 1] == 0) && (playground[s.X + 1, s.Y] == 0)) ||
-                    (direction == Direction.TopLeft && (playground[s.X, s.Y + 1] == 0) && (playground[s.X + 1, s.Y] == 0)))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-
-            public Point Move(Direction direction)
-            {
-                switch (direction)
-                {
-                    case Direction.Top: return new Point(X, Y - 1);
-                    case Direction.TopRight: return new Point(X + 1, Y - 1);
-                    case Direction.Right: return new Point(X + 1, Y);
-                    case Direction.BottomRight: return new Point(X + 1, Y + 1);
-                    case Direction.Bottom: return new Point(X, Y + 1);
-                    case Direction.BottomLeft: return new Point(X - 1, Y + 1);
-                    case Direction.Left: return new Point(X - 1, Y);
-                    case Direction.TopLeft: return new Point(X - 1, Y - 1);
-                }
-                throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
-            }
-        }
+        #region Support
 
         private const int WTF = 14;
         private int _size;
@@ -80,9 +17,10 @@ namespace SnakeDeathmatch.Players.Vazba
         private Snakes _snakes;
         private Queue<Vector> _queue;
         private IEnumerable<Direction> _allDirections;
+        private IEnumerable<Direction> _diagonalDirections;
         private IDictionary<Direction, IntPlayground> _deathPlaygroundByDirection;
         private IDictionary<Direction, IntPlayground> _queuePlaygroundByDirection;
-        private int InfinityId { get { return DeathIntArrayVisualizer.InfinityId; } }
+        private int Infinity { get { return DeathIntArrayVisualizer.InfinityId; } }
         private int _step;
 
         public event BreakpointEventHandler Breakpoint;
@@ -104,6 +42,14 @@ namespace SnakeDeathmatch.Players.Vazba
                 Direction.Left,
                 Direction.TopLeft,
             };
+            _diagonalDirections = new List<Direction>()
+            {
+                Direction.TopRight,
+                Direction.BottomRight,
+                Direction.BottomLeft,
+                Direction.TopLeft,
+            };
+
             Snake me = liveSnakes.Me;
 
             if (!_deathPlaygroundsCreated)
@@ -114,7 +60,7 @@ namespace SnakeDeathmatch.Players.Vazba
                 Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4DeathPlaygroundsRecalculated));
 
 
-            if (true)
+            if (false)
             {
                 Next next = me.GetNext(playground);
 
@@ -134,13 +80,30 @@ namespace SnakeDeathmatch.Players.Vazba
                 _Track = null;
                 _Playground = null;
 
-                Move move = GetNextStepForPasticka();
+                Move move = GetNextStepForPasticka2();
                 _step++;
                 return move;
             }
         }
 
-        private Move GetNextStepForPasticka()
+        private Move GetNextStepForPasticka2()
+        {
+            if (_step == 0) return Move.Straight;
+            else if (_step == 1) return Move.Right;
+            else if (_step == 2) return Move.Straight;
+            else if (_step == 3) return Move.Straight;
+            else if (_step == 4) return Move.Straight;
+            else if (_step == 5) return Move.Left;
+            else if (_step == 6) return Move.Left;
+            else if (_step == 7) return Move.Straight;
+            else if (_step == 8) return Move.Left;
+            else if (_step == 9) return Move.Left;
+            else if (_step == 10) return Move.Straight;
+            else
+                return Move.Straight;
+        }
+
+        private Move GetNextStepForPasticka1()
         {
             if (_step == 0) return Move.Straight;
             else if (_step == 1) return Move.Straight;
@@ -313,6 +276,45 @@ namespace SnakeDeathmatch.Players.Vazba
             _queuePlaygroundByDirection[Direction.TopLeft] = Queue_8_TopLeft;
         }
 
+        private Vector CreateVectorOneStepBackward(int x, int y, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Top: return new Vector(x, y + 1, direction);
+                case Direction.TopRight: return new Vector(x - 1, y + 1, direction);
+                case Direction.Right: return new Vector(x - 1, y, direction);
+                case Direction.BottomRight: return new Vector(x - 1, y - 1, direction);
+                case Direction.Bottom: return new Vector(x, y - 1, direction);
+                case Direction.BottomLeft: return new Vector(x + 1, y - 1, direction);
+                case Direction.Left: return new Vector(x + 1, y, direction);
+                case Direction.TopLeft: return new Vector(x + 1, y + 1, direction);
+            }
+            throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
+        }
+
+        private Vector CreateVectorOneStepForward(int x, int y, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Top: return new Vector(x, y - 1, direction);
+                case Direction.TopRight: return new Vector(x + 1, y - 1, direction);
+                case Direction.Right: return new Vector(x + 1, y, direction);
+                case Direction.BottomRight: return new Vector(x + 1, y + 1, direction);
+                case Direction.Bottom: return new Vector(x, y + 1, direction);
+                case Direction.BottomLeft: return new Vector(x - 1, y + 1, direction);
+                case Direction.Left: return new Vector(x - 1, y, direction);
+                case Direction.TopLeft: return new Vector(x - 1, y - 1, direction);
+            }
+            throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
+        }
+
+        private bool IsValid(int x, int y)
+        {
+            return x >= 0 && x < _size && y >= 0 && y < _size;
+        }
+
+        #endregion
+
         private void RecalculateDeathPlaygrounds()
         {
             _queue = new Queue<Vector>();
@@ -321,17 +323,55 @@ namespace SnakeDeathmatch.Players.Vazba
             var allSnakesIncludingMe = new List<Snake>();
             allSnakesIncludingMe.AddRange(_snakes);
             allSnakesIncludingMe.Add(_snakes.Me);
-            
+
+            // snake-heads
             foreach (Snake snake in allSnakesIncludingMe)
             {
                 foreach (Direction direction in _allDirections)
                 {
-                    _queue.Enqueue(new Vector(snake.X, snake.Y, direction));
-                    _queuePlaygroundByDirection[direction][snake.X, snake.Y] = 1;
+                    UpdateValue(snake.X, snake.Y, direction, 0);
                     InvokeBreakpointsForEnqueue(direction);
                 }
             }
+
+            // cross-collisions
+            foreach (Snake snake in allSnakesIncludingMe)
+            {
+                foreach (Direction direction in _diagonalDirections)
+                {
+                    Vector vector1 = CreateVectorOneStepForward(snake.X, snake.Y, direction.TurnLeft().TurnLeft());
+                    if (IsValid(vector1.X, vector1.Y) && _deathPlaygroundByDirection[direction][vector1.X, vector1.Y] == 0)
+                    {
+                        Vector tmpVector = CreateVectorOneStepForward(snake.X, snake.Y, vector1.Direction.TurnLeft());
+                        UpdateValue(tmpVector.X, tmpVector.Y, direction, 1);
+                    }
+
+                    Vector vector2 = CreateVectorOneStepForward(snake.X, snake.Y, direction.TurnRight().TurnRight());
+                    if (IsValid(vector2.X, vector2.Y) && _deathPlaygroundByDirection[direction][vector2.X, vector2.Y] == 0)
+                    {
+                        Vector tmpVector = CreateVectorOneStepForward(snake.X, snake.Y, vector2.Direction.TurnRight());
+                        UpdateValue(tmpVector.X, tmpVector.Y, direction, 1);
+                    }
+                }
+            }
             ProcessQueue();
+        }
+
+        private void UpdateValue(int x, int y, Direction direction, int value)
+        {
+            if (value < _deathPlaygroundByDirection[direction][x, y])
+            {
+                _deathPlaygroundByDirection[direction][x, y] = value;
+                _queuePlaygroundByDirection[direction][x, y] = 1;
+
+                Vector vector1 = CreateVectorOneStepBackward(x, y, direction.TurnRight());
+                Vector vector2 = CreateVectorOneStepBackward(x, y, direction);
+                Vector vector3 = CreateVectorOneStepBackward(x, y, direction.TurnLeft());
+
+                if (IsValid(vector1.X, vector1.Y)) _queue.Enqueue(vector1);
+                if (IsValid(vector2.X, vector2.Y)) _queue.Enqueue(vector2);
+                if (IsValid(vector3.X, vector3.Y)) _queue.Enqueue(vector3);
+            }
         }
 
         private void InvokeBreakpointsForEnqueue(Direction direction)
@@ -361,189 +401,20 @@ namespace SnakeDeathmatch.Players.Vazba
             while (_queue.Count > 0)
             {
                 Vector vector = _queue.Dequeue();
-                IntPlayground deathPlaygroundForDirection = _deathPlaygroundByDirection[vector.Direction];
-
-                if (_Playground[vector.X, vector.Y] != 0 && _snakes.Union(new[] {_snakes.Me}).Any(snake => snake.X == vector.X && snake.Y == vector.Y))
+                Vector forwardVector = CreateVectorOneStepForward(vector.X, vector.Y, vector.Direction);
+                if (IsValid(forwardVector.X, forwardVector.Y))
                 {
-                    // stojím na překážce
-                    // poznačím si, že smrt je okamžitá (0 kroků do smrti)
-                    deathPlaygroundForDirection[vector.X, vector.Y] = 0;
-                    EnqueueVectors(GetNeighborhoodVectors(vector.X, vector.Y));
-                }
-                else
-                {
-                    // nestojím na překážce
-                    // zjistím si, kolik kroků do smrti mi zbývá na pozici, kam bych chtěl jet (ve všech třech směrech)
-                    // pokud najdu jistou smrt, poznačím si, na kolik kroků ta smrt bude
-                    Point? nextPoint = vector.GetNextPoint(deathPlaygroundForDirection);
+                    int value1 = _deathPlaygroundByDirection[forwardVector.Direction.TurnLeft()][forwardVector.X, forwardVector.Y];
+                    int value2 = _deathPlaygroundByDirection[forwardVector.Direction][forwardVector.X, forwardVector.Y];
+                    int value3 = _deathPlaygroundByDirection[forwardVector.Direction.TurnRight()][forwardVector.X, forwardVector.Y];
 
-                    if (nextPoint == null)
+                    int maxValue = Math.Max(Math.Max(value1, value2), value3);
+                    if (maxValue < Infinity)
                     {
-                        if (deathPlaygroundForDirection[vector.X, vector.Y] > 1)
-                        {
-                            deathPlaygroundForDirection[vector.X, vector.Y] = 1;
-                            EnqueueVectors(GetAffectedVectorsAsRectangle(vector.X, vector.Y, vector.Direction));
-                        }
-                    }
-                    else
-                    {
-                        IntPlayground deathPlaygroundLeft = _deathPlaygroundByDirection[vector.Direction.TurnLeft()];
-                        IntPlayground deathPlaygroundStraight = deathPlaygroundForDirection;
-                        IntPlayground deathPlaygroundRight = _deathPlaygroundByDirection[vector.Direction.TurnRight()];
-
-                        int valueLeft = deathPlaygroundLeft[nextPoint.Value.X, nextPoint.Value.Y];
-                        int valueStraight = deathPlaygroundStraight[nextPoint.Value.X, nextPoint.Value.Y];
-                        int valueRight = deathPlaygroundRight[nextPoint.Value.X, nextPoint.Value.Y];
-
-                        int maxValue = Math.Max(Math.Max(valueLeft, valueStraight), valueRight);
-                        int minValue = Math.Min(Math.Min(valueLeft, valueStraight), valueRight);
-                        if (maxValue < InfinityId && deathPlaygroundForDirection[vector.X, vector.Y] > minValue + 1)
-                        {
-                            deathPlaygroundForDirection[vector.X, vector.Y] = minValue + 1;
-                            EnqueueVectors(GetAffectedVectorsAsRectangle(vector.X, vector.Y, vector.Direction));
-                        }
+                        UpdateValue(vector.X, vector.Y, vector.Direction, maxValue + 1);
                     }
                 }
             }
-        }
-
-        private void EnqueueVectors(IEnumerable<Vector> vectors)
-        {
-            foreach (Vector vector in vectors)
-            {
-                if (_queuePlaygroundByDirection[vector.Direction][vector.X, vector.Y] == 0/*
-                    _deathPlaygroundByDirection[vector.Direction][vector.X, vector.Y] == InfinityId*/)
-                {
-                    _queue.Enqueue(vector);
-                    _queuePlaygroundByDirection[vector.Direction][vector.X, vector.Y] = 1;
-                    InvokeBreakpointsForEnqueue(vector.Direction);
-                }
-            }
-        }
-
-        //private IEnumerable<Vector> GetNeighborhoodVectors(int x, int y)
-        //{
-        //    if (y < _size - 1) yield return new Vector(x, y + 1, Direction.Top);
-        //    if (x > 0 && y < _size - 1) yield return new Vector(x - 1, y + 1, Direction.TopRight);
-        //    if (x > 0) yield return new Vector(x - 1, y, Direction.Right);
-        //    if (x > 0 && y > 0) yield return new Vector(x - 1, y - 1, Direction.BottomRight);
-        //    if (y > 0) yield return new Vector(x, y - 1, Direction.Bottom);
-        //    if (x < _size - 1 && y > 0) yield return new Vector(x + 1, y - 1, Direction.BottomLeft);
-        //    if (x < _size - 1) yield return new Vector(x + 1, y, Direction.Left);
-        //    if (x < _size - 1 && y < _size - 1) yield return new Vector(x + 1, y + 1, Direction.TopLeft);
-        //}
-
-        private IEnumerable<Vector> GetAffectedVectorsForDirection(int x, int y, Direction direction)
-        {
-            if (direction == Direction.Top)
-            {
-                if (y < _size - 1)
-                    yield return new Vector(x, y + 1, Direction.Top);
-            }
-            else if (direction == Direction.TopRight)
-            {
-                if (y < _size - 1)
-                    yield return new Vector(x, y + 1, Direction.TopRight);
-                if (x > 0)
-                    yield return new Vector(x - 1, y, Direction.TopRight);
-                if (x > 0 && y < _size - 1)
-                    yield return new Vector(x - 1, y + 1, Direction.TopRight);
-            }
-            else if (direction == Direction.Right)
-            {
-                if (x > 0)
-                    yield return new Vector(x - 1, y, Direction.Right);
-            }
-            else if (direction == Direction.BottomRight)
-            {
-                if (x > 0)
-                    yield return new Vector(x - 1, y, Direction.BottomRight);
-                if (x > 0 && y > 0)
-                    yield return new Vector(x - 1, y - 1, Direction.BottomRight);
-                if (y > 0)
-                    yield return new Vector(x, y - 1, Direction.BottomRight);
-            }
-            else if (direction == Direction.Bottom)
-            {
-                if (y > 0)
-                    yield return new Vector(x, y - 1, Direction.Bottom);
-            }
-            else if (direction == Direction.BottomLeft)
-            {
-                if (y > 0)
-                    yield return new Vector(x, y - 1, Direction.BottomLeft);
-                if (x < _size - 1 && y > 0)
-                    yield return new Vector(x + 1, y - 1, Direction.BottomLeft);
-                if (x < _size - 1)
-                    yield return new Vector(x + 1, y, Direction.BottomLeft);
-            }
-            else if (direction == Direction.Left)
-            {
-                if (x < _size - 1)
-                    yield return new Vector(x + 1, y, Direction.Left);
-            }
-            else if (direction == Direction.TopLeft)
-            {
-                if (y < _size - 1)
-                    yield return new Vector(x, y + 1, Direction.TopLeft);
-                if (x < _size - 1)
-                    yield return new Vector(x + 1, y, Direction.TopLeft);
-                if (x < _size - 1 && y < _size - 1)
-                    yield return new Vector(x + 1, y + 1, Direction.TopLeft);
-            }
-        }
-
-        private bool IsInRange(int x, int y)
-        {
-            return (x > 0 && y > 0 && x < _size && y < _size);
-        }
-
-        private IEnumerable<Vector> GetAffectedVectorsAsRectangle(int x, int y, Direction direction)
-        {
-            for (int newX = x - 4; newX <= x + 4; newX++)
-                for (int newY = y - 4; newY <= y + 4; newY++)
-                    if (IsInRange(newX, newY))
-                        yield return new Vector(newX, newY, direction);
-        }
-
-        private IEnumerable<Vector> GetNeighborhoodVectors(int x, int y)
-        {
-            if (y < _size - 1)
-            {
-                yield return new Vector(x, y + 1, Direction.TopLeft);
-                yield return new Vector(x, y + 1, Direction.Top);
-                yield return new Vector(x, y + 1, Direction.TopRight);
-            }
-            if (x > 0 && y < _size - 1)
-                yield return new Vector(x - 1, y + 1, Direction.TopRight);
-
-            if (x > 0)
-            {
-                yield return new Vector(x - 1, y, Direction.TopRight);
-                yield return new Vector(x - 1, y, Direction.Right);
-                yield return new Vector(x - 1, y, Direction.BottomRight);
-            }
-            if (x > 0 && y > 0)
-                yield return new Vector(x - 1, y - 1, Direction.BottomRight);
-
-            if (y > 0)
-            {
-                yield return new Vector(x, y - 1, Direction.BottomLeft);
-                yield return new Vector(x, y - 1, Direction.Bottom);
-                yield return new Vector(x, y - 1, Direction.BottomRight);
-            }
-
-            if (x < _size - 1 && y > 0)
-                yield return new Vector(x + 1, y - 1, Direction.BottomLeft);
-
-            if (x < _size - 1)
-            {
-                yield return new Vector(x + 1, y, Direction.TopLeft);
-                yield return new Vector(x + 1, y, Direction.Left);
-                yield return new Vector(x + 1, y, Direction.BottomLeft);
-            }
-            if (x < _size - 1 && y < _size - 1)
-                yield return new Vector(x + 1, y + 1, Direction.TopLeft);
         }
     }
 }

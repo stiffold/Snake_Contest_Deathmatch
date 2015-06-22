@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections;
@@ -9,6 +8,7 @@ using SnakeDeathmatch.Players.Vazba;
 using SnakeDeathmatch.Players.Vazba.Debug;
 using SnakeDeathmatch.Game;
 using System.Threading;
+using System.Drawing;
 
 namespace SnakeDeathmatch.Debugger
 {
