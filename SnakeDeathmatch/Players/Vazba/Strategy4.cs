@@ -19,18 +19,13 @@ namespace SnakeDeathmatch.Players.Vazba
         private IEnumerable<Direction> _allDirections;
         private IEnumerable<Direction> _diagonalDirections;
         private IDictionary<Direction, IntPlayground> _deathPlaygroundByDirection;
-        private IDictionary<Direction, IntPlayground> _queuePlaygroundByDirection;
         private int Infinity { get { return DeathIntArrayVisualizer.InfinityId; } }
         private int _step;
 
         public event BreakpointEventHandler Breakpoint;
 
-        public Move GetNextMove(IntPlayground playground, Snakes liveSnakes)
+        public Strategy4()
         {
-            _Playground = playground;
-            _Track = playground.Clone();
-            _size = playground.Size;
-            _snakes = liveSnakes;
             _allDirections = new List<Direction>()
             {
                 Direction.Top,
@@ -49,6 +44,14 @@ namespace SnakeDeathmatch.Players.Vazba
                 Direction.BottomLeft,
                 Direction.TopLeft,
             };
+        }
+
+        public Move GetNextMove(IntPlayground playground, Snakes liveSnakes)
+        {
+            _Playground = playground;
+            _Track = playground.Clone();
+            _size = playground.Size;
+            _snakes = liveSnakes;
 
             Snake me = liveSnakes.Me;
 
@@ -59,8 +62,7 @@ namespace SnakeDeathmatch.Players.Vazba
             if (Breakpoint != null)
                 Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4DeathPlaygroundsRecalculated));
 
-
-            if (false)
+            if (true)
             {
                 Next next = me.GetNext(playground);
 
@@ -71,6 +73,11 @@ namespace SnakeDeathmatch.Players.Vazba
                 _Track = null;
                 _Playground = null;
 
+                _step++;
+                if (_step / 100 == 0)
+                    if (Breakpoint != null)
+                        Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4StopEvery100Steps));
+
                 if (depthLeft >= depthStraight && depthLeft >= depthRight) return Move.Left;
                 if (depthStraight >= depthLeft && depthStraight >= depthRight) return Move.Straight;
                 return Move.Right;
@@ -80,13 +87,16 @@ namespace SnakeDeathmatch.Players.Vazba
                 _Track = null;
                 _Playground = null;
 
-                Move move = GetNextStepForPasticka2();
+                Move move = GetNextStepForPasticka();
                 _step++;
+                if (_step / 100 == 0)
+                    if (Breakpoint != null)
+                        Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4StopEvery100Steps));
                 return move;
             }
         }
 
-        private Move GetNextStepForPasticka2()
+        private Move GetNextStepForPasticka()
         {
             if (_step == 0) return Move.Straight;
             else if (_step == 1) return Move.Right;
@@ -99,35 +109,6 @@ namespace SnakeDeathmatch.Players.Vazba
             else if (_step == 8) return Move.Left;
             else if (_step == 9) return Move.Left;
             else if (_step == 10) return Move.Straight;
-            else
-                return Move.Straight;
-        }
-
-        private Move GetNextStepForPasticka1()
-        {
-            if (_step == 0) return Move.Straight;
-            else if (_step == 1) return Move.Straight;
-            else if (_step == 2) return Move.Right;
-            else if (_step == 3) return Move.Right;
-            else if (_step == 4) return Move.Straight;
-            else if (_step == 5) return Move.Straight;
-            else if (_step == 6) return Move.Straight;
-            else if (_step == 7) return Move.Straight;
-            else if (_step == 8) return Move.Straight;
-            else if (_step == 9) return Move.Left;
-            else if (_step == 10) return Move.Left;
-            else if (_step == 11) return Move.Straight;
-            else if (_step == 12) return Move.Left;
-            else if (_step == 13) return Move.Left;
-            else if (_step == 14) return Move.Straight;
-            else if (_step == 15) return Move.Straight;
-            else if (_step == 16) return Move.Straight;
-            else if (_step == 17) return Move.Straight;
-            else if (_step == 18) return Move.Straight;
-            else if (_step == 19) return Move.Right;
-            else if (_step == 20) return Move.Right;
-            else if (_step == 21) return Move.Straight;
-            else if (_step == 22) return Move.Straight;
             else
                 return Move.Straight;
         }
@@ -193,34 +174,6 @@ namespace SnakeDeathmatch.Players.Vazba
 
         #endregion
 
-        #region QueuePlaygrounds
-
-        [ToDebug(typeof(BlackAndWhiteIntArrayVisualizer))]
-        public IntPlayground Queue_1_Top { get; private set; }
-
-        [ToDebug(typeof(BlackAndWhiteIntArrayVisualizer))]
-        public IntPlayground Queue_2_TopRight { get; private set; }
-
-        [ToDebug(typeof(BlackAndWhiteIntArrayVisualizer))]
-        public IntPlayground Queue_3_Right { get; private set; }
-
-        [ToDebug(typeof(BlackAndWhiteIntArrayVisualizer))]
-        public IntPlayground Queue_4_BottomRight { get; private set; }
-
-        [ToDebug(typeof(BlackAndWhiteIntArrayVisualizer))]
-        public IntPlayground Queue_5_Bottom { get; private set; }
-
-        [ToDebug(typeof(BlackAndWhiteIntArrayVisualizer))]
-        public IntPlayground Queue_6_BottomLeft { get; private set; }
-
-        [ToDebug(typeof(BlackAndWhiteIntArrayVisualizer))]
-        public IntPlayground Queue_7_Left { get; private set; }
-
-        [ToDebug(typeof(BlackAndWhiteIntArrayVisualizer))]
-        public IntPlayground Queue_8_TopLeft { get; private set; }
-
-        #endregion
-
         private void CreateDeathPlaygrounds()
         {
             var array = new int[_size, _size];
@@ -251,29 +204,6 @@ namespace SnakeDeathmatch.Players.Vazba
             _deathPlaygroundByDirection[Direction.TopLeft] = Death_8_TopLeft;
 
             _deathPlaygroundsCreated = true;
-        }
-
-        private void CreateQueuePlaygrounds()
-        {
-            Queue_1_Top = new IntPlayground(new int[_size, _size]);
-            Queue_2_TopRight = new IntPlayground(new int[_size, _size]);
-            Queue_3_Right = new IntPlayground(new int[_size, _size]);
-            Queue_4_BottomRight = new IntPlayground(new int[_size, _size]);
-            Queue_5_Bottom = new IntPlayground(new int[_size, _size]);
-            Queue_6_BottomLeft = new IntPlayground(new int[_size, _size]);
-            Queue_7_Left = new IntPlayground(new int[_size, _size]);
-            Queue_8_TopLeft = new IntPlayground(new int[_size, _size]);
-
-            _queuePlaygroundByDirection = new Dictionary<Direction, IntPlayground>();
-
-            _queuePlaygroundByDirection[Direction.Top] = Queue_1_Top;
-            _queuePlaygroundByDirection[Direction.TopRight] = Queue_2_TopRight;
-            _queuePlaygroundByDirection[Direction.Right] = Queue_3_Right;
-            _queuePlaygroundByDirection[Direction.BottomRight] = Queue_4_BottomRight;
-            _queuePlaygroundByDirection[Direction.Bottom] = Queue_5_Bottom;
-            _queuePlaygroundByDirection[Direction.BottomLeft] = Queue_6_BottomLeft;
-            _queuePlaygroundByDirection[Direction.Left] = Queue_7_Left;
-            _queuePlaygroundByDirection[Direction.TopLeft] = Queue_8_TopLeft;
         }
 
         private Vector CreateVectorOneStepBackward(int x, int y, Direction direction)
@@ -318,7 +248,6 @@ namespace SnakeDeathmatch.Players.Vazba
         private void RecalculateDeathPlaygrounds()
         {
             _queue = new Queue<Vector>();
-            CreateQueuePlaygrounds();
 
             var allSnakesIncludingMe = new List<Snake>();
             allSnakesIncludingMe.AddRange(_snakes);
@@ -330,7 +259,6 @@ namespace SnakeDeathmatch.Players.Vazba
                 foreach (Direction direction in _allDirections)
                 {
                     UpdateValue(snake.X, snake.Y, direction, 0);
-                    InvokeBreakpointsForEnqueue(direction);
                 }
             }
 
@@ -362,7 +290,6 @@ namespace SnakeDeathmatch.Players.Vazba
             if (value < _deathPlaygroundByDirection[direction][x, y])
             {
                 _deathPlaygroundByDirection[direction][x, y] = value;
-                _queuePlaygroundByDirection[direction][x, y] = 1;
 
                 Vector vector1 = CreateVectorOneStepBackward(x, y, direction.TurnRight());
                 Vector vector2 = CreateVectorOneStepBackward(x, y, direction);
@@ -372,28 +299,6 @@ namespace SnakeDeathmatch.Players.Vazba
                 if (IsValid(vector2.X, vector2.Y)) _queue.Enqueue(vector2);
                 if (IsValid(vector3.X, vector3.Y)) _queue.Enqueue(vector3);
             }
-        }
-
-        private void InvokeBreakpointsForEnqueue(Direction direction)
-        {
-            if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue));
-            if (Breakpoint != null && direction == Direction.Top)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue1Top));
-            if (Breakpoint != null && direction == Direction.TopRight)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue2TopRight));
-            if (Breakpoint != null && direction == Direction.Right)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue3Right));
-            if (Breakpoint != null && direction == Direction.BottomRight)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue4BottomRight));
-            if (Breakpoint != null && direction == Direction.Bottom)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue5Bottom));
-            if (Breakpoint != null && direction == Direction.BottomLeft)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue6BottomLeft));
-            if (Breakpoint != null && direction == Direction.Left)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue7Left));
-            if (Breakpoint != null && direction == Direction.TopLeft)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4Enqueue8TopLeft));
         }
 
         private void ProcessQueue()
