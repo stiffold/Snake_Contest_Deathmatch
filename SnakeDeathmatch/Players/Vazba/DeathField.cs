@@ -1,0 +1,207 @@
+﻿using SnakeDeathmatch.Debugger;
+using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Players.Vazba.Debug;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace SnakeDeathmatch.Players.Vazba
+{
+    public class DeathField
+    {
+        public struct Point
+        {
+            public int X;
+            public int Y;
+            public Point(int x, int y) { X = x; Y = y; }
+            public override string ToString() { return string.Format("[{0},{1}]", X, Y); }
+        }
+
+        public struct Vector
+        {
+            public int X;
+            public int Y;
+            public Direction Direction;
+            public Vector(int x, int y, Direction direction) { X = x; Y = y; Direction = direction; }
+            public override string ToString() { return string.Format("[{0},{1},{2}]", X, Y, Direction); }
+        }
+
+        private Queue<Vector> _queue;
+        private int _size;
+        private IEnumerable<Direction> _diagonalDirections = new[] { Direction.TopRight, Direction.BottomRight, Direction.BottomLeft, Direction.TopLeft };
+        private IEnumerable<Direction> _allDirections = new[] { Direction.Top, Direction.TopRight, Direction.Right, Direction.BottomRight,
+                                                                Direction.Bottom, Direction.BottomLeft, Direction.Left, Direction.TopLeft };
+        private IDictionary<Direction, IntPlayground> _deathPlaygroundByDirection;
+        private int Infinity { get { return DeathIntArrayVisualizer.InfinityId; } }
+
+        #region DeathPlaygrounds
+
+        [ToDebug(typeof(DeathIntArrayVisualizer))]
+        public IntPlayground Death_1_Top { get; private set; }
+
+        [ToDebug(typeof(DeathIntArrayVisualizer))]
+        public IntPlayground Death_2_TopRight { get; private set; }
+
+        [ToDebug(typeof(DeathIntArrayVisualizer))]
+        public IntPlayground Death_3_Right { get; private set; }
+
+        [ToDebug(typeof(DeathIntArrayVisualizer))]
+        public IntPlayground Death_4_BottomRight { get; private set; }
+
+        [ToDebug(typeof(DeathIntArrayVisualizer))]
+        public IntPlayground Death_5_Bottom { get; private set; }
+
+        [ToDebug(typeof(DeathIntArrayVisualizer))]
+        public IntPlayground Death_6_BottomLeft { get; private set; }
+
+        [ToDebug(typeof(DeathIntArrayVisualizer))]
+        public IntPlayground Death_7_Left { get; private set; }
+
+        [ToDebug(typeof(DeathIntArrayVisualizer))]
+        public IntPlayground Death_8_TopLeft { get; private set; }
+
+        #endregion
+
+        public DeathField(int size)
+        {
+            _size = size;
+            _queue = new Queue<Vector>();
+
+            var array = new int[_size, _size];
+            for (int x = 0; x < _size; x++)
+                for (int y = 0; y < _size; y++)
+                    array[x, y] = PlayersIntArrayVisualizer.InfinityId;
+
+            var intPlayground = new IntPlayground(array);
+
+            Death_1_Top = intPlayground;
+            Death_2_TopRight = intPlayground.Clone();
+            Death_3_Right = intPlayground.Clone();
+            Death_4_BottomRight = intPlayground.Clone();
+            Death_5_Bottom = intPlayground.Clone();
+            Death_6_BottomLeft = intPlayground.Clone();
+            Death_7_Left = intPlayground.Clone();
+            Death_8_TopLeft = intPlayground.Clone();
+
+            _deathPlaygroundByDirection = new Dictionary<Direction, IntPlayground>();
+            _deathPlaygroundByDirection[Direction.Top] = Death_1_Top;
+            _deathPlaygroundByDirection[Direction.TopRight] = Death_2_TopRight;
+            _deathPlaygroundByDirection[Direction.Right] = Death_3_Right;
+            _deathPlaygroundByDirection[Direction.BottomRight] = Death_4_BottomRight;
+            _deathPlaygroundByDirection[Direction.Bottom] = Death_5_Bottom;
+            _deathPlaygroundByDirection[Direction.BottomLeft] = Death_6_BottomLeft;
+            _deathPlaygroundByDirection[Direction.Left] = Death_7_Left;
+            _deathPlaygroundByDirection[Direction.TopLeft] = Death_8_TopLeft;
+        }
+
+        private Vector CreateVectorOneStepBackward(int x, int y, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Top: return new Vector(x, y + 1, direction);
+                case Direction.TopRight: return new Vector(x - 1, y + 1, direction);
+                case Direction.Right: return new Vector(x - 1, y, direction);
+                case Direction.BottomRight: return new Vector(x - 1, y - 1, direction);
+                case Direction.Bottom: return new Vector(x, y - 1, direction);
+                case Direction.BottomLeft: return new Vector(x + 1, y - 1, direction);
+                case Direction.Left: return new Vector(x + 1, y, direction);
+                case Direction.TopLeft: return new Vector(x + 1, y + 1, direction);
+            }
+            throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
+        }
+
+        private Vector CreateVectorOneStepForward(int x, int y, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Top: return new Vector(x, y - 1, direction);
+                case Direction.TopRight: return new Vector(x + 1, y - 1, direction);
+                case Direction.Right: return new Vector(x + 1, y, direction);
+                case Direction.BottomRight: return new Vector(x + 1, y + 1, direction);
+                case Direction.Bottom: return new Vector(x, y + 1, direction);
+                case Direction.BottomLeft: return new Vector(x - 1, y + 1, direction);
+                case Direction.Left: return new Vector(x - 1, y, direction);
+                case Direction.TopLeft: return new Vector(x - 1, y - 1, direction);
+            }
+            throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
+        }
+
+        private bool IsValid(int x, int y)
+        {
+            return x >= 0 && x < _size && y >= 0 && y < _size;
+        }
+
+        private void UpdateValue(int x, int y, Direction direction, int value)
+        {
+            if (value < _deathPlaygroundByDirection[direction][x, y])
+            {
+                _deathPlaygroundByDirection[direction][x, y] = value;
+
+                Vector vector1 = CreateVectorOneStepBackward(x, y, direction.TurnRight());
+                Vector vector2 = CreateVectorOneStepBackward(x, y, direction);
+                Vector vector3 = CreateVectorOneStepBackward(x, y, direction.TurnLeft());
+
+                if (IsValid(vector1.X, vector1.Y)) _queue.Enqueue(vector1);
+                if (IsValid(vector2.X, vector2.Y)) _queue.Enqueue(vector2);
+                if (IsValid(vector3.X, vector3.Y)) _queue.Enqueue(vector3);
+            }
+        }
+
+        private void ProcessQueue()
+        {
+            while (_queue.Count > 0)
+            {
+                Vector vector = _queue.Dequeue();
+                Vector forwardVector = CreateVectorOneStepForward(vector.X, vector.Y, vector.Direction);
+                if (IsValid(forwardVector.X, forwardVector.Y))
+                {
+                    int value1 = _deathPlaygroundByDirection[forwardVector.Direction.TurnLeft()][forwardVector.X, forwardVector.Y];
+                    int value2 = _deathPlaygroundByDirection[forwardVector.Direction][forwardVector.X, forwardVector.Y];
+                    int value3 = _deathPlaygroundByDirection[forwardVector.Direction.TurnRight()][forwardVector.X, forwardVector.Y];
+
+                    int maxValue = Math.Max(Math.Max(value1, value2), value3);
+                    if (maxValue < Infinity)
+                    {
+                        UpdateValue(vector.X, vector.Y, vector.Direction, maxValue + 1);
+                    }
+                }
+            }
+        }
+
+        public void Update(IEnumerable<Point> newPoints)
+        {
+            // new points (new positions of snake heads)
+            foreach (Point point in newPoints)
+            {
+                foreach (Direction direction in _allDirections)
+                {
+                    UpdateValue(point.X, point.Y, direction, 0);
+                }
+            }
+
+            // cross-collisions
+            foreach (Point point in newPoints)
+            {
+                foreach (Direction direction in _diagonalDirections)
+                {
+                    Vector vector1 = CreateVectorOneStepForward(point.X, point.Y, direction.TurnLeft().TurnLeft());
+                    if (IsValid(vector1.X, vector1.Y) && _deathPlaygroundByDirection[direction][vector1.X, vector1.Y] == 0)
+                    {
+                        Vector tmpVector = CreateVectorOneStepForward(point.X, point.Y, vector1.Direction.TurnLeft());
+                        UpdateValue(tmpVector.X, tmpVector.Y, direction, 1);
+                    }
+
+                    Vector vector2 = CreateVectorOneStepForward(point.X, point.Y, direction.TurnRight().TurnRight());
+                    if (IsValid(vector2.X, vector2.Y) && _deathPlaygroundByDirection[direction][vector2.X, vector2.Y] == 0)
+                    {
+                        Vector tmpVector = CreateVectorOneStepForward(point.X, point.Y, vector2.Direction.TurnRight());
+                        UpdateValue(tmpVector.X, tmpVector.Y, direction, 1);
+                    }
+                }
+            }
+
+            ProcessQueue();
+        }
+    }
+}
