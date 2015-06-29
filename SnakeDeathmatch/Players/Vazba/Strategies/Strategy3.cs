@@ -2,10 +2,12 @@
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Debugger;
 using SnakeDeathmatch.Players.Vazba.Debug;
+using SnakeDeathmatch.Players.Vazba.Helper;
+using SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis;
 
-namespace SnakeDeathmatch.Players.Vazba
+namespace SnakeDeathmatch.Players.Vazba.Strategies
 {
-    public class Strategy2 : IStrategy, IDebuggable
+    public class Strategy3 : IStrategy, IDebuggable
     {
         public const int MyWTF = 18;
         public const int OthersWTF = 5;
@@ -31,23 +33,23 @@ namespace SnakeDeathmatch.Players.Vazba
             CreateAndInitPlaygroundsForAllSteps();
 
             if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy2Initialized));
+                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy3Initialized));
 
             Snake me = liveSnakes.Me;
 
             Next next = me.GetNext(PlaygroundForTrack);
 
-            var resultForLeft = next.Left.HasValue ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
-            var resultForStraight = (resultForLeft != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
-            var resultForRight = (resultForLeft != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Right.HasValue) ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            //var resultForLeft = next.Left.HasValue ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            //var resultForStraight = (resultForLeft != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            //var resultForRight = (resultForLeft != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Right.HasValue) ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
 
             //var resultForStraight = next.Straight.HasValue ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
             //var resultForLeft = (resultForStraight != TrackExplorationResult.BestPossibleResult && next.Left.HasValue) ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
             //var resultForRight = (resultForLeft != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Right.HasValue) ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
 
-            //var resultForRight = next.Right.HasValue ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
-            //var resultForStraight = (resultForRight != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
-            //var resultForLeft = (resultForRight != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Left.HasValue) ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            var resultForRight = next.Right.HasValue ? ExploreTrack(next.Right.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            var resultForStraight = (resultForRight != TrackExplorationResult.BestPossibleResult && next.Straight.HasValue) ? ExploreTrack(next.Straight.Value, 1) : TrackExplorationResult.WorstPossibleResult;
+            var resultForLeft = (resultForRight != TrackExplorationResult.BestPossibleResult && resultForStraight != TrackExplorationResult.BestPossibleResult && next.Left.HasValue) ? ExploreTrack(next.Left.Value, 1) : TrackExplorationResult.WorstPossibleResult;
 
             if (resultForLeft >= resultForStraight && resultForLeft >= resultForRight) return Move.Left;
             if (resultForStraight >= resultForLeft && resultForStraight >= resultForRight) return Move.Straight;
@@ -117,10 +119,7 @@ namespace SnakeDeathmatch.Players.Vazba
             if (step == MyWTF)
                 return new TrackExplorationResult(step, aliveProbability: 1);
 
-            if (step > 0) PlaygroundForTrack[me.X, me.Y] = PlayersIntArrayVisualizer.TrackId;
-
-            if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy2TrackChanged));
+            if (step > 0) PlaygroundForTrack[me.X, me.Y] = me.Id;
 
             Next next = me.GetNext(PlaygroundForTrack);
 

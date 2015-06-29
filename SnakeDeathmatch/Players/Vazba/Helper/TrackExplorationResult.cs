@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SnakeDeathmatch.Players.Vazba.Strategies;
 
-namespace SnakeDeathmatch.Players.Vazba
+namespace SnakeDeathmatch.Players.Vazba.Helper
 {
     public class TrackExplorationResult
     {

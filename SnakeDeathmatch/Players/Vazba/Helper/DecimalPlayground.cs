@@ -1,7 +1,7 @@
 ﻿using SnakeDeathmatch.Debugger;
 using SnakeDeathmatch.Players.Vazba.Debug;
 
-namespace SnakeDeathmatch.Players.Vazba
+namespace SnakeDeathmatch.Players.Vazba.Helper
 {
     public class DecimalPlayground : IDecimalArray
     {

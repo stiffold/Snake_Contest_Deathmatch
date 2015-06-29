@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Debugger;
 using SnakeDeathmatch.Players.Vazba.Debug;
-using System;
-using System.Linq;
+using SnakeDeathmatch.Players.Vazba.Helper;
+using SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis;
 
-namespace SnakeDeathmatch.Players.Vazba
+
+namespace SnakeDeathmatch.Players.Vazba.Strategies
 {
     public class Strategy4 : IStrategy, IDebuggable
     {

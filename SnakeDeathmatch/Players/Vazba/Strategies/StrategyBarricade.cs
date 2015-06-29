@@ -5,8 +5,10 @@ using System.Text;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Debugger;
 using SnakeDeathmatch.Players.Vazba.Debug;
+using SnakeDeathmatch.Players.Vazba.Helper;
+using SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis;
 
-namespace SnakeDeathmatch.Players.Vazba
+namespace SnakeDeathmatch.Players.Vazba.Strategies
 {
     public class StrategyBarricade : IStrategy
     {

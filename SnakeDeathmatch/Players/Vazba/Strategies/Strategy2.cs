@@ -2,11 +2,12 @@
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Debugger;
 using SnakeDeathmatch.Players.Vazba.Debug;
+using SnakeDeathmatch.Players.Vazba.Helper;
+using SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis;
 
-namespace SnakeDeathmatch.Players.Vazba
+namespace SnakeDeathmatch.Players.Vazba.Strategies
 {
-    // Strategy5 = Strategy2, ze které je vyseparovaná DangerZone a ona ji pouze využívá
-    public class Strategy5 : IStrategy, IDebuggable
+    public class Strategy2 : IStrategy, IDebuggable
     {
         public const int MyWTF = 18;
         public const int OthersWTF = 5;
@@ -16,24 +17,20 @@ namespace SnakeDeathmatch.Players.Vazba
         [ToDebug(typeof(PlayersIntArrayVisualizer))]
         public IntPlayground PlaygroundForTrack { get; private set; }
 
-        [ToDebug]
-        public DangerZone DangerZone { get; private set; }
+        /// <summary>Herní hřiště (pro každý krok jedno) s pravděpodobnostmi obsazenosti jednotlivých políček v daném kroku.</summary>
+        [ToDebug(typeof(ZeroToOneDecimalArrayVisualizer))]
+        public List<DecimalPlayground> PlaygroundForStep { get; private set; }
 
         private int _size;
         private Snakes _snakes;
 
-        public Strategy5(int size)
-        {
-            _size = size;
-            DangerZone = new DangerZone(size, maxDepth: OthersWTF);
-        }
-
         public Move GetNextMove(IntPlayground playground, Snakes liveSnakes)
         {
             PlaygroundForTrack = playground;
+            _size = playground.Size;
             _snakes = liveSnakes;
 
-            DangerZone.Update(liveSnakes);
+            CreateAndInitPlaygroundsForAllSteps();
 
             if (Breakpoint != null)
                 Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy2Initialized));
@@ -57,6 +54,64 @@ namespace SnakeDeathmatch.Players.Vazba
             if (resultForLeft >= resultForStraight && resultForLeft >= resultForRight) return Move.Left;
             if (resultForStraight >= resultForLeft && resultForStraight >= resultForRight) return Move.Straight;
             return Move.Right;
+        }
+
+        private void CreateAndInitPlaygroundsForAllSteps()
+        {
+            // vytvoření polí
+            PlaygroundForStep = new List<DecimalPlayground>();
+            for (int step = 0; step <= OthersWTF; step++)
+            {
+                PlaygroundForStep.Add(new DecimalPlayground(_size));
+            }
+
+            // inicializace obsazenosti polí podle aktuálního herního hřiště
+            for (int x = 0; x < _size; x++)
+            {
+                for (int y = 0; y < _size; y++)
+                {
+                    decimal value = (PlaygroundForTrack[x, y] != 0) ? 1 : 0;
+
+                    foreach (DecimalPlayground playground in PlaygroundForStep)
+                    {
+                        playground[x, y] = value;
+                    }
+                }
+            }
+
+            // inicializace pravděpodobnosti obsazenosti polí v budoucnu
+            foreach (Snake snake in _snakes)
+            {
+                FillPlaygroundsWithDeathProbabilityForSnake(snake, step: 0, deathProbability: 1);
+            }
+        }
+
+        private void FillPlaygroundsWithDeathProbabilityForSnake(Snake snake, int step, decimal deathProbability)
+        {
+            if (step == OthersWTF)
+                return;
+
+            if (step > 0) PlaygroundForTrack[snake.X, snake.Y] = snake.Id;
+
+            AddDeathProbabilityForTheStepAndUpwards(deathProbability, snake.X, snake.Y, step);
+
+            Next next = snake.GetNext(PlaygroundForTrack);
+
+            decimal freeWays = (next.Left.HasValue ? 1 : 0) + (next.Straight.HasValue ? 1 : 0) + (next.Right.HasValue ? 1 : 0);
+
+            if (next.Left.HasValue) FillPlaygroundsWithDeathProbabilityForSnake(next.Left.Value, step + 1, deathProbability / freeWays);
+            if (next.Straight.HasValue) FillPlaygroundsWithDeathProbabilityForSnake(next.Straight.Value, step + 1, deathProbability / freeWays);
+            if (next.Right.HasValue) FillPlaygroundsWithDeathProbabilityForSnake(next.Right.Value, step + 1, deathProbability / freeWays);
+
+            if (step > 0) PlaygroundForTrack[snake.X, snake.Y] = 0;
+        }
+
+        private void AddDeathProbabilityForTheStepAndUpwards(decimal deathProbability, int x, int y, int targetStep)
+        {
+            for (int currentStep = targetStep; currentStep < PlaygroundForStep.Count; currentStep++)
+            {
+                PlaygroundForStep[currentStep][x, y] += deathProbability;
+            }
         }
 
         private TrackExplorationResult ExploreTrack(Snake me, int step)
@@ -97,7 +152,7 @@ namespace SnakeDeathmatch.Players.Vazba
             if (step > 0) PlaygroundForTrack[me.X, me.Y] = 0;
 
             //decimal aliveProbabilityForCurrentStep = (step > OthersWTF) ? 1 : 1 - PlaygroundForStep[step][me.X, me.Y];
-            decimal aliveProbabilityForCurrentStep = (step > OthersWTF) ? 1 : 1 - DangerZone.PlaygroundForStep[OthersWTF][me.X, me.Y];
+            decimal aliveProbabilityForCurrentStep = (step > OthersWTF) ? 1 : 1 - PlaygroundForStep[OthersWTF][me.X, me.Y];
 
             return new TrackExplorationResult(currentBestResult.Depth, currentBestResult.AliveProbability * aliveProbabilityForCurrentStep);
         }

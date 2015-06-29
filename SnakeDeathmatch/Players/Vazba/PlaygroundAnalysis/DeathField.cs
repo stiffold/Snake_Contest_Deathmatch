@@ -1,12 +1,14 @@
-﻿using SnakeDeathmatch.Debugger;
-using SnakeDeathmatch.Interface;
-using SnakeDeathmatch.Players.Vazba.Debug;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SnakeDeathmatch.Debugger;
+using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Players.Vazba.Debug;
+using SnakeDeathmatch.Players.Vazba.Helper;
 
-namespace SnakeDeathmatch.Players.Vazba
+
+namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
 {
     public class DeathField
     {

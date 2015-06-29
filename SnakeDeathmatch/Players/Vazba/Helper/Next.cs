@@ -1,4 +1,4 @@
-﻿namespace SnakeDeathmatch.Players.Vazba
+﻿namespace SnakeDeathmatch.Players.Vazba.Helper
 {
     public class Next
     {

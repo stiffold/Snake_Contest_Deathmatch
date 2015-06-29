@@ -132,8 +132,8 @@
     <Compile Include="Debugger\DebuggerForm.Designer.cs">
       <DependentUpon>DebuggerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Players\Vazba\DangerZone.cs" />
-    <Compile Include="Players\Vazba\DeathField.cs" />
+    <Compile Include="Players\Vazba\PlaygroundAnalysis\DangerZone.cs" />
+    <Compile Include="Players\Vazba\PlaygroundAnalysis\DeathField.cs" />
     <Compile Include="Players\Vazba\Debug\BlackAndWhiteIntArrayVisualizer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -147,35 +147,35 @@
     <Compile Include="Players\Vazba\Debug\ZeroToOneDecimalArrayVisualizer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Players\Vazba\DecimalPlayground.cs" />
+    <Compile Include="Players\Vazba\Helper\DecimalPlayground.cs" />
     <Compile Include="Debugger\DecimalArrayVisualizerBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Debugger\DecimalArrayVisualizerBase.Designer.cs">
       <DependentUpon>DecimalArrayVisualizerBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Players\Vazba\DirectionExt.cs" />
+    <Compile Include="Players\Vazba\Helper\DirectionExt.cs" />
     <Compile Include="Debugger\IDebuggable.cs" />
     <Compile Include="Debugger\IVisualizer.cs" />
-    <Compile Include="Players\Vazba\IntPlayground.cs" />
+    <Compile Include="Players\Vazba\Helper\IntPlayground.cs" />
     <Compile Include="Debugger\IntArrayVisualizerBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Debugger\IntArrayVisualizerBase.Designer.cs">
       <DependentUpon>IntArrayVisualizerBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Players\Vazba\Strategy1.cs" />
-    <Compile Include="Players\Vazba\IStrategy.cs" />
-    <Compile Include="Players\Vazba\Next.cs" />
-    <Compile Include="Players\Vazba\Snake.cs" />
-    <Compile Include="Players\Vazba\Snakes.cs" />
-    <Compile Include="Players\Vazba\Strategy2.cs" />
+    <Compile Include="Players\Vazba\Strategies\Strategy1.cs" />
+    <Compile Include="Players\Vazba\Strategies\IStrategy.cs" />
+    <Compile Include="Players\Vazba\Helper\Next.cs" />
+    <Compile Include="Players\Vazba\Helper\Snake.cs" />
+    <Compile Include="Players\Vazba\PlaygroundAnalysis\Snakes.cs" />
+    <Compile Include="Players\Vazba\Strategies\Strategy2.cs" />
     <Compile Include="Debugger\ToDebugAttribute.cs" />
-    <Compile Include="Players\Vazba\Strategy3.cs" />
-    <Compile Include="Players\Vazba\Strategy5.cs" />
-    <Compile Include="Players\Vazba\Strategy4.cs" />
-    <Compile Include="Players\Vazba\StrategyBarricade.cs" />
-    <Compile Include="Players\Vazba\TrackExplorationResult.cs" />
+    <Compile Include="Players\Vazba\Strategies\Strategy3.cs" />
+    <Compile Include="Players\Vazba\Strategies\Strategy5.cs" />
+    <Compile Include="Players\Vazba\Strategies\Strategy4.cs" />
+    <Compile Include="Players\Vazba\Strategies\StrategyBarricade.cs" />
+    <Compile Include="Players\Vazba\Helper\TrackExplorationResult.cs" />
     <Compile Include="Tests\CollisionTests.cs" />
     <Compile Include="Interface\Direction.cs" />
     <Compile Include="Interface\Move.cs" />

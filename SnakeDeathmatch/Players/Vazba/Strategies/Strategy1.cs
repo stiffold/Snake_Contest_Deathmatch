@@ -1,7 +1,9 @@
 ﻿using System;
 using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Players.Vazba.Helper;
+using SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis;
 
-namespace SnakeDeathmatch.Players.Vazba
+namespace SnakeDeathmatch.Players.Vazba.Strategies
 {
     public class Strategy1 : IStrategy
     {

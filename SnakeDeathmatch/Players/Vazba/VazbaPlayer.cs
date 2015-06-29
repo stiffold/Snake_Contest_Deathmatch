@@ -2,6 +2,9 @@
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Debugger;
 using SnakeDeathmatch.Players.Vazba.Debug;
+using SnakeDeathmatch.Players.Vazba.Helper;
+using SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis;
+using SnakeDeathmatch.Players.Vazba.Strategies;
 
 namespace SnakeDeathmatch.Players.Vazba
 {

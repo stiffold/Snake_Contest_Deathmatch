@@ -187,7 +187,7 @@ namespace NewGameUI
             {
                 _gameEngine = CreateGameEngineWithInitialStateFromFile(@"c:\a\__snake\initial-state.png");
 
-                var form = new DebuggerForm(_gameEngine, defaultBreakpointName: VazbaBreakpointNames.Strategy5DeathPlaygroundsRecalculated);
+                var form = new DebuggerForm(_gameEngine, defaultBreakpointName: VazbaBreakpointNames.Strategy5Initialized);
                 form.Show();
                 form.UpdateUI();
             }

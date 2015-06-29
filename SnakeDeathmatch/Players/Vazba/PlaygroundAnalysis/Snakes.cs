@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using SnakeDeathmatch.Interface;
+using SnakeDeathmatch.Players.Vazba.Helper;
 
-namespace SnakeDeathmatch.Players.Vazba
+namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
 {
     public class Snakes : List<Snake>
     {
