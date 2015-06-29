@@ -6,17 +6,30 @@ using SnakeDeathmatch.Players.Vazba.Helper;
 
 namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
 {
-    public class Snakes : List<Snake>
+    public class Snakes
     {
         private IntPlayground _oldPlayground;
         private IntPlayground _newPlayground;
+        private List<Snake> _others = new List<Snake>();
+        public IEnumerable<Snake> Others { get { return _others; } }
+        public Snake Me { get; private set; }
+        public IEnumerable<Snake> OthersAndMe
+        {
+            get
+            {
+                foreach (Snake snake in _others)
+                {
+                    yield return snake;
+                }
+                yield return Me;
+            }
+        }
 
         public Snakes(Snake me)
         {
-            this.Me = me;
+            Me = me;
         }
 
-        public Snake Me { get; private set; }
         public bool IsInitialized { get; private set; }
 
         public void Update(IntPlayground playground)
@@ -33,7 +46,7 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
                     {
                         int playerId = playground[x, y];
                         if (playerId != 0 && playerId != Me.Id)
-                            this.Add(new Snake(playerId, x, y, Direction.Top));
+                            _others.Add(new Snake(playerId, x, y, Direction.Top));
                     }
                 }
                 return;
@@ -60,10 +73,10 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
                     {
                         int playerId = _newPlayground[x, y];
                         if (playerId == Me.Id)
-                            this.Me = new Snake((int)PlayerId.Vazba, x, y, GetDirection(Me.X, Me.Y, x, y));
+                            Me = new Snake((int)PlayerId.Vazba, x, y, GetDirection(Me.X, Me.Y, x, y));
                         else
                         {
-                            IEnumerable<Snake> snakes = this.Where(s => s.Id == playerId);
+                            IEnumerable<Snake> snakes = Others.Where(s => s.Id == playerId);
                             if (snakes.Count() == 1)
                             {
                                 Snake snake = snakes.Single();
@@ -74,8 +87,8 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
                 }
             }
 
-            Clear();
-            AddRange(liveSnakes);
+            _others.Clear();
+            _others.AddRange(liveSnakes);
         }
 
         private Direction GetDirection(int oldX, int oldY, int newX, int newY)
@@ -90,18 +103,6 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
             if (oldX - 1 == newX && oldY + 1 == newY) return Direction.BottomLeft;
 
             throw new Exception(string.Format("Old position [{0},{1}] and new position [{2},{3}] are not next to each other.", oldX, oldY, newX, newY));
-        }
-
-        public IEnumerable<Snake> IncludingMe
-        {
-            get
-            {
-                foreach (Snake snake in this)
-                {
-                    yield return snake;
-                }
-                yield return Me;
-            }
         }
     }
 }

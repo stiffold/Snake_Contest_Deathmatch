@@ -32,10 +32,10 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
 
             if (_state == State.Begin && liveSnakes.IsInitialized)
             {
-                int topRightQuadrantSpace = liveSnakes.All(snake => snake.X < me.X || snake.Y > me.Y) ? (playground.Size - me.X) * me.Y : 0;
-                int bottomRightQuadrantSpace = liveSnakes.All(snake => snake.X < me.X || snake.Y < me.Y) ? (playground.Size - me.X) * (playground.Size - me.Y) : 0;
-                int bottomLeftQuadrantSpace = liveSnakes.All(snake => snake.X > me.X || snake.Y < me.Y) ? me.X * (playground.Size - me.Y) : 0;
-                int topLeftQuadrantSpace = liveSnakes.All(snake => snake.X > me.X || snake.Y > me.Y) ? me.X * me.Y : 0;
+                int topRightQuadrantSpace = liveSnakes.OthersAndMe.All(snake => snake.X < me.X || snake.Y > me.Y) ? (playground.Size - me.X) * me.Y : 0;
+                int bottomRightQuadrantSpace = liveSnakes.OthersAndMe.All(snake => snake.X < me.X || snake.Y < me.Y) ? (playground.Size - me.X) * (playground.Size - me.Y) : 0;
+                int bottomLeftQuadrantSpace = liveSnakes.OthersAndMe.All(snake => snake.X > me.X || snake.Y < me.Y) ? me.X * (playground.Size - me.Y) : 0;
+                int topLeftQuadrantSpace = liveSnakes.OthersAndMe.All(snake => snake.X > me.X || snake.Y > me.Y) ? me.X * me.Y : 0;
 
                 var quadrantSpaces = new [] {topRightQuadrantSpace, bottomRightQuadrantSpace, bottomLeftQuadrantSpace, topLeftQuadrantSpace};
 
@@ -65,7 +65,7 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
                 if (me.X == 0 || me.X == playground.Size - 1 || me.Y == 0 || me.Y == playground.Size - 1)
                     _state = State.TurnRightFirst;
 
-                if (liveSnakes.Any(snake => _x1 <= snake.X && snake.X <= _x2 && _y1 <= snake.Y && snake.Y <= _y2))
+                if (liveSnakes.OthersAndMe.Any(snake => _x1 <= snake.X && snake.X <= _x2 && _y1 <= snake.Y && snake.Y <= _y2))
                     _state = State.End;
             }
             
@@ -83,7 +83,7 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
                     }
                 }
 
-                if (liveSnakes.Any(snake => _x1 <= snake.X && snake.X <= _x2 && _y1 <= snake.Y && snake.Y <= _y2))
+                if (liveSnakes.OthersAndMe.Any(snake => _x1 <= snake.X && snake.X <= _x2 && _y1 <= snake.Y && snake.Y <= _y2))
                     _state = State.End;
             }
             

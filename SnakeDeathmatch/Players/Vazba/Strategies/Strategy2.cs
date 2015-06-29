@@ -80,7 +80,7 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
             }
 
             // inicializace pravděpodobnosti obsazenosti polí v budoucnu
-            foreach (Snake snake in _snakes)
+            foreach (Snake snake in _snakes.Others)
             {
                 FillPlaygroundsWithDeathProbabilityForSnake(snake, step: 0, deathProbability: 1);
             }

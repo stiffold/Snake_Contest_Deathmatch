@@ -36,7 +36,7 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
         public void Update(Snakes snakes)
         {
             // aktualizace herního pole podle aktuálních pozic hadů
-            foreach (Snake snake in snakes.IncludingMe)
+            foreach (Snake snake in snakes.OthersAndMe)
             {
                 Playground[snake.X, snake.Y] = snake.Id;
             }            
@@ -56,7 +56,7 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
             }
 
             // inicializace pravděpodobnosti obsazenosti polí v budoucnu
-            foreach (Snake snake in snakes)
+            foreach (Snake snake in snakes.Others)
             {
                 FillPlaygroundsWithDeathProbabilityForSnake(snake, step: 0, deathProbability: 1);
             }
