@@ -31,7 +31,7 @@ namespace SnakeDeathmatch.Players.Vazba
             if (DeathField == null)
                 DeathField = new DeathField(_size);
 
-            IEnumerable<DeathField.Point> newPoints = liveSnakes.Union(new[] { liveSnakes.Me }).Select(snake => new DeathField.Point(snake.X, snake.Y));
+            IEnumerable<DeathField.Point> newPoints = liveSnakes.IncludingMe.Select(snake => new DeathField.Point(snake.X, snake.Y));
             DeathField.Update(newPoints);
             if (Breakpoint != null)
                 Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4DeathPlaygroundsRecalculated));

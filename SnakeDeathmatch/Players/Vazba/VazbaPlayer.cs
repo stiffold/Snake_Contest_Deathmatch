@@ -11,7 +11,7 @@ namespace SnakeDeathmatch.Players.Vazba
 
         public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)
         {
-            Strategy = new Strategy4();
+            Strategy = new Strategy5(playgroundSize);
 
             if (playerId != (int)PlayerId.Vazba)
                 throw new ArgumentException(string.Format("Expected playerId {0} ({1}) but got {2}.", (int)PlayerId.Vazba, PlayerId.Vazba, playerId), "playerId");

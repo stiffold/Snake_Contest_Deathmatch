@@ -132,6 +132,7 @@
     <Compile Include="Debugger\DebuggerForm.Designer.cs">
       <DependentUpon>DebuggerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Players\Vazba\DangerZone.cs" />
     <Compile Include="Players\Vazba\DeathField.cs" />
     <Compile Include="Players\Vazba\Debug\BlackAndWhiteIntArrayVisualizer.cs">
       <SubType>UserControl</SubType>
@@ -171,6 +172,7 @@
     <Compile Include="Players\Vazba\Strategy2.cs" />
     <Compile Include="Debugger\ToDebugAttribute.cs" />
     <Compile Include="Players\Vazba\Strategy3.cs" />
+    <Compile Include="Players\Vazba\Strategy5.cs" />
     <Compile Include="Players\Vazba\Strategy4.cs" />
     <Compile Include="Players\Vazba\StrategyBarricade.cs" />
     <Compile Include="Players\Vazba\TrackExplorationResult.cs" />

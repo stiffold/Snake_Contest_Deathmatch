@@ -90,5 +90,17 @@ namespace SnakeDeathmatch.Players.Vazba
 
             throw new Exception(string.Format("Old position [{0},{1}] and new position [{2},{3}] are not next to each other.", oldX, oldY, newX, newY));
         }
+
+        public IEnumerable<Snake> IncludingMe
+        {
+            get
+            {
+                foreach (Snake snake in this)
+                {
+                    yield return snake;
+                }
+                yield return Me;
+            }
+        }
     }
 }
