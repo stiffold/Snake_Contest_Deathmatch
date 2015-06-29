@@ -18,7 +18,7 @@ namespace SnakeDeathmatch.Players.Vazba
             public override string ToString() { return string.Format("[{0},{1}]", X, Y); }
         }
 
-        public struct Vector
+        private struct Vector
         {
             public int X;
             public int Y;
@@ -93,6 +93,51 @@ namespace SnakeDeathmatch.Players.Vazba
             _deathPlaygroundByDirection[Direction.BottomLeft] = Death_6_BottomLeft;
             _deathPlaygroundByDirection[Direction.Left] = Death_7_Left;
             _deathPlaygroundByDirection[Direction.TopLeft] = Death_8_TopLeft;
+
+            InitializeBorders();
+        }
+
+        private void InitializeBorders()
+        {
+            int N0 = _size - 1;
+            int N1 = _size - 2;
+            int N2 = _size - 3;
+
+            for (int i = 0; i < _size; i++)
+            {
+                Death_1_Top[i, 0] = 1;
+                Death_1_Top[i, 1] = 2;
+                Death_2_TopRight[i, 0] = 1;
+                Death_2_TopRight[N0, i] = 1;
+                Death_3_Right[N0, i] = 1;
+                Death_3_Right[N1, i] = 2;
+                Death_4_BottomRight[N0, i] = 1;
+                Death_4_BottomRight[i, N0] = 1;
+                Death_5_Bottom[i, N0] = 1;
+                Death_5_Bottom[i, N1] = 2;
+                Death_6_BottomLeft[0, i] = 1;
+                Death_6_BottomLeft[i, N0] = 1;
+                Death_7_Left[0, i] = 1;
+                Death_7_Left[1, i] = 2;
+                Death_8_TopLeft[0, i] = 1;
+                Death_8_TopLeft[i, 0] = 1;
+            }
+            Death_2_TopRight[N1, 1] = 2;
+            Death_2_TopRight[N2, 1] = 3;
+            Death_2_TopRight[N2, 2] = 3;
+            Death_2_TopRight[N1, 2] = 3;
+            Death_4_BottomRight[N1, N1] = 2;
+            Death_4_BottomRight[N2, N1] = 3;
+            Death_4_BottomRight[N2, N2] = 3;
+            Death_4_BottomRight[N1, N2] = 3;
+            Death_6_BottomLeft[1, N1] = 2;
+            Death_6_BottomLeft[2, N1] = 3;
+            Death_6_BottomLeft[2, N2] = 3;
+            Death_6_BottomLeft[1, N2] = 3;
+            Death_8_TopLeft[1, 1] = 2;
+            Death_8_TopLeft[2, 1] = 3;
+            Death_8_TopLeft[2, 2] = 3;
+            Death_8_TopLeft[1, 2] = 3;
         }
 
         private Vector CreateVectorOneStepBackward(int x, int y, Direction direction)
