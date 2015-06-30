@@ -8,9 +8,9 @@ namespace SnakeDeathmatch.Players.Vazba.Helper
         public int Id { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
-        public Direction Direction { get; private set; }
+        public Direction? Direction { get; private set; }
 
-        public Snake(int id, int x, int y, Direction direction) : this()
+        public Snake(int id, int x, int y, Direction? direction) : this()
         {
             Id = id;
             X = x;
@@ -25,9 +25,12 @@ namespace SnakeDeathmatch.Players.Vazba.Helper
 
         public Next GetNext(IntPlayground playground)
         {
-            Direction leftDirection = Direction.TurnLeft();
-            Direction straightDirection = Direction;
-            Direction rightDirection = Direction.TurnRight();
+            if (Direction == null)
+                throw new InvalidOperationException(string.Format("Snake direction is not initialized yet (snake with Id {0} and position [{1},{2}]).", Id, X, Y));
+
+            Direction leftDirection = Direction.Value.TurnLeft();
+            Direction straightDirection = Direction.Value;
+            Direction rightDirection = Direction.Value.TurnRight();
 
             return new Next()
             {
@@ -39,6 +42,9 @@ namespace SnakeDeathmatch.Players.Vazba.Helper
 
         public bool CanMove(Direction direction, IntPlayground playground)
         {
+            if (Direction == null)
+                throw new InvalidOperationException(string.Format("Snake direction is not initialized yet (snake with Id {0} and position [{1},{2}]).", Id, X, Y));
+
             Snake s = Move(direction);
 
             // detekce kolize s okrajem pole
@@ -54,10 +60,10 @@ namespace SnakeDeathmatch.Players.Vazba.Helper
             }
 
             // detekce snahy projet diagonálně skrz tělo jiného hada
-            if ((direction == Direction.TopRight && (playground[s.X, s.Y + 1] != 0) && (playground[s.X - 1, s.Y] != 0)) ||
-                (direction == Direction.BottomRight && (playground[s.X, s.Y - 1] != 0) && (playground[s.X - 1, s.Y] != 0)) ||
-                (direction == Direction.BottomLeft && (playground[s.X, s.Y - 1] != 0) && (playground[s.X + 1, s.Y] != 0)) ||
-                (direction == Direction.TopLeft && (playground[s.X, s.Y + 1] != 0) && (playground[s.X + 1, s.Y] != 0)))
+            if ((direction == Interface.Direction.TopRight && (playground[s.X, s.Y + 1] != 0) && (playground[s.X - 1, s.Y] != 0)) ||
+                (direction == Interface.Direction.BottomRight && (playground[s.X, s.Y - 1] != 0) && (playground[s.X - 1, s.Y] != 0)) ||
+                (direction == Interface.Direction.BottomLeft && (playground[s.X, s.Y - 1] != 0) && (playground[s.X + 1, s.Y] != 0)) ||
+                (direction == Interface.Direction.TopLeft && (playground[s.X, s.Y + 1] != 0) && (playground[s.X + 1, s.Y] != 0)))
             {
                 return false;
             }
@@ -69,14 +75,14 @@ namespace SnakeDeathmatch.Players.Vazba.Helper
         {
             switch (direction)
             {
-                case Direction.Top: return new Snake(Id, X, Y - 1, direction);
-                case Direction.TopRight: return new Snake(Id, X + 1, Y - 1, direction);
-                case Direction.Right: return new Snake(Id, X + 1, Y, direction);
-                case Direction.BottomRight: return new Snake(Id, X + 1, Y + 1, direction);
-                case Direction.Bottom: return new Snake(Id, X, Y + 1, direction);
-                case Direction.BottomLeft: return new Snake(Id, X - 1, Y + 1, direction);
-                case Direction.Left: return new Snake(Id, X - 1, Y, direction);
-                case Direction.TopLeft: return new Snake(Id, X - 1, Y - 1, direction);
+                case Interface.Direction.Top: return new Snake(Id, X, Y - 1, direction);
+                case Interface.Direction.TopRight: return new Snake(Id, X + 1, Y - 1, direction);
+                case Interface.Direction.Right: return new Snake(Id, X + 1, Y, direction);
+                case Interface.Direction.BottomRight: return new Snake(Id, X + 1, Y + 1, direction);
+                case Interface.Direction.Bottom: return new Snake(Id, X, Y + 1, direction);
+                case Interface.Direction.BottomLeft: return new Snake(Id, X - 1, Y + 1, direction);
+                case Interface.Direction.Left: return new Snake(Id, X - 1, Y, direction);
+                case Interface.Direction.TopLeft: return new Snake(Id, X - 1, Y - 1, direction);
             }
             throw new Exception(string.Format("Unknown value {0}.{1}.", typeof(Direction).Name, direction));
         }

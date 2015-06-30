@@ -22,20 +22,21 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
 
         public event BreakpointEventHandler Breakpoint;
 
+        public Strategy4(int size)
+        {
+            _size = size;
+            DeathField = new DeathField(size);
+        }
+
         public Move GetNextMove(IntPlayground playground, Snakes liveSnakes)
         {
             _Playground = playground;
             _Track = playground.Clone();
-            _size = playground.Size;
             _snakes = liveSnakes;
 
             Snake me = liveSnakes.Me;
 
-            if (DeathField == null)
-                DeathField = new DeathField(_size);
-
-            IEnumerable<DeathField.Point> newPoints = liveSnakes.OthersAndMe.Select(snake => new DeathField.Point(snake.X, snake.Y));
-            DeathField.Update(newPoints);
+            DeathField.Update(liveSnakes);
             if (Breakpoint != null)
                 Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4DeathPlaygroundsRecalculated));
 

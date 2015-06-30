@@ -46,7 +46,7 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
                     {
                         int playerId = playground[x, y];
                         if (playerId != 0 && playerId != Me.Id)
-                            _others.Add(new Snake(playerId, x, y, Direction.Top));
+                            _others.Add(new Snake(playerId, x, y, null));
                     }
                 }
                 return;

@@ -7,19 +7,10 @@ using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Players.Vazba.Debug;
 using SnakeDeathmatch.Players.Vazba.Helper;
 
-
 namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
 {
     public class DeathField
     {
-        public struct Point
-        {
-            public int X;
-            public int Y;
-            public Point(int x, int y) { X = x; Y = y; }
-            public override string ToString() { return string.Format("[{0},{1}]", X, Y); }
-        }
-
         private struct Vector
         {
             public int X;
@@ -216,33 +207,33 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
             }
         }
 
-        public void Update(IEnumerable<Point> newPoints)
+        public void Update(Snakes snakes)
         {
             // new points (new positions of snake heads)
-            foreach (Point point in newPoints)
+            foreach (Snake snake in snakes.OthersAndMe)
             {
                 foreach (Direction direction in _allDirections)
                 {
-                    UpdateValue(point.X, point.Y, direction, 0);
+                    UpdateValue(snake.X, snake.Y, direction, 0);
                 }
             }
 
             // cross-collisions
-            foreach (Point point in newPoints)
+            foreach (Snake snake in snakes.OthersAndMe)
             {
                 foreach (Direction direction in _diagonalDirections)
                 {
-                    Vector vector1 = CreateVectorOneStepForward(point.X, point.Y, direction.TurnLeft().TurnLeft());
+                    Vector vector1 = CreateVectorOneStepForward(snake.X, snake.Y, direction.TurnLeft().TurnLeft());
                     if (IsValid(vector1.X, vector1.Y) && _deathPlaygroundByDirection[direction][vector1.X, vector1.Y] == 0)
                     {
-                        Vector tmpVector = CreateVectorOneStepForward(point.X, point.Y, vector1.Direction.TurnLeft());
+                        Vector tmpVector = CreateVectorOneStepForward(snake.X, snake.Y, vector1.Direction.TurnLeft());
                         UpdateValue(tmpVector.X, tmpVector.Y, direction, 1);
                     }
 
-                    Vector vector2 = CreateVectorOneStepForward(point.X, point.Y, direction.TurnRight().TurnRight());
+                    Vector vector2 = CreateVectorOneStepForward(snake.X, snake.Y, direction.TurnRight().TurnRight());
                     if (IsValid(vector2.X, vector2.Y) && _deathPlaygroundByDirection[direction][vector2.X, vector2.Y] == 0)
                     {
-                        Vector tmpVector = CreateVectorOneStepForward(point.X, point.Y, vector2.Direction.TurnRight());
+                        Vector tmpVector = CreateVectorOneStepForward(snake.X, snake.Y, vector2.Direction.TurnRight());
                         UpdateValue(tmpVector.X, tmpVector.Y, direction, 1);
                     }
                 }

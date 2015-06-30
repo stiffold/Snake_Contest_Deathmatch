@@ -21,6 +21,9 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
         [ToDebug]
         public DangerZone DangerZone { get; private set; }
 
+        [ToDebug]
+        public DeathField DeathField { get; private set; }
+
         private int _size;
         private Snakes _snakes;
 
@@ -28,6 +31,7 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
         {
             _size = size;
             DangerZone = new DangerZone(size, maxDepth: OthersWTF);
+            DeathField = new DeathField(size);
         }
 
         public Move GetNextMove(IntPlayground playground, Snakes liveSnakes)
@@ -36,6 +40,7 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
             _snakes = liveSnakes;
 
             DangerZone.Update(liveSnakes);
+            DeathField.Update(liveSnakes);
 
             if (Breakpoint != null)
                 Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy5Initialized));
