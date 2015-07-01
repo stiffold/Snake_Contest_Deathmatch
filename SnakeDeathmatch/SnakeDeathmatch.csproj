@@ -132,6 +132,7 @@
     <Compile Include="Debugger\DebuggerForm.Designer.cs">
       <DependentUpon>DebuggerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Players\Vazba\PlaygroundAnalysis\Analysis.cs" />
     <Compile Include="Players\Vazba\PlaygroundAnalysis\DangerZone.cs" />
     <Compile Include="Players\Vazba\PlaygroundAnalysis\DeathField.cs" />
     <Compile Include="Players\Vazba\Debug\BlackAndWhiteIntArrayVisualizer.cs">

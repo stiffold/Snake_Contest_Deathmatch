@@ -21,7 +21,14 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
         private const int EnoughtSpace = 1200;
 
         private State _state = State.Begin;
-        private IStrategy _strategy = new Strategy2();
+        private IStrategy _strategy;
+
+        public Analysis Analysis { get; private set; }
+
+        public StrategyBarricade(Analysis analysis)
+        {
+            Analysis = analysis;
+        }
 
         [ToDebug(typeof(PlayersIntArrayVisualizer))]
         public IntPlayground BarricadePlayground { get; private set; }
@@ -30,12 +37,12 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
         {
             Snake me = liveSnakes.Me;
 
-            if (_state == State.Begin && liveSnakes.IsInitialized)
+            if (_state == State.Begin)
             {
-                int topRightQuadrantSpace = liveSnakes.OthersAndMe.All(snake => snake.X < me.X || snake.Y > me.Y) ? (playground.Size - me.X) * me.Y : 0;
-                int bottomRightQuadrantSpace = liveSnakes.OthersAndMe.All(snake => snake.X < me.X || snake.Y < me.Y) ? (playground.Size - me.X) * (playground.Size - me.Y) : 0;
-                int bottomLeftQuadrantSpace = liveSnakes.OthersAndMe.All(snake => snake.X > me.X || snake.Y < me.Y) ? me.X * (playground.Size - me.Y) : 0;
-                int topLeftQuadrantSpace = liveSnakes.OthersAndMe.All(snake => snake.X > me.X || snake.Y > me.Y) ? me.X * me.Y : 0;
+                int topRightQuadrantSpace = liveSnakes.Others.All(snake => snake.X < me.X || snake.Y > me.Y) ? (playground.Size - me.X) * me.Y : 0;
+                int bottomRightQuadrantSpace = liveSnakes.Others.All(snake => snake.X < me.X || snake.Y < me.Y) ? (playground.Size - me.X) * (playground.Size - me.Y) : 0;
+                int bottomLeftQuadrantSpace = liveSnakes.Others.All(snake => snake.X > me.X || snake.Y < me.Y) ? me.X * (playground.Size - me.Y) : 0;
+                int topLeftQuadrantSpace = liveSnakes.Others.All(snake => snake.X > me.X || snake.Y > me.Y) ? me.X * me.Y : 0;
 
                 var quadrantSpaces = new [] {topRightQuadrantSpace, bottomRightQuadrantSpace, bottomLeftQuadrantSpace, topLeftQuadrantSpace};
 
@@ -51,7 +58,7 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
             if (_state == State.TurnLeftFirst)
             {
                 if (_strategy == null)
-                    _strategy = new Strategy2();
+                    _strategy = new Strategy5(Analysis, Move.Left);
 
                 for (int y = 0; y < playground.Size; y++)
                 {
@@ -63,16 +70,22 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
                 }
 
                 if (me.X == 0 || me.X == playground.Size - 1 || me.Y == 0 || me.Y == playground.Size - 1)
+                {
                     _state = State.TurnRightFirst;
+                    _strategy = null;
+                }
 
-                if (liveSnakes.OthersAndMe.Any(snake => _x1 <= snake.X && snake.X <= _x2 && _y1 <= snake.Y && snake.Y <= _y2))
+                if (liveSnakes.Others.Any(snake => _x1 <= snake.X && snake.X <= _x2 && _y1 <= snake.Y && snake.Y <= _y2))
+                {
                     _state = State.End;
+                    _strategy = null;
+                }
             }
             
             if (_state == State.TurnRightFirst)
             {
-                if (_strategy == null || _strategy is Strategy2)
-                    _strategy = new Strategy3();
+                if (_strategy == null)
+                    _strategy = new Strategy5(Analysis, Move.Right);
 
                 for (int y = 0; y < playground.Size; y++)
                 {
@@ -83,10 +96,16 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
                     }
                 }
 
-                if (liveSnakes.OthersAndMe.Any(snake => _x1 <= snake.X && snake.X <= _x2 && _y1 <= snake.Y && snake.Y <= _y2))
+                if (liveSnakes.Others.Any(snake => _x1 <= snake.X && snake.X <= _x2 && _y1 <= snake.Y && snake.Y <= _y2))
+                {
                     _state = State.End;
+                    _strategy = null;
+                }
             }
-            
+
+            if (_strategy == null)
+                _strategy = new Strategy5(Analysis, Move.Left);
+
             BarricadePlayground = playground;
 
             return _strategy.GetNextMove(playground, liveSnakes);

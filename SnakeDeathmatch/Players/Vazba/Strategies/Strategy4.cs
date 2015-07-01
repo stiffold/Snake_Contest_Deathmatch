@@ -67,7 +67,7 @@ namespace SnakeDeathmatch.Players.Vazba.Strategies
 
                 Move move = GetNextStepForPasticka();
                 _step++;
-                if (_step / 100 == 0)
+                if (_step % 100 == 0)
                     if (Breakpoint != null)
                         Breakpoint(this, new BreakpointEventArgs(VazbaBreakpointNames.Strategy4StopEvery100Steps));
                 return move;

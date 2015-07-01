@@ -40,7 +40,7 @@
             this._pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this._pictureBox.Location = new System.Drawing.Point(0, 0);
             this._pictureBox.Name = "_pictureBox";
-            this._pictureBox.Size = new System.Drawing.Size(300, 300);
+            this._pictureBox.Size = new System.Drawing.Size(150, 150);
             this._pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this._pictureBox.TabIndex = 1;
             this._pictureBox.TabStop = false;
@@ -51,7 +51,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this._pictureBox);
             this.Name = "DecimalArrayVisualizerBase";
-            this.Size = new System.Drawing.Size(300, 300);
             ((System.ComponentModel.ISupportInitialize)(this._pictureBox)).EndInit();
             this.ResumeLayout(false);
 

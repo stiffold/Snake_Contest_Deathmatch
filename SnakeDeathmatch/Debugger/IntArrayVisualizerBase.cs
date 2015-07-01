@@ -24,7 +24,7 @@ namespace SnakeDeathmatch.Debugger
             var bitmap = new Bitmap(size * 4, size * 4);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
-                g.FillRectangle(Brushes.Gray, 0 , 0, size*4, size*4);
+                g.FillRectangle(Brushes.Gray, 0 , 0, size * 4, size * 4);
             }
             for (int x = 0; x < size; x++)
             {

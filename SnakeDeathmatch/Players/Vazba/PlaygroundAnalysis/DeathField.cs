@@ -25,8 +25,9 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
         private IEnumerable<Direction> _diagonalDirections = new[] { Direction.TopRight, Direction.BottomRight, Direction.BottomLeft, Direction.TopLeft };
         private IEnumerable<Direction> _allDirections = new[] { Direction.Top, Direction.TopRight, Direction.Right, Direction.BottomRight,
                                                                 Direction.Bottom, Direction.BottomLeft, Direction.Left, Direction.TopLeft };
-        private IDictionary<Direction, IntPlayground> _deathPlaygroundByDirection;
-        private int Infinity { get { return DeathIntArrayVisualizer.InfinityId; } }
+        public static int Infinity { get { return DeathIntArrayVisualizer.InfinityId; } }
+
+        public IDictionary<Direction, IntPlayground> DeathPlaygroundByDirection;
 
         #region DeathPlaygrounds
 
@@ -61,10 +62,11 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
             _size = size;
             _queue = new Queue<Vector>();
 
+            int infinity = Infinity;
             var array = new int[_size, _size];
             for (int x = 0; x < _size; x++)
                 for (int y = 0; y < _size; y++)
-                    array[x, y] = PlayersIntArrayVisualizer.InfinityId;
+                    array[x, y] = infinity;
 
             var intPlayground = new IntPlayground(array);
 
@@ -77,15 +79,15 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
             Death_7_Left = intPlayground.Clone();
             Death_8_TopLeft = intPlayground.Clone();
 
-            _deathPlaygroundByDirection = new Dictionary<Direction, IntPlayground>();
-            _deathPlaygroundByDirection[Direction.Top] = Death_1_Top;
-            _deathPlaygroundByDirection[Direction.TopRight] = Death_2_TopRight;
-            _deathPlaygroundByDirection[Direction.Right] = Death_3_Right;
-            _deathPlaygroundByDirection[Direction.BottomRight] = Death_4_BottomRight;
-            _deathPlaygroundByDirection[Direction.Bottom] = Death_5_Bottom;
-            _deathPlaygroundByDirection[Direction.BottomLeft] = Death_6_BottomLeft;
-            _deathPlaygroundByDirection[Direction.Left] = Death_7_Left;
-            _deathPlaygroundByDirection[Direction.TopLeft] = Death_8_TopLeft;
+            DeathPlaygroundByDirection = new Dictionary<Direction, IntPlayground>();
+            DeathPlaygroundByDirection[Direction.Top] = Death_1_Top;
+            DeathPlaygroundByDirection[Direction.TopRight] = Death_2_TopRight;
+            DeathPlaygroundByDirection[Direction.Right] = Death_3_Right;
+            DeathPlaygroundByDirection[Direction.BottomRight] = Death_4_BottomRight;
+            DeathPlaygroundByDirection[Direction.Bottom] = Death_5_Bottom;
+            DeathPlaygroundByDirection[Direction.BottomLeft] = Death_6_BottomLeft;
+            DeathPlaygroundByDirection[Direction.Left] = Death_7_Left;
+            DeathPlaygroundByDirection[Direction.TopLeft] = Death_8_TopLeft;
 
             InitializeBorders();
         }
@@ -172,9 +174,9 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
 
         private void UpdateValue(int x, int y, Direction direction, int value)
         {
-            if (value < _deathPlaygroundByDirection[direction][x, y])
+            if (value < DeathPlaygroundByDirection[direction][x, y])
             {
-                _deathPlaygroundByDirection[direction][x, y] = value;
+                DeathPlaygroundByDirection[direction][x, y] = value;
 
                 Vector vector1 = CreateVectorOneStepBackward(x, y, direction.TurnRight());
                 Vector vector2 = CreateVectorOneStepBackward(x, y, direction);
@@ -194,9 +196,9 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
                 Vector forwardVector = CreateVectorOneStepForward(vector.X, vector.Y, vector.Direction);
                 if (IsValid(forwardVector.X, forwardVector.Y))
                 {
-                    int value1 = _deathPlaygroundByDirection[forwardVector.Direction.TurnLeft()][forwardVector.X, forwardVector.Y];
-                    int value2 = _deathPlaygroundByDirection[forwardVector.Direction][forwardVector.X, forwardVector.Y];
-                    int value3 = _deathPlaygroundByDirection[forwardVector.Direction.TurnRight()][forwardVector.X, forwardVector.Y];
+                    int value1 = DeathPlaygroundByDirection[forwardVector.Direction.TurnLeft()][forwardVector.X, forwardVector.Y];
+                    int value2 = DeathPlaygroundByDirection[forwardVector.Direction][forwardVector.X, forwardVector.Y];
+                    int value3 = DeathPlaygroundByDirection[forwardVector.Direction.TurnRight()][forwardVector.X, forwardVector.Y];
 
                     int maxValue = Math.Max(Math.Max(value1, value2), value3);
                     if (maxValue < Infinity)
@@ -224,14 +226,14 @@ namespace SnakeDeathmatch.Players.Vazba.PlaygroundAnalysis
                 foreach (Direction direction in _diagonalDirections)
                 {
                     Vector vector1 = CreateVectorOneStepForward(snake.X, snake.Y, direction.TurnLeft().TurnLeft());
-                    if (IsValid(vector1.X, vector1.Y) && _deathPlaygroundByDirection[direction][vector1.X, vector1.Y] == 0)
+                    if (IsValid(vector1.X, vector1.Y) && DeathPlaygroundByDirection[direction][vector1.X, vector1.Y] == 0)
                     {
                         Vector tmpVector = CreateVectorOneStepForward(snake.X, snake.Y, vector1.Direction.TurnLeft());
                         UpdateValue(tmpVector.X, tmpVector.Y, direction, 1);
                     }
 
                     Vector vector2 = CreateVectorOneStepForward(snake.X, snake.Y, direction.TurnRight().TurnRight());
-                    if (IsValid(vector2.X, vector2.Y) && _deathPlaygroundByDirection[direction][vector2.X, vector2.Y] == 0)
+                    if (IsValid(vector2.X, vector2.Y) && DeathPlaygroundByDirection[direction][vector2.X, vector2.Y] == 0)
                     {
                         Vector tmpVector = CreateVectorOneStepForward(snake.X, snake.Y, vector2.Direction.TurnRight());
                         UpdateValue(tmpVector.X, tmpVector.Y, direction, 1);

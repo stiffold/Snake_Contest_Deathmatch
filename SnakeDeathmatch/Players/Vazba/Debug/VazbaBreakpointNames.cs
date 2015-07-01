@@ -12,6 +12,7 @@ namespace SnakeDeathmatch.Players.Vazba.Debug
         public const string Strategy4TrackChanged = "Vazba.Strategy4.TrackChanged";
         public const string Strategy4StopEvery100Steps = "Vazba.Strategy4.StopEvery100Steps";
         public const string Strategy5Initialized = "Vazba.Strategy5.Initialized";
+        public const string Strategy5ExploreTrackRecursionStep = "Vazba.Strategy5.ExploreTrackRecursionStep";
         public const string Strategy5StopEvery10Steps = "Vazba.Strategy5.StopEvery10Steps";
        
         public IEnumerable<string> GetNames()
@@ -23,6 +24,7 @@ namespace SnakeDeathmatch.Players.Vazba.Debug
             yield return Strategy4TrackChanged;
             yield return Strategy4StopEvery100Steps;
             yield return Strategy5Initialized;
+            yield return Strategy5ExploreTrackRecursionStep;
             yield return Strategy5StopEvery10Steps;
         }
     }

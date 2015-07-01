@@ -14,7 +14,8 @@ namespace SnakeDeathmatch.Players.Vazba
 
         public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)
         {
-            Strategy = new Strategy5(playgroundSize);
+            Analysis = new Analysis(playgroundSize);
+            Strategy = new StrategyBarricade(Analysis);
 
             if (playerId != (int)PlayerId.Vazba)
                 throw new ArgumentException(string.Format("Expected playerId {0} ({1}) but got {2}.", (int)PlayerId.Vazba, PlayerId.Vazba, playerId), "playerId");
@@ -31,15 +32,17 @@ namespace SnakeDeathmatch.Players.Vazba
         [ToDebug]
         public IStrategy Strategy { get; private set; }
 
+        [ToDebug]
+        public Analysis Analysis { get; private set; }
+
         public Move GetNextMove(int[,] playground)
         {
             var intPlayground = new IntPlayground(playground);
 
             _snakes.Update(intPlayground);
+            Analysis.Update(_snakes);
 
-            var snakes = _snakes.IsInitialized ? _snakes : new Snakes(_snakes.Me);
-
-            Move move = Strategy.GetNextMove(intPlayground, snakes);
+            Move move = Strategy.GetNextMove(intPlayground, _snakes);
 
             return move;
         }
