@@ -123,9 +123,9 @@ namespace SnakeDeathmatch.Players.SoulEater
 
             var ourPlayer = gameGround.OurHeroicPlayer;
 
-            Direction absoluteDirection = DirectionHelper.GetAbsoluteDirection(ourPlayer.Direction.Value, move);
+            Direction absoluteDirection = MySuperClass.GetAbsoluteDirection(ourPlayer.Direction.Value, move);
 
-            Point nextPoint = DirectionHelper.GetNextPoint(ourPlayer.CurrentPosition, absoluteDirection);
+            Point nextPoint = MySuperClass.GetNextPoint(ourPlayer.CurrentPosition, absoluteDirection);
 
             if (gameGround.IsValidPoint(nextPoint) == false)
                 return pointsForThisMove;

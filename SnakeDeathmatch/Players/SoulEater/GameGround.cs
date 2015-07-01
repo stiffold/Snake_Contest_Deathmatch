@@ -140,7 +140,7 @@ namespace SnakeDeathmatch.Players.SoulEater
                 {
                     if (Ground[x, y] == 0)
                     {
-                        var borderPoints = DirectionHelper.GetBorderPoints(new Point(x,y)).ToList();
+                        var borderPoints = MySuperClass.GetBorderPoints(new Point(x,y)).ToList();
                         if (borderPoints.Any(point => IsValidPoint(point) == false || this[point.X, point.Y] == JardaId))
                         {
                             Ground[x, y] = LightDangerId;
@@ -238,7 +238,7 @@ namespace SnakeDeathmatch.Players.SoulEater
             Point oldPoint = movedPlayer.CurrentPosition;
             Point newPoint = nextPoint;
 
-            Direction newDirection = DirectionHelper.GetDirection(oldPoint, newPoint);
+            Direction newDirection = MySuperClass.GetDirection(oldPoint, newPoint);
 
             movedPlayer.Direction = newDirection;
             movedPlayer.CurrentPosition = newPoint;
@@ -252,7 +252,7 @@ namespace SnakeDeathmatch.Players.SoulEater
                 {
                     var currentPoint = player.CurrentPosition;
 
-                    var potentionalyDangerousPoints = DirectionHelper.GetBorderPoints(currentPoint).ToList();
+                    var potentionalyDangerousPoints = MySuperClass.GetBorderPoints(currentPoint).ToList();
 
                     foreach (var point in potentionalyDangerousPoints)
                     {
@@ -265,7 +265,7 @@ namespace SnakeDeathmatch.Players.SoulEater
                     if (player.Direction == null)
                         continue;
 
-                    Point nextPoint = DirectionHelper.GetNextPoint(currentPoint, player.Direction.Value);
+                    Point nextPoint = MySuperClass.GetNextPoint(currentPoint, player.Direction.Value);
                     if (nextPoint.X >= SizeOfTable || nextPoint.Y >= SizeOfTable || nextPoint.X < 0 || nextPoint.Y < 0 )
                         break;
 

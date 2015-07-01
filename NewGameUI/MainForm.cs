@@ -134,7 +134,7 @@ namespace NewGameUI
             if (playerId == PlayerId.Jardik) return new SnakeDeathmatch.Players.Jardik.Jardik();
             if (playerId == PlayerId.Vazba) return new SnakeDeathmatch.Players.Vazba.VazbaPlayer();
             if (playerId == PlayerId.Setal) return new SnakeDeathmatch.Players.Setal.Setal();
-            if (playerId == PlayerId.SoulEater) return new SoulEaterMK2Behaiviour();
+            //if (playerId == PlayerId.SoulEater) return new SoulEaterMK2Behaiviour();
             if (playerId == PlayerId.ClockworkMole) return new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer();
 
             throw new NotImplementedException(string.Format("Unknown playerId {0}.", playerId));

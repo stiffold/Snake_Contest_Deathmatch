@@ -35,6 +35,7 @@ namespace SnakeDeathmatch.Players.Setal
             _roundCounter = 0;
 
             _preferMove = (int)_direction < 5 ? Move.Right : Move.Left;
+            //_preferMove = Move.Straight;
 
             _enemies = new List<EnemyHead>();
 
@@ -94,6 +95,63 @@ namespace SnakeDeathmatch.Players.Setal
                         MarkPointAsOccupied(i, j, (playground[i, j] != _identificator));
                     }
                 }
+            EvadeNarrowPlaces(playground);
+        }
+
+        private void EvadeNarrowPlaces(int[,] playground)
+        {
+            int holder;
+
+            #region Vypocti radky
+
+            for (int i = 0; i < 20; i++)
+            {
+                holder = 0;
+
+                for (int j = 0; j < 20; j++)
+                {
+                    //Obsazeno
+                    if (playground[i, j] != 0)
+                    {
+                        //Zkontroluj vzdalenost
+                        if (((j - holder) < 5) && (holder != 0))
+                        {
+                            for (int x = holder; x < j; x++)
+                            {
+                                MarkPointAsDanger(i, x);
+                            }
+                        }
+
+                        holder = j;
+                    }
+                }
+            }
+            #endregion
+
+            #region Vypocet sloupcu
+            for (int j = 0; j < 20; j++)
+            {
+                holder = 0;
+
+                for (int i = 0; i < 20; i++)
+                {
+                    //Obsazeno
+                    if (playground[i, j] != 0)
+                    {
+                        //Zkontroluj vzdalenost
+                        if (((i - holder) < 5) && (holder != 0))
+                        {
+                            for (int x = holder; x < i; x++)
+                            {
+                                MarkPointAsDanger(x, j);
+                            }
+
+                        }
+                        holder = i;
+                    }
+                }
+            }
+            #endregion
         }
 
         private void WatchYourEnemies(int[,] playground)
@@ -1004,13 +1062,31 @@ namespace SnakeDeathmatch.Players.Setal
                 return true;
 
             var steps = PossibleSteps(direction, point);
-            if (_prefer == Move.Right)
+            if (steps.Count > 1)
             {
-                steps = steps.OrderByDescending(x => x.Move).ToList();
-            }
-            else
-            {
-                steps = steps.OrderBy(x => x.Move).ToList();
+                if (_prefer == Move.Right)
+                {
+                    steps = steps.OrderByDescending(x => x.Move).ToList();
+                }
+                else if (_prefer == Move.Left)
+                {
+                    steps = steps.OrderBy(x => x.Move).ToList();
+                }
+                else if ((_prefer == Move.Straight))
+                {
+                    steps = steps.OrderBy(x => x.Move).ToList();
+                    for (int i = 0; i < steps.Count; i++)
+                    {
+                        if (steps[0].Move == Move.Straight)
+                            break;
+                        else
+                        {
+                            var m = steps[0];
+                            steps.Remove(m);
+                            steps.Add(m);
+                        }
+                    }
+                }
             }
 
             foreach (var step in steps)

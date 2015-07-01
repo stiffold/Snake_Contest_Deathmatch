@@ -12,7 +12,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
         public PointClass[,] Points;
         public int GroundSize;
 
-        public IList<PlayerInfoMk2> Players = new List<PlayerInfoMk2>();
+        public IList<Snake> OtherSnakes = new List<Snake>();
 
         private int _myId;
 
@@ -32,7 +32,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             {
                 for (int x = 0; x < GroundSize; x++)
                 {
-                    var newPoint = new PointClass();
+                    var newPoint = new PointClass(x, y);
                     Points[x,y] = newPoint;
 
                     InitPointLinks(newPoint, x, y, fakePoint);
@@ -83,7 +83,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
         private PointClass CreateFakePoint()
         {
-            PointClass fakePoint = new PointClass();
+            PointClass fakePoint = new PointClass(-1,-1);
 
             var bottomWay = new PathClass(fakePoint, fakePoint, Direction.Bottom, PathState.DeathInThisRound);
             bottomWay.OpositePath = bottomWay;
@@ -124,7 +124,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
         public void Update(int[,] newGround)
         {
-            foreach (var player in Players)
+            foreach (var player in OtherSnakes)
             {
                 player.IsDown = true;
             }
@@ -157,7 +157,7 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
                             UpdateGroundPointIsUsed(point);
                             if (value != _myId)
                             {
-                                UpdatePlayerLocationAndUpdateDangerZone(value, x, y);
+                                UpdatePlayerLocation(value, x, y);
                             }
                         }
                         
@@ -166,20 +166,20 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
             }          
         }
 
-        private void UpdatePlayerLocationAndUpdateDangerZone(int playerIdentificator, int x, int y)
+        private void UpdatePlayerLocation(int playerIdentificator, int x, int y)
         {
             PointClass point = this[x, y];
-            PlayerInfoMk2 player = Players.SingleOrDefault(p => p.Identificator == playerIdentificator);
+            Snake player = OtherSnakes.SingleOrDefault(p => p.Identificator == playerIdentificator);
 
             if (player == null)
             {
-                player = new PlayerInfoMk2(point, playerIdentificator);
-                Players.Add(player);
+                player = new Snake(point, playerIdentificator, x, y);
+                OtherSnakes.Add(player);
 
                 return;
             }
 
-            player.UpdatePosition(point);
+            player.UpdatePosition(point, x, y);
         }
 
         public PointClass this[int x, int y]
@@ -380,12 +380,18 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
     public class PointClass
     {
+        public int X;
+        public int Y;
+
         public bool IsUsed { get; set; }
 
         public IList<PathClass> PathsFromPoint { get; set; }
 
-        public PointClass()
+        public PointClass(int x, int y)
         {
+            X = x;
+            Y = y;
+
             PathsFromPoint = new List<PathClass>();
             IsUsed = false;
         }
@@ -399,8 +405,6 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
 
             PathsFromPoint.Add(path);
         }
-
-        public bool OtherPlayerDanger;
 
         public PathClass GetPath(Direction direction)
         {
@@ -462,13 +466,5 @@ namespace SnakeDeathmatch.Players.SoulEater.MK2
         Ok,
         DeathInNextRound,
         DeathInThisRound
-    }
-
-    public enum DangerType
-    {
-        None,
-        Danger1,
-        Danger2,
-        Danger3
     }
 }
