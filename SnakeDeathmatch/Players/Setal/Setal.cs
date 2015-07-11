@@ -104,11 +104,11 @@ namespace SnakeDeathmatch.Players.Setal
 
             #region Vypocti radky
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < _size; i++)
             {
                 holder = 0;
 
-                for (int j = 0; j < 20; j++)
+                for (int j = 0; j < _size; j++)
                 {
                     //Obsazeno
                     if (playground[i, j] != 0)
@@ -129,11 +129,11 @@ namespace SnakeDeathmatch.Players.Setal
             #endregion
 
             #region Vypocet sloupcu
-            for (int j = 0; j < 20; j++)
+            for (int j = 0; j < _size; j++)
             {
                 holder = 0;
 
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < _size; i++)
                 {
                     //Obsazeno
                     if (playground[i, j] != 0)
