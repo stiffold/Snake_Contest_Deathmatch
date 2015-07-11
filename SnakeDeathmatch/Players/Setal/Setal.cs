@@ -4,12 +4,17 @@ using System.Linq;
 using System.Windows;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Debugger;
+using System.Threading;
+using System.Text;
 
 namespace SnakeDeathmatch.Players.Setal
 {
+    //Pokud jsem zapomen vypnout debug, je treba prehodit bool Service.UseDebug na false
 
     public class Setal : IPlayerBehaviour2
     {
+
+
         private byte[,] _possibilities;
         private int _identificator;
         private int _size;
@@ -52,7 +57,12 @@ namespace SnakeDeathmatch.Players.Setal
             WatchYourEnemies(playground);
 
             if (_roundCounter > 1)
-                EvaluateEnemies(3);
+                EvaluateEnemies(2);
+
+            if (Service.UseDebug)
+            {
+                Service.Debugger(_possibilities, _size);
+            }
 
             SafeMap safePath = new SafeMap(15, _actualPosition, _direction, _preferMove, _possibilities, _size);
             safePath.Start();
@@ -111,7 +121,7 @@ namespace SnakeDeathmatch.Players.Setal
                 for (int j = 0; j < _size; j++)
                 {
                     //Obsazeno
-                    if (playground[i, j] != 0)
+                    if ((playground[i, j] != 0) && (playground[i, j] != _identificator))
                     {
                         //Zkontroluj vzdalenost
                         if (((j - holder) < 5) && (holder != 0))
@@ -136,7 +146,7 @@ namespace SnakeDeathmatch.Players.Setal
                 for (int i = 0; i < _size; i++)
                 {
                     //Obsazeno
-                    if (playground[i, j] != 0)
+                    if ((playground[i, j] != 0) && (playground[i, j] != _identificator))
                     {
                         //Zkontroluj vzdalenost
                         if (((i - holder) < 5) && (holder != 0))
@@ -698,8 +708,6 @@ namespace SnakeDeathmatch.Players.Setal
 
             return steps;
         }
-
-
     }
 
     internal class GamePoint
@@ -1457,6 +1465,11 @@ namespace SnakeDeathmatch.Players.Setal
 
     internal static class Service
     {
+        //Zapnuti/Vypnuti debugu
+        public static bool UseDebug = false;
+
+        public static DebugWindow setalServiceDebug;
+
         public static Direction UpdateDirection(Direction direction, Move move)
         {
             switch (move)
@@ -1582,6 +1595,13 @@ namespace SnakeDeathmatch.Players.Setal
 
             //Some terrible shit happens...
             return Direction.Top;
+        }
+
+        public static void Debugger(byte[,] field, int size)
+        {
+            setalServiceDebug = new DebugWindow(field, size);
+            setalServiceDebug.ShowDialog();
+
         }
     }
 
