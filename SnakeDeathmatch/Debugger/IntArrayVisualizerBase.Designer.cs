@@ -40,7 +40,7 @@
             this._pictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this._pictureBox.Location = new System.Drawing.Point(0, 0);
             this._pictureBox.Name = "_pictureBox";
-            this._pictureBox.Size = new System.Drawing.Size(150, 150);
+            this._pictureBox.Size = new System.Drawing.Size(400, 400);
             this._pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this._pictureBox.TabIndex = 0;
             this._pictureBox.TabStop = false;

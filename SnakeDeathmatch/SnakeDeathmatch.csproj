@@ -109,6 +109,21 @@
     <Compile Include="Players\Jardik\Walk.cs" />
     <Compile Include="Players\Jardik\WalkSetBase.cs" />
     <Compile Include="Players\Jardik\WalkSets.cs" />
+    <Compile Include="Players\Jardos\Components\Collider.cs" />
+    <Compile Include="Players\Jardos\Components\ComputeHelper.cs" />
+    <Compile Include="Players\Jardos\Components\Fact.cs" />
+    <Compile Include="Players\Jardos\Components\IStrategy.cs" />
+    <Compile Include="Players\Jardos\Components\Masker.cs" />
+    <Compile Include="Players\Jardos\Components\Point.cs" />
+    <Compile Include="Players\Jardos\Components\Snake.cs" />
+    <Compile Include="Players\Jardos\Components\Strategies\RecurseStrategy.cs" />
+    <Compile Include="Players\Jardos\Components\StrategyProcessor.cs" />
+    <Compile Include="Players\Jardos\Debug\DebugablePlayground.cs" />
+    <Compile Include="Players\Jardos\Debug\JardosBreakpointNames.cs" />
+    <Compile Include="Players\Jardos\Debug\DebugVizualizer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Players\Jardos\Jardos.cs" />
     <Compile Include="Players\Jirka\Extensions.cs" />
     <Compile Include="Players\Jirka\Jirka.cs" />
     <Compile Include="Players\Jirka\Vector.cs" />
@@ -224,7 +239,9 @@
     <Compile Include="Game\PlayerState.cs" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

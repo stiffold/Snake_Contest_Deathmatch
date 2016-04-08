@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using SnakeDeathmatch.Interface;
 using SnakeDeathmatch.Debugger;
+using System.Diagnostics;
 
 namespace SnakeDeathmatch.Game
 {
     public class Player
     {
         IPlayerBehaviour2 _playerBehaviour;
+        private long _miliseconds;
 
         public string Name { get; private set; }
         public int Identifier { get; private set; }
@@ -17,6 +19,8 @@ namespace SnakeDeathmatch.Game
         public Direction Direction { get; private set; }
         public object Color { get; private set; }
         public int Score { get; private set; }
+        public long TotalMiliseconds { get { return _miliseconds; } }
+
 
         //public Player(Position position, Direction direction, Color color, object playerBehaviour, int identificator, int playgroundSize)
         //{
@@ -40,6 +44,7 @@ namespace SnakeDeathmatch.Game
             Color = color;
             Identifier = identificator;
             State = PlayerState.Playing;
+            _miliseconds =0;
 
             _playerBehaviour.Init(Identifier, playgroundSize, position.X, position.Y, Direction);
         }
@@ -48,7 +53,10 @@ namespace SnakeDeathmatch.Game
 
         public Move NextMove(int[,] playground)
         {
+            var sw = Stopwatch.StartNew();
             Move move = _playerBehaviour.GetNextMove(playground);
+            sw.Stop();
+            _miliseconds += sw.ElapsedMilliseconds;
             Direction newDirection = GetNewDirection(Direction, move);
             Direction = newDirection;
             Position.Update(newDirection);

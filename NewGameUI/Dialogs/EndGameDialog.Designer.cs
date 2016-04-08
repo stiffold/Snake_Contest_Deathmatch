@@ -43,6 +43,7 @@
             this.txtFileName = new System.Windows.Forms.TextBox();
             this.lblGameStats = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.Čas = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,7 +88,8 @@
             this.body,
             this.Skóre,
             this.Jméno,
-            this.Smrt});
+            this.Smrt,
+            this.Čas});
             this.listPlayers.Location = new System.Drawing.Point(-1, -1);
             this.listPlayers.Name = "listPlayers";
             this.listPlayers.Size = new System.Drawing.Size(467, 155);
@@ -120,7 +122,7 @@
             // Smrt
             // 
             this.Smrt.Text = "Smrt";
-            this.Smrt.Width = 140;
+            this.Smrt.Width = 77;
             // 
             // lblFileName
             // 
@@ -165,12 +167,17 @@
             this.label1.TabIndex = 10;
             this.label1.Text = "Spustit další hru?";
             // 
+            // Čas
+            // 
+            this.Čas.Text = "Čas/tah";
+            this.Čas.Width = 111;
+            // 
             // EndGameDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(487, 272);
+            this.ClientSize = new System.Drawing.Size(574, 272);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonNo);
@@ -207,5 +214,6 @@
         private System.Windows.Forms.ColumnHeader Smrt;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader body;
+        private System.Windows.Forms.ColumnHeader Čas;
     }
 }

@@ -30,6 +30,7 @@ namespace SnakeDeathmatch.Debugger
 
             _rootObj = rootObjToDebug;
             _nextBreakpointName = defaultBreakpointName;
+            UpdateUI();
         }
 
         private void DebuggerForm_Load(object sender, EventArgs e)

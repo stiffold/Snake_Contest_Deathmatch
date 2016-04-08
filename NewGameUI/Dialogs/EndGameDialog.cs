@@ -94,6 +94,7 @@ namespace NewGameUI.Dialogs
                     item.SubItems.Add(player.Score.ToString(CultureInfo.InvariantCulture));
                     item.SubItems.Add(player.Name);
                     item.SubItems.Add(player.State.ToString());
+                    item.SubItems.Add(string.Format("{0}",(float)player.TotalMiliseconds / (float)player.Score));
                     item.ImageKey = player.Identifier.ToString(CultureInfo.InvariantCulture);
 
                     listPlayers.Items.Add(item);
