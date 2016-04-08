@@ -1,7 +1,7 @@
 # Snake_Contest_Deathmatch
 Jedná se o souboj algoritmů chování jednotlivých hadů. Kdo zůstane nejdéle vyhrál.
 ## Pravidla hry
-- zatáčí se o 45° o 180° se had otočí na 4 tahy
+- zatáčí se o 45° (o 180° se had otočí na 4 tahy)
 - hrací plocha je 100x100
 - na začátku hry se had objeví na náhodné pozici s náhodným směrem
 - detekují se tyto typy kolize
