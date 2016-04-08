@@ -1,6 +1,14 @@
 # Snake_Contest_Deathmatch
-Snake contest c#
-Soubory ReSharperu a obsah Debug složky by měl být ignorován při commitu
+Jedná se o souboj algoritmů chování jednotlivých hadů. Kdo zůstane nejdéle vyhrál.
+## Pravidla hry
+- zatáčí se o 45° o 180° se had otočí na 4 tahy
+- hrací plocha je 100x100
+- na začátku hry se had objeví na náhodné pozici s náhodným směrem
+- detekují se tyto typy kolize
+ - kolize s hracím polem
+ - kolize s hadem kolmo i diagonálně
+ - kolize hlav - nerozhodně pro oba hady
+
 ## Jak se připojit
 #####1. Vytvořit složku/namespace pro nového hada v projektu SnakeDeathmatch/Players
 
@@ -36,3 +44,5 @@ private IEnumerable<Player> GetPlayers()
             return players;
         }
 ```
+##Ostatní
+Soubory ReSharperu a obsah Debug složky by měl být ignorován při commitu
