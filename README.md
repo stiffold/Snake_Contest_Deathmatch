@@ -1,7 +1,7 @@
 # Snake_Contest_Deathmatch
 Snake contest c#
 Soubory ReSharperu a obsah Debug složky by měl být ignorován při commitu
-## Jak se přípojit
+## Jak se připojit
 #####1. Vytvořit složku/namespace pro nového hada v projektu SnakeDeathmatch/Players
 
 #####2. Vytvořit class, která se bude jmenovat stejně jako had a bude realizovat interface IPlayerBehaviour2
