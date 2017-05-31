@@ -13,11 +13,16 @@ namespace SnakeDeathmatch.Players.Jardos.Components
     /// </summary>
     public class Snake
     {
+        public Snake()
+        {
+            MoveStats = new MoveStat();
+        }
+
         private bool _rotationLeaved = false;
         private float _bingoCount = 0;
         private float _missCount = 0;
         private float _round;
-        private Move _primariMove = Move.Straight;  
+        private Move _primariMove = Move.Straight; 
 
         public Point HeadPoint { get; set; }
 
@@ -39,7 +44,9 @@ namespace SnakeDeathmatch.Players.Jardos.Components
         [ToDebug]
         public int Future { get; set; }
 
-        public List<SnakePoint> WayPoints { get; set; }        
+        public List<SnakePoint> WayPoints { get; set; }
+         
+        public MoveStat MoveStats { get; set; }
 
         public void Evaluate(int round, Point point, Direction direction, int[,] playGround)
         {
@@ -47,19 +54,26 @@ namespace SnakeDeathmatch.Players.Jardos.Components
             LastMove = ComputeHelper.CalculateMove(LastDirection, direction);
             HeadPoint = point;
             LastDirection = direction;
-            var realPoint = new SnakePoint(round, point, LastMove, direction, false);
-            var sameFuturePoint = WayPoints.FirstOrDefault(x => x.IsFuturePoint && x.Point.Equals(realPoint.Point));
-            WayPoints.Add(realPoint);
+            MoveStats.Update(LastMove);
             EvaluateRotator(playGround);
-            
-            if (sameFuturePoint!= null)
+            var realPoint = new SnakePoint(round, point, LastMove, direction, false);
+            WayPoints.Add(realPoint);
+
+            //ComputeFuture(round, playGround, realPoint);
+        }
+
+        private void ComputeFuture(int round, int[,] playGround, SnakePoint realPoint)
+        {
+            var sameFuturePoint = WayPoints.FirstOrDefault(x => x.IsFuturePoint && x.Point.Equals(realPoint.Point));
+
+            if (sameFuturePoint != null)
             {
                 _bingoCount++;
                 if (sameFuturePoint.Round > round)
                 {
-                    int diff =  round - sameFuturePoint.Round;
+                    int diff = round - sameFuturePoint.Round;
                     WayPoints.RemoveAll(x => x.Round <= round - diff && x.IsFuturePoint);
-                    foreach (var p in WayPoints.Where(x=>x.IsFuturePoint))
+                    foreach (var p in WayPoints.Where(x => x.IsFuturePoint))
                     {
                         p.Round += diff;
                     }
@@ -68,28 +82,32 @@ namespace SnakeDeathmatch.Players.Jardos.Components
             else
             {
                 _missCount++;
-                if (_missCount > 3)
+                if (_missCount > 5)
                 {
                     _primariMove = GetNextPrimaryMove();
-                    WayPoints.RemoveAll(x=>x.IsFuturePoint);
+                    WayPoints.RemoveAll(x => x.IsFuturePoint);
                     _missCount = 0;
                 }
             }
 
-            if (WayPoints.Count(x=>x.IsFuturePoint) < 200)
+            if (WayPoints.Count(x => x.IsFuturePoint) < 100)
             {
-                AddFuturePoints(200 - WayPoints.Count(x => x.IsFuturePoint), playGround);
+                AddFuturePoints(100 - WayPoints.Count(x => x.IsFuturePoint), playGround);
             }
 
             WayPoints.RemoveAll(x => x.Round <= round && x.IsFuturePoint);
 
-            FutureSucces =(_bingoCount / _round)*100;
+            FutureSucces = (_bingoCount / _round) * 100;
         }
 
         private Move GetNextPrimaryMove()
         {
             int primaryMoveNumber = (int)_primariMove;
             if (primaryMoveNumber < 3)
+            {
+                primaryMoveNumber++;
+            }
+            else if (primaryMoveNumber == 2)
             {
                 primaryMoveNumber++;
             }
@@ -165,43 +183,61 @@ namespace SnakeDeathmatch.Players.Jardos.Components
             }
             else
             {
-                Snake.SnakePoint nextPoint = ComputeHelper.Move(lastSnakePoint, _primariMove);
-                if (!Collider.Collission(nextPoint.Direction, nextPoint.Point, playGround) && !WayPoints.Any(x=>x.IsFuturePoint && x.Point.Equals(nextPoint.Point)))
+                SnakePoint nextPoint = ComputeHelper.Move(lastSnakePoint, _primariMove);
+                SnakePoint nextPoint2 = ComputeHelper.Move(nextPoint, _primariMove);
+                if (!Collider.Collission(nextPoint.Direction, nextPoint.Point, playGround) && 
+                    !Collider.Collission(nextPoint2.Direction, nextPoint2.Point, playGround) && 
+                    !WayPoints.Any(x=>x.IsFuturePoint && x.Point.Equals(nextPoint.Point)))
                 {
                     WayPoints.Add(nextPoint);
                 }
                 else
                 {
-                    foreach (Move m in ComputeHelper.OtherMoves(_primariMove))
+                    foreach (Move m in MoveStats.OtherMoves(_primariMove))
                     {
                         nextPoint = ComputeHelper.Move(lastSnakePoint, m);
-                        if (!Collider.Collission(nextPoint.Direction, nextPoint.Point, playGround) && !WayPoints.Any(x => x.IsFuturePoint && x.Point.Equals(nextPoint.Point))) break;
+                        nextPoint2 = ComputeHelper.Move(nextPoint, _primariMove);
+                        if (!Collider.Collission(nextPoint.Direction, nextPoint.Point, playGround) &&
+                            !Collider.Collission(nextPoint2.Direction, nextPoint2.Point, playGround) &&
+                            !WayPoints.Any(x => x.IsFuturePoint && x.Point.Equals(nextPoint.Point))) break;
                     }
                     WayPoints.Add(nextPoint);
                 }                
             }
         }
 
-        public class SnakePoint
+        public class MoveStat
         {
-            public SnakePoint(int round, Point point, Move move, Direction direction, bool isFuturePoint)
+            private Dictionary<Move, int> _moves = new Dictionary<Move, int>();
+
+            public MoveStat()
             {
-                Round = round;
-                Point = point;
-                Move = move;
-                Direction = direction;
-                IsFuturePoint = isFuturePoint;
+                _moves.Add(Move.Straight, 0);
+                _moves.Add(Move.Left, 0);
+                _moves.Add(Move.Right, 0);
             }
 
-            public int Round { get; set; }
+            public void Update(Move move)
+            {
+                _moves[move] = _moves[move] + 1;
 
-            public Point Point { get; set; }
+                var sorted  = _moves.OrderByDescending(x => x.Value).ToList();
 
-            public Move Move { get; set; }
+                Primary = sorted[0].Key;
+                Secondary = sorted[1].Key;
+                Low = sorted[2].Key;
+            }
 
-            public Direction Direction { get; set; }
+            public IEnumerable<Move> OtherMoves(Move move)
+            {
+                if (Primary != move) yield return Primary;
+                if (Secondary != move) yield return Secondary;
+                if (Low != move) yield return Low;
+            }
 
-            public bool IsFuturePoint { get; set; }
+            public Move Primary { get; set; }
+            public Move Secondary { get; set; }
+            public Move Low { get; set; }
         }
     }
 }

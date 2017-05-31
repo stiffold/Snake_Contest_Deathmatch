@@ -55,6 +55,12 @@ namespace SnakeDeathmatch.Debugger
             UpdateVisualizers(oldRootDebugNode, newRootDebugNode);
         }
 
+        public void UpdateUI(object rootObject)
+        {
+            _rootObj = rootObject;
+            UpdateUI();
+        }
+
         private void UpdateHandlers(DebugNode oldRootDebugNode, DebugNode newRootDebugNode)
         {
             if (oldRootDebugNode != null)
@@ -122,7 +128,7 @@ namespace SnakeDeathmatch.Debugger
                 foreach (string path in pathsToUpdate)
                 {
                     TreeNode treeNode = _treeView.Nodes.GetNodeByTagObjectRecursively(path);
-                    DebugNode debugNode = oldRootDebugNode.GetAllNodesRecursively().First(x => x.Path == path);
+                    DebugNode debugNode = newRootDebugNode.GetAllNodesRecursively().First(x => x.Path == path);
                     treeNode.Text = GetTreeNodeText(debugNode);
                 }
             }

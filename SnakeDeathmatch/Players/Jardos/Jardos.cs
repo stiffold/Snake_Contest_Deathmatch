@@ -13,6 +13,7 @@ namespace SnakeDeathmatch.Players.Jardos
     {
         private Point _myPoint;
         private Direction _myDirection;
+        private Move _myMove;
         private StrategyProcessor _strategyProcessor;
         
         public string Name {
@@ -21,9 +22,9 @@ namespace SnakeDeathmatch.Players.Jardos
 
         public Move GetNextMove(int[,] playground)
         {
-            var nextMove = _strategyProcessor.GetMove(playground, _myPoint, _myDirection);
-            ComputeHelper.Move(ref _myDirection, ref _myPoint, nextMove);
-            return nextMove;
+            _myMove = _strategyProcessor.GetMove(playground, _myPoint, _myDirection, _myMove);
+            ComputeHelper.Move(ref _myDirection, ref _myPoint, _myMove);
+            return _myMove;
         }
 
         public void Init(int playerId, int playgroundSize, int x, int y, Direction direction)

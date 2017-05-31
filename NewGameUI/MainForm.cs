@@ -22,11 +22,11 @@ namespace NewGameUI
 
         //game settings
         public const int PlaygroundSizeInDots = 100;
-        public const int GameSpeed = 1000;  // pokud více než 1000, tak maximum, co dá procesor (vypne se sleep ve vlaknu)
+        public const int GameSpeed = 1001;  // pokud více než 1000, tak maximum, co dá procesor (vypne se sleep ve vlaknu)
         public const int TestsSpeed = 25;
 
         //render settings
-        public const int PlaygroundSizeInPixels = 700;
+        public const int PlaygroundSizeInPixels = 600;
         public const int RenderTimerIntervalInMilliseconds = 30; // rychlost vykreslovani, cim nizsi, tim rychlejsi
         public const int ReplayTimerIntervalInMilliseconds = 1;
 
@@ -39,6 +39,9 @@ namespace NewGameUI
         private bool _drawingReplaySavedGame = false;
         private int _drawingSavedGameRoundNumber;
         private Game _game;
+
+        //debugger instance
+        private DebuggerForm _debuggerForm;
 
         #region Load initial state from file
 
@@ -152,12 +155,12 @@ namespace NewGameUI
         private IEnumerable<Player> GetPlayers()
         {
             var players = new List<Player>();
-            //players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.DeepPink, new SnakeDeathmatch.Players.Jardos.Jardos(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.DeepPink, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
+            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.DeepPink, new SnakeDeathmatch.Players.Jardos.Jardos(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
+            //players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.DeepPink, new SnakeDeathmatch.Players.Jardik.Jardik(), (int)PlayerId.Jardik, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Blue, new SnakeDeathmatch.Players.Vazba.VazbaPlayer(), (int)PlayerId.Vazba, PlaygroundSizeInDots));
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Aqua, new SnakeDeathmatch.Players.Setal.Setal(), (int)PlayerId.Setal, PlaygroundSizeInDots));
             //players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new SoulEaterMK2Behaiviour(), (int)PlayerId.SoulEater, PlaygroundSizeInDots));
-            players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new PlayerBehaviour1Adapter(new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior()), (int)PlayerId.SoulEater, PlaygroundSizeInDots));         
+            //players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.White, new PlayerBehaviour1Adapter(new SnakeDeathmatch.Players.SoulEater.SoulEaterBehavior()), (int)PlayerId.SoulEater, PlaygroundSizeInDots));         
             players.Add(new Player(GetRandomPosition(), GetRandomDirection(), Color.Lime, new SnakeDeathmatch.Players.ClockworkMole.ClockWorkMolePlayer(), (int)PlayerId.ClockworkMole, PlaygroundSizeInDots));
 
             // Jirko, až updatuješ hada, tak se zas odkomentuj.
@@ -196,7 +199,10 @@ namespace NewGameUI
             {
                 _gameEngine = new GameEngine(new int[PlaygroundSizeInDots, PlaygroundSizeInDots], Color.Magenta, GetPlayers());
             }
-            _gameEngine.StepMode = _checkboxStepping.Checked;
+
+            if (_debuggerForm != null) _debuggerForm.UpdateUI(_gameEngine);
+
+                _gameEngine.StepMode = _checkboxStepping.Checked;
             _gameEngine.StartGame(GameSpeed);
 
             _previousGameState = null;
@@ -446,8 +452,9 @@ namespace NewGameUI
 
         private void _buttonDebugger_Click(object sender, EventArgs e)
         {
-            var form = new DebuggerForm(_gameEngine);
-            form.Show();
+            if (_debuggerForm != null) _debuggerForm.Hide();
+            _debuggerForm = new DebuggerForm(_gameEngine);
+            _debuggerForm.Show();
         }
 
         private void btTournament_Click(object sender, EventArgs e)

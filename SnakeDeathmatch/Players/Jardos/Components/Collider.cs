@@ -14,6 +14,15 @@ namespace SnakeDeathmatch.Players.Jardos.Components
             return false;
         }
 
+        public static bool Collission(this SnakePoint sp, int[,] playGround)
+        {
+            if (!sp.Point.IsValid()) return true;
+            if (CrossColision(sp.Direction, playGround, sp.Point)) return true;
+            if (CollissionWithPlayer(sp.Point, playGround)) return true;
+
+            return false;
+        }
+
         private static bool CollissionWithPlayer(Point point, int[,] playGround)
         {
             if (playGround[point.X, point.Y] != 0) return true;

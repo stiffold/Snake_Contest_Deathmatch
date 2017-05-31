@@ -94,7 +94,23 @@ namespace SnakeDeathmatch.Players.Jardos.Components
 
             return m;
         }
+
+        public static void Circle(int[,] array, Point p, double radius, int value)
+        {
+            for (int row = 0; row < ComputeHelper.MaxSize; row++)
+            {
+                for (int col = 0; col < ComputeHelper.MaxSize; col++)
+                {
+                    double d = Math.Sqrt((p.X - row) * (p.X - row) + (p.Y - col) * (p.Y - col));
+                    if (d <= radius)
+                    {
+                        array[row, col] = value;
+                    }
+                }
+            }
+        }
     }
+
 
     internal class MaskItem
     {

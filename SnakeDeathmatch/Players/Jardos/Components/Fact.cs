@@ -26,6 +26,7 @@ namespace SnakeDeathmatch.Players.Jardos.Components
         public int Round { get; private set; }
         public Point LastPoint { get; private set; }
         public Direction LastDirection { get; private set; }
+        public Move LastMove { get; private set; }
         public int[,] LastUnmaskedBattleGround { get; set; }
         public int[,] ActualBattleGround { get; set; }
         public int[,] MaskBattleGround { get; set; }
@@ -35,11 +36,12 @@ namespace SnakeDeathmatch.Players.Jardos.Components
         [ToDebug(typeof(DebugVizualizer))]
         public DebugablePlayground MaskBattleGroundDebug { get; set; }
 
-        public void Update(int[,] newBattleground, Point lastPoint, Direction lastDirection)
+        public void Update(int[,] newBattleground, Point lastPoint, Direction lastDirection, Move lastMove)
         {
             Round++;
             LastPoint = lastPoint;
             LastDirection = lastDirection;
+            LastMove = LastMove;
             UpdateSnakes(newBattleground);
             ActualBattleGround = (int[,])newBattleground.Clone();
             LastUnmaskedBattleGround = (int[,])newBattleground.Clone();
@@ -59,9 +61,9 @@ namespace SnakeDeathmatch.Players.Jardos.Components
                 {
                     for (int y = 0; y < ComputeHelper.MaxSize; y++)
                     {
-                        if (newBattleground[x, y] != 0)
+                        if (newBattleground[x, y] != 0 && newBattleground[x, y] != ComputeHelper.MyId)
                         {
-                            snakes.Add(new Snake { Id = newBattleground[x, y], HeadPoint = new Point(x, y), Live = true, StartPoint = new Point(x,y), WayPoints = new List<Snake.SnakePoint>()});
+                            snakes.Add(new Snake { Id = newBattleground[x, y], HeadPoint = new Point(x, y), Live = true, StartPoint = new Point(x,y), WayPoints = new List<SnakePoint>()});
                         }
                     }
                 }
@@ -86,16 +88,30 @@ namespace SnakeDeathmatch.Players.Jardos.Components
                     s.Live = live;
                 }
             }
-        }
+    }
 
         /// <summary>
         /// namaskuje hrací plochu
         /// </summary>
         private void UpgradeBattleGround()
         {
-
             foreach (var s in Snakes.Where(s => s.Live))
             {
+                //circle kolem hlav
+                var distanceFromMe = s.HeadPoint.Distance(LastPoint);
+                if (distanceFromMe > 7)
+                {
+                    Masker.Circle(MaskBattleGround, s.HeadPoint, 5, 1000);
+                }
+                else if (distanceFromMe > 5)
+                {
+                    Masker.Circle(MaskBattleGround, s.HeadPoint, 3, 1000);
+                }
+                else if (distanceFromMe > 3)
+                {
+                    Masker.Circle(MaskBattleGround, s.HeadPoint, 2, 1000);
+                }
+
                 foreach (var p in s.HeadPoint.GetNeighbours())
                 {
                     if (_masker.Mask(p,ActualBattleGround))
@@ -103,17 +119,17 @@ namespace SnakeDeathmatch.Players.Jardos.Components
                         MaskBattleGround[p.X, p.Y] = 1000;
                     }
                 }
-                if (s.Id != ComputeHelper.MyId)
-                {
-                    foreach (var p in s.WayPoints.Where(x => x.IsFuturePoint == true))
-                    {
-                        if (p.Point.IsValid())
-                        {
-                            //musí zmizet v dalším tahu, proto do actual
-                            ActualBattleGround[p.Point.X, p.Point.Y] = 1001;
-                        }
-                    }
-                }                
+                //if (s.Id != ComputeHelper.MyId)
+                //{
+                //    foreach (var p in s.WayPoints.Where(x => x.IsFuturePoint == true))
+                //    {
+                //        if (p.Point.IsValid())
+                //        {
+                //            //musí zmizet v dalším tahu, proto do actual
+                //            ActualBattleGround[p.Point.X, p.Point.Y] = 1001;
+                //        }
+                //    }
+                //}                
             }
 
             for (int x = 0; x < ComputeHelper.MaxSize; x++)
@@ -127,7 +143,7 @@ namespace SnakeDeathmatch.Players.Jardos.Components
             MaskBattleGroundDebug = new DebugablePlayground((int[,])ActualBattleGround.Clone(), "Mask");
 
             if (Breakpoint != null)
-                Breakpoint(this, new BreakpointEventArgs(JardosBreakpointNames.One));
+                Breakpoint(this, new BreakpointEventArgs(JardosBreakpointNames.Jardos_FactUpgradeBattleGround));
         }
 
         public event BreakpointEventHandler Breakpoint;

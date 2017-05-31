@@ -25,6 +25,7 @@ namespace SnakeDeathmatch.Players.Jardos.Debug
                 case (int)PlayerId.ClockworkMole: return Color.Lime;
                 case SnakeDeathmatch.Game.GameEngine.HeadToHeadCrashId: return Color.Magenta;
                 case 1001: return Color.DodgerBlue;
+                case 201: return Color.Fuchsia;
             }
             return Color.Aquamarine;
 

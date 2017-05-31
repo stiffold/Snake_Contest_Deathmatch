@@ -11,7 +11,7 @@ namespace SnakeDeathmatch.Players.Jardos.Components
     /// <summary>
     /// strategie
     /// </summary>
-     interface IStrategy : IDebuggable
+     public interface IStrategy : IDebuggable
     {
         /*1 krok     = 1bod   */
         /*zabití     = 100bodů*/

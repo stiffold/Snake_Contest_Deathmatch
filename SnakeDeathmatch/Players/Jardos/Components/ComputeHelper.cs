@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml.XPath;
 using SnakeDeathmatch.Interface;
@@ -19,7 +20,20 @@ namespace SnakeDeathmatch.Players.Jardos.Components
         public static int MyId {
             get { return _myId; }
         }
-        
+
+        public static bool IsMoveValid(Move move, Point point, Direction direction, int[,] battleground)
+        {
+            Point fakePoint = point;
+            Direction fakeDirection = direction;
+
+            ComputeHelper.Move(ref fakeDirection, ref fakePoint, move);
+            if (Collider.Collission(fakeDirection, fakePoint, battleground))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public static void SetDefaults(int maxSize, int myId)
         {
             _maxSize = maxSize;
@@ -30,6 +44,33 @@ namespace SnakeDeathmatch.Players.Jardos.Components
         {
             dir = ApplyMove(dir, move);
             point.Update(dir);
+        }
+
+        internal static bool SnakePointsIsValid(IEnumerable<SnakePoint> snakePoints ,int[,] playGround)
+        {
+            foreach (var sp in snakePoints)
+            {
+                if (Collider.Collission(sp.Direction, sp.Point, playGround))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static void Cut(int count, IList<SnakePoint> snakePoints)
+        {
+            if (count > snakePoints.Count)
+            {
+                snakePoints.Clear();
+                return;
+            }
+            int maxRound = snakePoints.Max(x => x.Round);
+            for (int i = 0; i < count; i++)
+            {
+                var w = snakePoints.FirstOrDefault(x => x.Round == maxRound - i);
+                snakePoints.Remove(w);
+            }
         }
 
         public static IEnumerable<Move> OtherMoves(Move move)
@@ -43,12 +84,61 @@ namespace SnakeDeathmatch.Players.Jardos.Components
             }
         }
 
-        public static Snake.SnakePoint Move(Snake.SnakePoint lastSnakePoint, Move move)
+
+        public static bool SnakePointsToTarget(SnakePoint first, Point targetPoint ,ref List<SnakePoint> snakePoints, int[,] playGround)
+        {
+            SnakePoint head = first;
+            int i = 0;
+            while (!targetPoint.Equals(head.Point) && i < 150)
+            {
+                i++;
+                double minDistance = 200;
+                SnakePoint choosenSnakePoint = null;
+                foreach (var m in Enum.GetValues(typeof(Move)))
+                {
+                    var nextSnakePoint = Move(head, (Move)m);
+                    if (nextSnakePoint.Point.Distance(targetPoint) < minDistance
+                        && !Collider.Collission(nextSnakePoint.Direction, nextSnakePoint.Point, playGround))
+                    {
+                        choosenSnakePoint = nextSnakePoint;
+                        minDistance = nextSnakePoint.Point.Distance(targetPoint);
+                    }
+                }
+                if (choosenSnakePoint != null)
+                {
+                    snakePoints.Add(choosenSnakePoint);
+                    head = choosenSnakePoint;
+                }
+                else
+                {
+                    snakePoints.Add(Move(head, Interface.Move.Right));
+                }
+            }
+
+            if (i < 150)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static IEnumerable<Move> OtherLRMoves(Move move)
+        {
+            foreach (Move m in Enum.GetValues(typeof(Move)))
+            {
+                if (m != move && m != Interface.Move.Straight)
+                {
+                    yield return m;
+                }
+            }
+        }
+
+        public static SnakePoint Move(SnakePoint lastSnakePoint, Move move)
         {
             Direction fakeDirection = lastSnakePoint.Direction;
             Point fakePoint = lastSnakePoint.Point;
             Move(ref fakeDirection, ref fakePoint, move);
-            return new Snake.SnakePoint(lastSnakePoint.Round + 1, fakePoint, move, fakeDirection, true);
+            return new SnakePoint(lastSnakePoint.Round + 1, fakePoint, move, fakeDirection, true);
         }
 
         private static Direction ApplyMove(Direction dir, Move move)
@@ -113,6 +203,22 @@ namespace SnakeDeathmatch.Players.Jardos.Components
                 }
             }
             return result;
+        }
+
+        public static void MergeArrays(int[,] from, int[,] to)
+        {
+            for (int x = 0; x < ComputeHelper.MaxSize; x++)
+            {
+                for (int y = 0; y < ComputeHelper.MaxSize; y++)
+                {
+                    var fromValue = from[x, y];
+                    var toValue = to[x, y];
+                    if (fromValue != 0 && fromValue != toValue)
+                    {
+                        to[x, y] = from[x, y];
+                    }
+                }
+            }
         }
     }
 }

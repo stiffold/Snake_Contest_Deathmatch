@@ -62,7 +62,7 @@ namespace SnakeDeathmatch.Debugger
             if (Obj == null)
                 return;
 
-            if (typeof(IEnumerable).IsAssignableFrom(Obj.GetType()))
+            if (typeof(IEnumerable).IsAssignableFrom(Obj.GetType()) && Obj.GetType() != typeof(string))
             {
                 IEnumerator enumerator = (Obj as IEnumerable).GetEnumerator();
                 int i = 0;

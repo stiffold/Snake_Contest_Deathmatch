@@ -116,7 +116,12 @@
     <Compile Include="Players\Jardos\Components\Masker.cs" />
     <Compile Include="Players\Jardos\Components\Point.cs" />
     <Compile Include="Players\Jardos\Components\Snake.cs" />
+    <Compile Include="Players\Jardos\Components\SnakePoint.cs" />
+    <Compile Include="Players\Jardos\Components\Strategies\BehindMeStrategy.cs" />
+    <Compile Include="Players\Jardos\Components\Strategies\BullingStrategy.cs" />
     <Compile Include="Players\Jardos\Components\Strategies\RecurseStrategy.cs" />
+    <Compile Include="Players\Jardos\Components\Strategies\RoterrorStrategy.cs" />
+    <Compile Include="Players\Jardos\Components\Strategies\SurviveStrategy.cs" />
     <Compile Include="Players\Jardos\Components\StrategyProcessor.cs" />
     <Compile Include="Players\Jardos\Debug\DebugablePlayground.cs" />
     <Compile Include="Players\Jardos\Debug\JardosBreakpointNames.cs" />
